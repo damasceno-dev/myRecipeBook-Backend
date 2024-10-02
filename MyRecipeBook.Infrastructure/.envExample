@@ -1,0 +1,2 @@
+ConnectionStrings__DefaultConnection=Server=Host=yourhost;Database=yourDatabase;Username=yourUsername;
+Password=$$password$$
