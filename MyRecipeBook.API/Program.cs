@@ -2,6 +2,7 @@ using DotNetEnv;
 using MyRecipeBook.Application;
 using MyRecipeBook.Filters;
 using MyRecipeBook.Infrastructure;
+using MyRecipeBook.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 Env.Load();
@@ -16,7 +17,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<CultureMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

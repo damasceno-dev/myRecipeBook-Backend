@@ -28,6 +28,6 @@
         <value>This is not a valid e-mail</value>
     </data>
     <data name="PASSWORD_LENGTH" xml:space="preserve">
-        <value>Invalida password length</value>
+        <value>Invalid password length</value>
     </data>
 </root>
