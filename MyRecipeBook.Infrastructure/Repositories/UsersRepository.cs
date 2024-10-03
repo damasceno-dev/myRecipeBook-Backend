@@ -3,7 +3,7 @@ using MyRecipeBook.Domain.Interfaces;
 
 namespace MyRecipeBook.Infrastructure.Repositories;
 
-public class UsersRepository : IUsersRepository
+internal class UsersRepository : IUsersRepository
 {
     private readonly MyRecipeBookDbContext _dbContext;
 

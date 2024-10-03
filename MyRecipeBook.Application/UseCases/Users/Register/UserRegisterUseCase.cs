@@ -42,5 +42,11 @@ public class UserRegisterUseCase
 
     private void Validate(RequestUserRegisterJson request)
     {
+        var result = new UserRegisterFluentValidation().Validate(request);
+        if (result.IsValid == false)
+        {
+            var errors = result.Errors.Select(e => e.ErrorMessage).ToList();
+            // throw new OnValidationExcetption(errors);
+        }
     }
 }

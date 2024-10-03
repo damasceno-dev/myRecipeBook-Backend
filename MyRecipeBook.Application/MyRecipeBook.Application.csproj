@@ -9,9 +9,11 @@
     <ItemGroup>
       <ProjectReference Include="..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
       <ProjectReference Include="..\MyRecipeBook.Domain\MyRecipeBook.Domain.csproj" />
+      <ProjectReference Include="..\MyRecipeBook.Exception\MyRecipeBook.Exception.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.10.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
