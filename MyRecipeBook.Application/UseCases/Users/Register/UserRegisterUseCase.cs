@@ -2,6 +2,7 @@ using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.Register;
 
@@ -46,7 +47,7 @@ public class UserRegisterUseCase
         if (result.IsValid == false)
         {
             var errors = result.Errors.Select(e => e.ErrorMessage).ToList();
-            // throw new OnValidationExcetption(errors);
+            throw new OnValidationException(errors);
         }
     }
 }
