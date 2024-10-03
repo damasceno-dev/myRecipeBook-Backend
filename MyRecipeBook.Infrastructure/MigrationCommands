@@ -1,0 +1,2 @@
+dotnet ef migrations add ##MigrationNameHere## --project MyRecipeBook.Infrastructure --startup-project MyRecipeBook.API
+dotnet ef database update --project MyRecipeBook.Infrastructure --startup-project MyRecipeBook.API

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Infrastructure.Repositories;
 
 namespace MyRecipeBook.Infrastructure;
 
@@ -8,7 +10,14 @@ public static class InfraDependencyInjectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        AddDatabase(services);
         AddDbContext(services, configuration);
+    }
+
+    private static void AddDatabase(IServiceCollection services)
+    {
+        services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
