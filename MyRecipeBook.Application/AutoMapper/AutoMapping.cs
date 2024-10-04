@@ -20,6 +20,7 @@ public class AutoMapping : Profile
 
     private void RequestToDomain()
     {
-        CreateMap<RequestUserRegisterJson, User>();
+        CreateMap<RequestUserRegisterJson, User>()
+            .ForMember(u => u.Password, config => config.Ignore());
     }
 }
