@@ -1,5 +1,5 @@
 using AutoMapper;
-using MyRecipeBook.Application.Services.Password;
+using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;

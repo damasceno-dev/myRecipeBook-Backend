@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyRecipeBook.Application.AutoMapper;
+using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Users.Register;
 
 namespace MyRecipeBook.Application;

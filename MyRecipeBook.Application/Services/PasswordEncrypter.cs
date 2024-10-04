@@ -1,4 +1,4 @@
-namespace MyRecipeBook.Application.Services.Password;
+namespace MyRecipeBook.Application.Services;
 
 public static class PasswordEncrypter
 {
@@ -7,7 +7,6 @@ public static class PasswordEncrypter
     {
         return BCrypt.Net.BCrypt.HashPassword($"{ChaveAdicional}{password}");
     }
-
     public static bool VerifyPassword(string password, string hashedPassword)
     {
         return BCrypt.Net.BCrypt.Verify($"{ChaveAdicional}{password}", hashedPassword);
