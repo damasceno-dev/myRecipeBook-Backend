@@ -68,5 +68,10 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("PASSWORD_LENGTH", resourceCulture);
             }
         }
+        
+        public static string UNKOWN_ERROR
+        {
+            get { return ResourceManager.GetString("UNKOWN_ERROR", resourceCulture);}
+        }
     }
 }

@@ -30,4 +30,7 @@
     <data name="PASSWORD_LENGTH" xml:space="preserve">
         <value>Senha muito curta</value>
     </data>
+    <data name="UNKNOWN_ERROR" xml:space="preserve">
+        <value>Erro desconhecido</value>
+    </data>
 </root>

@@ -30,4 +30,7 @@
     <data name="PASSWORD_LENGTH" xml:space="preserve">
         <value>Invalid password length</value>
     </data>
+    <data name="UNKNOWN_ERROR" xml:space="preserve">
+        <value>Unkown error</value>
+    </data>
 </root>

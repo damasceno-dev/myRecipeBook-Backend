@@ -1,4 +1,4 @@
-namespace MyRecipeBook.Communication;
+namespace MyRecipeBook.Communication.Responses;
 
 public class ResponseErrorJson
 {
