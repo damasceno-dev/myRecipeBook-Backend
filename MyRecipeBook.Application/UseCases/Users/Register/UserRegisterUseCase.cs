@@ -1,3 +1,4 @@
+using AutoMapper;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
@@ -10,33 +11,25 @@ public class UserRegisterUseCase
 {
     private readonly IUsersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork)
+    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
         Validate(request);
-
-        var newUser = new User
-        {
-            Email = request.Email,
-            Name = request.Name,
-            Password = request.Password
-        };
+        var newUser = _mapper.Map<User>(request);
 
         _repository.Register(newUser);
         await _unitOfWork.Commit();
 
-        return new ResponseUserRegisterJson
-        {
-            Id = newUser.Id,
-            CreatedOn = newUser.CreatedOn,
-            Name = newUser.Name,
-            Email = newUser.Email,
-        };
+
+        var response = _mapper.Map<ResponseUserRegisterJson>(newUser);
+        return response;
     }
 
     private void Validate(RequestUserRegisterJson request)
