@@ -73,5 +73,9 @@ namespace MyRecipeBook.Communication {
         {
             get { return ResourceManager.GetString("UNKOWN_ERROR", resourceCulture);}
         }
+        public static string EMAIL_ALREADY_EXISTS
+        {
+            get { return ResourceManager.GetString("EMAIL_ALREADY_EXISTS", resourceCulture);}
+        }
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using MyRecipeBook.Application.Services;
+using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
@@ -23,6 +24,7 @@ public class UserRegisterUseCase
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
         Validate(request);
+        await VerifyIfActiveUserEmailAlreadyExists(request.Email);
         
         var newUser = _mapper.Map<User>(request);
         newUser.Password = PasswordEncrypter.HashPassword(request.Password);
@@ -31,6 +33,15 @@ public class UserRegisterUseCase
         await _unitOfWork.Commit();
         
         return _mapper.Map<ResponseUserRegisterJson>(newUser);
+    }
+
+    private async Task VerifyIfActiveUserEmailAlreadyExists(string newUserEmail)
+    {
+        var userAlreadyExists = await _repository.ExistsActiveUserWithEmail(newUserEmail);
+        if (userAlreadyExists)
+        {
+            throw new ConflictException($"{newUserEmail} - {ResourceErrorMessages.EMAIL_ALREADY_EXISTS}");
+        }
     }
 
     private void Validate(RequestUserRegisterJson request)

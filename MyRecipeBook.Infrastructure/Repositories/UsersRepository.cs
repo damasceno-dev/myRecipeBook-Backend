@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
 
@@ -14,5 +15,9 @@ internal class UsersRepository : IUsersRepository
     public async Task Register(User newUser)
     {
         await _dbContext.Users.AddAsync(newUser);
+    }
+    public async Task<bool> ExistsActiveUserWithEmail(string email)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.Email.Equals(email) && u.Active);
     }
 }
