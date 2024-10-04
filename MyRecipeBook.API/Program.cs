@@ -1,11 +1,9 @@
-using DotNetEnv;
 using MyRecipeBook.Application;
 using MyRecipeBook.Filters;
 using MyRecipeBook.Infrastructure;
 using MyRecipeBook.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
-Env.Load();
 
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 builder.Services.AddInfrastructure(builder.Configuration);
