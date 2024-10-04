@@ -11,8 +11,8 @@ internal class UsersRepository : IUsersRepository
     {
         _dbContext = dbContext;
     }
-    public void Register(User newUser)
+    public async Task Register(User newUser)
     {
-        _dbContext.Users.Add(newUser);
+        await _dbContext.Users.AddAsync(newUser);
     }
 }

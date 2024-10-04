@@ -4,5 +4,5 @@ namespace MyRecipeBook.Domain.Interfaces;
 
 public interface IUsersRepository
 {
-    void Register(User newUser);
+    Task Register(User newUser);
 }

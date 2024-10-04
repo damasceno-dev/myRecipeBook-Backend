@@ -27,7 +27,7 @@ public class UserRegisterUseCase
         var newUser = _mapper.Map<User>(request);
         newUser.Password = PasswordEncrypter.HashPassword(request.Password);
         
-        _repository.Register(newUser);
+        await _repository.Register(newUser);
         await _unitOfWork.Commit();
         
         return _mapper.Map<ResponseUserRegisterJson>(newUser);
