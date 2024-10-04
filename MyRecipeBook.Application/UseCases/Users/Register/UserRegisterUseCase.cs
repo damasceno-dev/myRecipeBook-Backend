@@ -1,4 +1,5 @@
 using AutoMapper;
+using MyRecipeBook.Application.Services.Password;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
@@ -22,14 +23,14 @@ public class UserRegisterUseCase
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
         Validate(request);
+        
         var newUser = _mapper.Map<User>(request);
-
+        newUser.Password = PasswordEncrypter.HashPassword(request.Password);
+        
         _repository.Register(newUser);
         await _unitOfWork.Commit();
-
-
-        var response = _mapper.Map<ResponseUserRegisterJson>(newUser);
-        return response;
+        
+        return _mapper.Map<ResponseUserRegisterJson>(newUser);
     }
 
     private void Validate(RequestUserRegisterJson request)
