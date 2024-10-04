@@ -13,9 +13,8 @@ namespace MyRecipeBook.Controllers
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(typeof(ResponseUserRegisterJson), StatusCodes.Status201Created)]
-        public async Task<IActionResult> Register([FromBody] RequestUserRegisterJson request, [FromServices] 
-            UserRegisterUseCase
-                userRegisterUseCase)
+        public async Task<IActionResult> Register([FromBody]RequestUserRegisterJson request, 
+            [FromServices]UserRegisterUseCase userRegisterUseCase)
         {
             var response = await userRegisterUseCase.Execute(request);
             return Created(string.Empty, response);

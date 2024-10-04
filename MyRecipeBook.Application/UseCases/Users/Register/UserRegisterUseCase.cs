@@ -14,12 +14,15 @@ public class UserRegisterUseCase
     private readonly IUsersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly PasswordEncryption _passwordEncryption;
 
-    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
+    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper, 
+        PasswordEncryption passwordEncryption)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _passwordEncryption = passwordEncryption;
     }
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
@@ -27,7 +30,7 @@ public class UserRegisterUseCase
         await VerifyIfActiveUserEmailAlreadyExists(request.Email);
         
         var newUser = _mapper.Map<User>(request);
-        newUser.Password = PasswordEncrypter.HashPassword(request.Password);
+        newUser.Password = _passwordEncryption.HashPassword(request.Password);
         
         await _repository.Register(newUser);
         await _unitOfWork.Commit();
