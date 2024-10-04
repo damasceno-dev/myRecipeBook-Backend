@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MyRecipeBook.Communication;
+using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Filters;
@@ -17,7 +18,7 @@ public class ExceptionFilter : IExceptionFilter
         else
         {
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Result = new ObjectResult(new ResponseErrorJson("Erro desconhecido"));
+            context.Result = new ObjectResult(new ResponseErrorJson(ResourceErrorMessages.UNKOWN_ERROR));
         }
     }
 }

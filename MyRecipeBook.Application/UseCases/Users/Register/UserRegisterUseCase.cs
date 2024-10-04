@@ -22,8 +22,6 @@ public class UserRegisterUseCase
 
         var newUser = new User
         {
-            Active = true,
-            CreatedOn = DateTime.UtcNow,
             Email = request.Email,
             Name = request.Name,
             Password = request.Password
