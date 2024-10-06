@@ -12,6 +12,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRecipeBook.Communication"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRecipeBook.Exception", "MyRecipeBook.Exception\MyRecipeBook.Exception.csproj", "{5FF77DB2-8DAF-424E-A53B-BFF271A6A1FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validators.Test", "tests\Validators.Test\Validators.Test.csproj", "{3C965EB6-BC2B-4223-95AE-81609E8BB648}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{55CB7A4D-007A-4649-B402-57A4B470A1D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTestUtilities", "tests\CommonTestUtilities\CommonTestUtilities.csproj", "{1F060105-AC47-48DE-9DB4-BE72FF8327F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +48,17 @@ Global
 		{5FF77DB2-8DAF-424E-A53B-BFF271A6A1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FF77DB2-8DAF-424E-A53B-BFF271A6A1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FF77DB2-8DAF-424E-A53B-BFF271A6A1FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C965EB6-BC2B-4223-95AE-81609E8BB648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C965EB6-BC2B-4223-95AE-81609E8BB648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C965EB6-BC2B-4223-95AE-81609E8BB648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C965EB6-BC2B-4223-95AE-81609E8BB648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F060105-AC47-48DE-9DB4-BE72FF8327F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F060105-AC47-48DE-9DB4-BE72FF8327F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F060105-AC47-48DE-9DB4-BE72FF8327F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F060105-AC47-48DE-9DB4-BE72FF8327F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C965EB6-BC2B-4223-95AE-81609E8BB648} = {55CB7A4D-007A-4649-B402-57A4B470A1D2}
+		{1F060105-AC47-48DE-9DB4-BE72FF8327F9} = {55CB7A4D-007A-4649-B402-57A4B470A1D2}
 	EndGlobalSection
 EndGlobal
