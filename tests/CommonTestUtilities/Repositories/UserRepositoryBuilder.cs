@@ -5,8 +5,8 @@ namespace CommonTestUtilities.Repositories;
 
 public static class UserRepositoryBuilder
 {
-    public static IUsersRepository Build()
+    public static Mock<IUsersRepository> Build()
     {
-        return new Mock<IUsersRepository>().Object;
+        return new Mock<IUsersRepository>();
     }
 }
