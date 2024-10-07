@@ -37,6 +37,18 @@ public class RegisterUseCaseTest
         
         await act.Should().ThrowAsync<ConflictException>().WithMessage($"{request.Email} - {ResourceErrorMessages.EMAIL_ALREADY_EXISTS}");
     }
+    [Fact]
+    public async Task UserNameIsEmptyError()
+    {
+        var request = RequestUserRegisterJsonBuilder.Build();
+        request.Name = " ";
+        var useCase = CreateUserRegisterUseCase();
+        Func<Task> act = () => useCase.Execute(request);
+
+        (await act.Should().ThrowAsync<OnValidationException>())
+            .Where(e => e.GetErrors.Count == 1 && 
+                        e.GetErrors.Contains(ResourceErrorMessages.NAME_NOT_EMPTY));
+    }
     private UserRegisterUseCase CreateUserRegisterUseCase(TestCondition? condition = null)
     {
         var usersRepository = UserRepositoryBuilder.Build();
