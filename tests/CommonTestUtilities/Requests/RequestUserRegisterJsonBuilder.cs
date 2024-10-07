@@ -3,7 +3,7 @@ using MyRecipeBook.Communication.Requests;
 
 namespace CommonTestUtilities.Requests;
 
-public class RequestUserRegisterJsonBuilder
+public static class RequestUserRegisterJsonBuilder
 {
     public static RequestUserRegisterJson Build(int passwordLength = 10)
     {
