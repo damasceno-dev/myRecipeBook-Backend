@@ -35,8 +35,10 @@ public class RegisterUseCaseTest
         var useCase = CreateUserRegisterUseCase(TestCondition.EmailAlreadyExists);
         Func<Task> act = () => useCase.Execute(request);
         
-        await act.Should().ThrowAsync<ConflictException>().WithMessage($"{request.Email} - {ResourceErrorMessages.EMAIL_ALREADY_EXISTS}");
+        await act.Should().ThrowAsync<ConflictException>()
+            .WithMessage($"{request.Email} - {ResourceErrorMessages.EMAIL_ALREADY_EXISTS}");
     }
+    
     [Fact]
     public async Task UserNameIsEmptyError()
     {
@@ -48,7 +50,25 @@ public class RegisterUseCaseTest
         (await act.Should().ThrowAsync<OnValidationException>())
             .Where(e => e.GetErrors.Count == 1 && 
                         e.GetErrors.Contains(ResourceErrorMessages.NAME_NOT_EMPTY));
+    }    
+    
+    [Fact]
+    public async Task InvalidNameEmailAndPasswordError()
+    {
+        var request = RequestUserRegisterJsonBuilder.Build();
+        request.Name = " ";
+        request.Email = " ";
+        request.Password = "1234";
+        var useCase = CreateUserRegisterUseCase();
+        Func<Task> act = () => useCase.Execute(request);
+
+        (await act.Should().ThrowAsync<OnValidationException>())
+            .Where(e => e.GetErrors.Count == 3 && 
+                        e.GetErrors.Contains(ResourceErrorMessages.NAME_NOT_EMPTY) &&
+                        e.GetErrors.Contains(ResourceErrorMessages.EMAIL_NOT_EMPTY) &&
+                        e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_LENGTH));
     }
+    
     private UserRegisterUseCase CreateUserRegisterUseCase(TestCondition? condition = null)
     {
         var usersRepository = UserRepositoryBuilder.Build();
