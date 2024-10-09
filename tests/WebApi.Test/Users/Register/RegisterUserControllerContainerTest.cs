@@ -1,13 +1,11 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
-using System.Resources;
 using System.Text.Json;
+using CommonTestUtilities.InLineData;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Infrastructure;
@@ -19,12 +17,10 @@ namespace WebApi.Test.Users.Register;
 public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFactory>
 {
     private readonly MyRecipeBookDbContext _dbContextContainer;
-    private readonly MyContainerFactory _containerFactory;
     private readonly HttpClient _httpClient;
 
     public RegisterUserControllerContainerTest(MyContainerFactory containerFactory)
     {
-        _containerFactory = containerFactory;
         _httpClient = containerFactory.CreateClient();
         _dbContextContainer = containerFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
@@ -53,12 +49,11 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);
-        userInDb!.Email.Should().Be(request.Email);
+        userInDb.Email.Should().Be(request.Email);
     }
 
     [Theory]
-    [InlineData("pt-BR")]
-    [InlineData("en")]
+    [ClassData(typeof(TestCultures))]
     public async Task ErrorNameEmpty(string culture)
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("NAME_NOT_EMPTY", new CultureInfo
