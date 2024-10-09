@@ -31,7 +31,6 @@ public class MyContainerFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await _databaseContainer.StartAsync();
         await Services.CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>().Database.MigrateAsync();
-
     }
 
     public new async Task DisposeAsync()
