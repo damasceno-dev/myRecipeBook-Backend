@@ -10,11 +10,15 @@ public static class InfraDependencyInjectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDatabase(services);
-        AddDbContext(services, configuration);
+        var testEnv = configuration.GetValue<bool>("IsTestEnvironment");
+        AddRepositories(services);
+        if (testEnv is false)
+        {
+            AddDbContext(services, configuration);
+        }
     }
 
-    private static void AddDatabase(IServiceCollection services)
+    private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
