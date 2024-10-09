@@ -10,22 +10,22 @@ using Xunit;
 
 namespace WebApi.Test.Users.Register;
 
-public class RegisterUserControllerTest : IClassFixture<MyFactory>
+public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFactory>
 {
-    private readonly MyFactory _factory;
-    private readonly MyRecipeBookDbContext _dbContext;
+    private readonly MyRecipeBookDbContext _dbContextContainer;
+    private readonly MyContainerFactory _containerFactory;
 
-    public RegisterUserControllerTest(MyFactory factory)
+    public RegisterUserControllerContainerTest(MyContainerFactory containerFactory)
     {
-        _factory = factory;
-        _dbContext = factory.Services.GetRequiredService<MyRecipeBookDbContext>();
+        _containerFactory = containerFactory;
+        _dbContextContainer = containerFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
     [Fact]
-    public async Task SuccessFromResponseBody()
+    public async Task SuccessFromResponseBodyContainer()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
-        var client = _factory.CreateClient();
+        var client = _containerFactory.CreateClient();
         var response = await client.PostAsJsonAsync("user/register", request);
         var responseBody = await response.Content.ReadAsStreamAsync();
         var result = await JsonDocument.ParseAsync(responseBody);
@@ -36,13 +36,13 @@ public class RegisterUserControllerTest : IClassFixture<MyFactory>
     }
     
     [Fact]
-    public async Task SuccessFromJsonSerialize()
+    public async Task SuccessFromJsonSerializeContainer()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
-        var client = _factory.CreateClient();
+        var client = _containerFactory.CreateClient();
         var response = await client.PostAsJsonAsync("user/register", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
-        var userInDb = await _dbContext.Users.FindAsync(userFromJson!.Id);
+        var userInDb = await _dbContextContainer.Users.FindAsync(userFromJson!.Id);
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);

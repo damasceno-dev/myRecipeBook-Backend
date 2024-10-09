@@ -7,13 +7,14 @@ using MyRecipeBook.Infrastructure;
 
 namespace WebApi.Test;
 
-public class MyFactory : WebApplicationFactory<Program>
+public class MyInMemoryFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Test").ConfigureTestServices(s =>
-            {
-                s.Remove(s.SingleOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<MyRecipeBookDbContext>))!);
+            { 
+                var currentDbContext = s.SingleOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<MyRecipeBookDbContext>));
+                if (currentDbContext is not null) s.Remove(currentDbContext);
                 s.AddDbContext<MyRecipeBookDbContext>(d => d.UseInMemoryDatabase("TestDatabase"));
             });
     }
