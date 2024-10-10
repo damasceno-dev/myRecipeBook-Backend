@@ -30,7 +30,8 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     {
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _httpClient.PostAsJsonAsync("user/register", request);
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        var responseBody = await response.Content.ReadAsStreamAsync();
+        var result = await JsonDocument.ParseAsync(responseBody);
         
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         result.RootElement.GetProperty("name").GetString().Should().Be(request.Name);
