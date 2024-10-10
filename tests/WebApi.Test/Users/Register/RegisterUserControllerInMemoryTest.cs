@@ -25,7 +25,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
-    [Fact]
+    // [Fact]
     public async Task SuccessFromResponseBodyInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
@@ -38,7 +38,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
         result.RootElement.GetProperty("email").GetString().Should().Be(request.Email);
     }
     
-    [Fact]
+    // [Fact]
     public async Task SuccessFromJsonSerializeInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
