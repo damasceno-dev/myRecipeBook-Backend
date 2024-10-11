@@ -44,7 +44,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # The renewed SonarCloud token
         shell: pwsh
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"damasceno-dev_myRecipeBook-Backend" /o:"damasceno-dev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=tests\**\*.Test\coverage.opencover.xml 
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"damasceno-dev_myRecipeBook-Backend" /o:"damasceno-dev" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" 
           dotnet build
-          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l trx
+          dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults/ -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
