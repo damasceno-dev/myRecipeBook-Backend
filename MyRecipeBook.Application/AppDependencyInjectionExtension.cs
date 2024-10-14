@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services;
+using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Register;
 
 namespace MyRecipeBook.Application;
@@ -27,5 +28,6 @@ public static class AppDependencyInjectionExtension
     private static void AddUseCases(IServiceCollection services)
     {
         services.AddScoped<UserRegisterUseCase>();
+        services.AddScoped<UserLoginUseCase>();
     }
 }

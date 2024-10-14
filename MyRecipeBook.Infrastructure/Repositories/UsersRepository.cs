@@ -20,4 +20,9 @@ internal class UsersRepository : IUsersRepository
     {
         return await _dbContext.Users.AnyAsync(u => u.Email.Equals(email) && u.Active);
     }
+
+    public async Task<User?> GetExistingUserWithEmail(string email)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+    }
 }

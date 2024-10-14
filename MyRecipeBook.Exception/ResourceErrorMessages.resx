@@ -36,4 +36,13 @@
     <data name="EMAIL_ALREADY_EXISTS" xml:space="preserve">
         <value>This email is already registered</value>
     </data>
+    <data name="EMAIL_NOT_REGISTERED" xml:space="preserve">
+        <value>This e-mail is not registered</value>
+    </data>
+    <data name="EMAIL_NOT_ACTIVE" xml:space="preserve">
+        <value>This e-mail is not active</value>
+    </data>
+    <data name="WRONG_PASSWORD" xml:space="preserve">
+        <value>Wrong password</value>
+    </data>
 </root>

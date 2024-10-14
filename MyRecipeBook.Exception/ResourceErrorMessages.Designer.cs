@@ -77,5 +77,17 @@ namespace MyRecipeBook.Communication {
         {
             get { return ResourceManager.GetString("EMAIL_ALREADY_EXISTS", resourceCulture);}
         }
+        public static string EMAIL_NOT_REGISTERED
+        {
+            get { return ResourceManager.GetString("EMAIL_NOT_REGISTERED", resourceCulture);}
+        }
+        public static string EMAIL_NOT_ACTIVE
+        {
+            get { return ResourceManager.GetString("EMAIL_NOT_ACTIVE", resourceCulture);}
+        }
+        public static string WRONG_PASSWORD
+        {
+            get { return ResourceManager.GetString("WRONG_PASSWORD", resourceCulture);}
+        }
     }
 }
