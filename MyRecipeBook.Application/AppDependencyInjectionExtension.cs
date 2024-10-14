@@ -19,7 +19,7 @@ public static class AppDependencyInjectionExtension
         var additionalKey = configuration.GetValue<string>("Settings:Password:AdditionalKey");
         if (additionalKey is null)
         {
-            throw new System.Exception("Invalid additional key for password encryption");
+            throw new ArgumentException("Invalid additional key for password encryption");
         }
         services.AddScoped(options => new PasswordEncryption(additionalKey));
     }

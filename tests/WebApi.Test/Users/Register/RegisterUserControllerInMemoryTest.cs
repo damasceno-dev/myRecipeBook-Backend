@@ -26,7 +26,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     }
     
     // [Fact]
-    public async Task SuccessFromResponseBodyInMemory()
+    private async Task SuccessFromResponseBodyInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _httpClient.PostAsJsonAsync("user/register", request);
@@ -39,7 +39,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     }
     
     // [Fact]
-    public async Task SuccessFromJsonSerializeInMemory()
+    private async Task SuccessFromJsonSerializeInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _httpClient.PostAsJsonAsync("user/register", request);

@@ -69,7 +69,7 @@ public class RegisterUseCaseTest
                         e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_LENGTH));
     }
     
-    private UserRegisterUseCase CreateUserRegisterUseCase(TestCondition? condition = null)
+    private static UserRegisterUseCase CreateUserRegisterUseCase(TestCondition? condition = null)
     {
         var usersRepository = UserRepositoryBuilder.Build();
         if (condition == TestCondition.EmailAlreadyExists)

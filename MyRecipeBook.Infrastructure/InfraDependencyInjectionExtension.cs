@@ -30,12 +30,12 @@ public static class InfraDependencyInjectionExtension
         var envPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
         
         if (envPassword is null)
-            throw new Exception("Invalid password from .env");
+            throw new ArgumentException("Invalid password from .env");
         
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         
         if (connectionString is null)
-            throw new Exception("Invalid connection string");
+            throw new ArgumentException("Invalid connection string");
         
         connectionString = connectionString.Replace("$$password$$", envPassword);
 

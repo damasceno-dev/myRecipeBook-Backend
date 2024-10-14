@@ -47,7 +47,7 @@ public class UserRegisterUseCase
         }
     }
 
-    private void Validate(RequestUserRegisterJson request)
+    private static void Validate(RequestUserRegisterJson request)
     {
         var result = new UserRegisterFluentValidation().Validate(request);
         if (result.IsValid == false)
