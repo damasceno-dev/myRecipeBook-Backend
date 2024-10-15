@@ -21,7 +21,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         _dbContextContainer = containerFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
-    // [Fact]
+    [Fact]
     public async Task SuccessFromResponseBodyContainer()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
@@ -34,7 +34,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         result.RootElement.GetProperty("email").GetString().Should().Be(request.Email);
     }
     
-    // [Fact]
+    [Fact]
     public async Task SuccessFromJsonSerializeContainer()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
