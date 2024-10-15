@@ -3,6 +3,7 @@ using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Exception;
 
@@ -21,9 +22,18 @@ public class UserLoginUseCase
     public async Task<ResponseUserLoginJson> Execute(RequestUserLoginJson request)
     {
         Validate(request);
-        var userEmail = request.Email;
-        var validUser = await _repository.GetExistingUserWithEmail(userEmail);
+        var userToVerify = await _repository.GetExistingUserWithEmail(request.Email);
+        var verifiedUser = VerifyUser(userToVerify, request.Password);
         
+        return new ResponseUserLoginJson
+        {
+            Email = verifiedUser.Email,
+            Name = verifiedUser.Name
+        };
+    }
+
+    private User VerifyUser(User? validUser, string requestPassword)
+    {
         if (validUser is null)
         {
             throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_REGISTERED);
@@ -34,16 +44,12 @@ public class UserLoginUseCase
             throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
         }
         
-        if (_passwordEncryption.VerifyPassword(request.Password, validUser.Password) is false)
+        if (_passwordEncryption.VerifyPassword(requestPassword, validUser.Password) is false)
         {
             throw new InvalidLoginException(ResourceErrorMessages.WRONG_PASSWORD);
         }
-        
-        return new ResponseUserLoginJson
-        {
-            Email = validUser.Email,
-            Name = validUser.Name
-        };
+
+        return validUser;
     }
 
     private void Validate(RequestUserLoginJson request)
