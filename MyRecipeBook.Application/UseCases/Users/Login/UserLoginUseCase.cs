@@ -52,7 +52,7 @@ public class UserLoginUseCase
         return validUser;
     }
 
-    private void Validate(RequestUserLoginJson request)
+    private static void Validate(RequestUserLoginJson request)
     {
         var result = new UserLoginFluentValidation().Validate(request);
         if (result.IsValid is false)

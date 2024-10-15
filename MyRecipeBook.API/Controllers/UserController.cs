@@ -33,7 +33,6 @@ namespace MyRecipeBook.Controllers
         public async Task<IActionResult> DoLogin([FromBody]RequestUserLoginJson request, [FromServices]UserLoginUseCase
             userLoginUseCase)
         {
-            //todo: validation, usecase and integration test for login route
             var response = await userLoginUseCase.Execute(request);
             return Ok(response);
         }
