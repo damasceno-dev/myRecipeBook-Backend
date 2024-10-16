@@ -112,11 +112,11 @@ public class LoginUseCaseTest
                 usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(validUser);
                 break;
             case TestCondition.InactiveUser:
-                var inactiveUser = new User {Name = "Valid User",Email = request.Email,Password = password.HashPassword(request.Password), Active = false};
+                var inactiveUser = new User {Name = "Inactive User",Email = request.Email,Password = password.HashPassword(request.Password), Active = false};
                 usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(inactiveUser);
                 break;
             case TestCondition.WrongPassword:
-                var wrongPassword = new User {Name = "Valid User",Email = request.Email,Password = password.HashPassword("wrong pass")};
+                var wrongPassword = new User {Name = "Wrong Password User",Email = request.Email,Password = password.HashPassword("wrong pass")};
                 usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(wrongPassword);
                 break;
             case null:

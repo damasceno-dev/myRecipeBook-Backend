@@ -13,11 +13,11 @@ namespace WebApi.Test.Users.Register;
 public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFactory>
 {
     private readonly MyRecipeBookDbContext _dbContextContainer;
-    private readonly HttpClient _httpClient;
+    private readonly MyContainerFactory _factory;
 
     public RegisterUserControllerContainerTest(MyContainerFactory containerFactory)
     {
-        _httpClient = containerFactory.CreateClient();
+        _factory = containerFactory;
         _dbContextContainer = containerFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -25,7 +25,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
     public async Task SuccessFromResponseBodyContainer()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
-        var response = await _httpClient.PostAsJsonAsync("user/register", request);
+        var response = await _factory.DoPost("user/register", request);
         var responseBody = await response.Content.ReadAsStreamAsync();
         var result = await JsonDocument.ParseAsync(responseBody);
         
@@ -39,7 +39,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
     {
         var request = RequestUserRegisterJsonBuilder.Build();
         
-        var response = await _httpClient.PostAsJsonAsync("user/register", request);
+        var response = await _factory.DoPost("user/register", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
         var userInDb = await _dbContextContainer.Users.FindAsync(userFromJson!.Id);
         

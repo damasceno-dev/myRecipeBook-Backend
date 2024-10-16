@@ -10,18 +10,17 @@ using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Infrastructure;
 using Xunit;
-using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
 namespace WebApi.Test.Users.Register;
 
 public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
     private readonly MyRecipeBookDbContext _dbContextInMemory;
-    private readonly HttpClient _httpClient;
+    private readonly MyInMemoryFactory _factory;
 
     public RegisterUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
-        _httpClient = inMemoryFactory.CreateClient();
+        _factory = inMemoryFactory;
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -29,7 +28,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     private async Task SuccessFromResponseBodyInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
-        var response = await _httpClient.PostAsJsonAsync("user/register", request);
+        var response = await _factory.DoPost("user/register", request);
         var responseBody = await response.Content.ReadAsStreamAsync();
         var result = await JsonDocument.ParseAsync(responseBody);
         
@@ -42,7 +41,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     private async Task SuccessFromJsonSerializeInMemory()
     {
         var request = RequestUserRegisterJsonBuilder.Build();
-        var response = await _httpClient.PostAsJsonAsync("user/register", request);
+        var response = await _factory.DoPost("user/register", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
         var userInDb = await _dbContextInMemory.Users.FindAsync(userFromJson!.Id);
         
@@ -59,10 +58,8 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
             (culture));
         var request = RequestUserRegisterJsonBuilder.Build();
         request.Name = "";
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         
-        var response = await _httpClient.PostAsJsonAsync("user/register", request);
+        var response = await _factory.DoPost("user/register", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

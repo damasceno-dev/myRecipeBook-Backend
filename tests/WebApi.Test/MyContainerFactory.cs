@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -6,11 +7,18 @@ using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Infrastructure;
 using Testcontainers.PostgreSql;
 using Xunit;
+using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
 namespace WebApi.Test;
 
 public class MyContainerFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private readonly HttpClient _httpClient;
+    public MyContainerFactory()
+    {
+        _httpClient = CreateClient();
+    }
+    
     private readonly PostgreSqlContainer _databaseContainer = new PostgreSqlBuilder()
             .WithUsername("postgres")
             .WithPassword("testPassword")
@@ -25,6 +33,15 @@ public class MyContainerFactory : WebApplicationFactory<Program>, IAsyncLifetime
             if (currentDbContext is not null) s.Remove(currentDbContext);
             s.AddDbContext<MyRecipeBookDbContext>(options => options.UseNpgsql(_databaseContainer.GetConnectionString()));
         });
+    }
+    public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null)
+    {
+        if (culture is not null)
+        {
+            _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
+            _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
+        }
+        return await _httpClient.PostAsJsonAsync(route, request);
     }
 
     public async Task InitializeAsync()

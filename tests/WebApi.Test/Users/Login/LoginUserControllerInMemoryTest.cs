@@ -7,24 +7,22 @@ using CommonTestUtilities.Requests;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Infrastructure;
 using Xunit;
-using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
 namespace WebApi.Test.Users.Login;
 
 public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
     private readonly MyRecipeBookDbContext _dbContextInMemory;
-    private readonly HttpClient _httpClient;
+    private readonly MyInMemoryFactory _factory;
 
     public LoginUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
-        _httpClient = inMemoryFactory.CreateClient();
+        _factory = inMemoryFactory;
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -32,28 +30,26 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     private async Task SuccessFromResponseBodyInMemory()
     {
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
-        await _httpClient.PostAsJsonAsync("user/register", requestRegister);
+        await _factory.DoPost("user/register", requestRegister);
+        var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
         
-        var response = await _httpClient.PostAsJsonAsync("user/login", new RequestUserLoginJson {Email = 
-            requestRegister.Email, Password = requestRegister.Password});
+        var response = await _factory.DoPost("user/login", request);
         var responseBody = await response.Content.ReadAsStreamAsync();
         var result = await JsonDocument.ParseAsync(responseBody);
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.RootElement.GetProperty("name").GetString().Should().Be(requestRegister.Name);
         result.RootElement.GetProperty("email").GetString().Should().Be(requestRegister.Email);
-        
-
     }
     
     [Fact]
     private async Task SuccessFromJsonSerializeInMemory()
     {
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
-        await _httpClient.PostAsJsonAsync("user/register", requestRegister);
+        var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
+        await _factory.DoPost("user/register", requestRegister);
         
-        var response = await _httpClient.PostAsJsonAsync("user/login", new RequestUserLoginJson {Email = 
-            requestRegister.Email, Password = requestRegister.Password});
+        var response = await _factory.DoPost("user/login", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserLoginJson>();
         var userInDb = await _dbContextInMemory.Users.FirstAsync(u => u.Email.Equals(userFromJson!.Email) && u.Name
             .Equals(userFromJson.Name));
@@ -67,14 +63,11 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     [ClassData(typeof(TestCultures))]
     public async Task ErrorEmailEmpty(string culture)
     {
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_EMPTY", new CultureInfo
-            (culture));
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_EMPTY", new CultureInfo(culture));
         var request = RequestUserLoginJsonBuilder.Build();
         request.Email = " ";
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         
-        var response = await _httpClient.PostAsJsonAsync("user/login", request);
+        var response = await _factory.DoPost("user/register", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -91,10 +84,8 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
             (culture));
         var request = RequestUserLoginJsonBuilder.Build();
         request.Email = "invalid.email.com";
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         
-        var response = await _httpClient.PostAsJsonAsync("user/login", request);
+        var response = await _factory.DoPost("user/login", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -108,13 +99,10 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     [ClassData(typeof(TestCultures))]
     public async Task ErrorEmailNotRegistered(string culture)    
     {
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_REGISTERED", new CultureInfo
-            (culture));
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_REGISTERED", new CultureInfo(culture));
         var request = RequestUserLoginJsonBuilder.Build();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         
-        var response = await _httpClient.PostAsJsonAsync("user/login", request);
+        var response = await _factory.DoPost("user/login", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -130,16 +118,14 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_ACTIVE", new CultureInfo(culture));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
-        var responseRegister = await _httpClient.PostAsJsonAsync("user/register", requestRegister);
+        var responseRegister = await _factory.DoPost("user/register", requestRegister);
+        var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
         var userFromJson = await responseRegister.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
         var userInDb = await _dbContextInMemory.Users.FindAsync(userFromJson!.Id);
         userInDb!.Active = false;
         await _dbContextInMemory.SaveChangesAsync();
         
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
-        var response = await _httpClient.PostAsJsonAsync("user/login", new RequestUserLoginJson {Email = 
-            requestRegister.Email, Password = requestRegister.Password});
+        var response = await _factory.DoPost("user/login", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -155,12 +141,10 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("WRONG_PASSWORD", new CultureInfo(culture));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
-        await _httpClient.PostAsJsonAsync("user/register", requestRegister);
+        await _factory.DoPost("user/register", requestRegister);
+        var request = new RequestUserLoginJson {Email = requestRegister.Email,Password = "wrong.password123"};
         
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
-        var response = await _httpClient.PostAsJsonAsync("user/login", new RequestUserLoginJson {Email = 
-            requestRegister.Email, Password = "wrong.password123"});
+        var response = await _factory.DoPost("user/login", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
         
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
