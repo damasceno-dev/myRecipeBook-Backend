@@ -27,6 +27,8 @@ public class RegisterUseCaseTest
 
         response.Should().NotBeNull();
         response.Name.Should().Be(request.Name);
+        response.Email.Should().Be(request.Email);
+        response.ResponseToken.Token.Should().NotBeNullOrEmpty();
     }
 
     [Fact]

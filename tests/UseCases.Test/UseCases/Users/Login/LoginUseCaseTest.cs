@@ -34,6 +34,7 @@ public class LoginUseCaseTest
         response.Should().NotBeNull();
         response.Email.Should().Be(request.Email);
         response.Name.Should().Be("Valid User");
+        response.ResponseToken.Token.Should().NotBeNullOrEmpty();
     }
 
     [Fact]

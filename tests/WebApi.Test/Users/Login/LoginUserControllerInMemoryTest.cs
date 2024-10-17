@@ -41,6 +41,7 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.RootElement.GetProperty("name").GetString().Should().Be(requestRegister.Name);
         result.RootElement.GetProperty("email").GetString().Should().Be(requestRegister.Email);
+        result.RootElement.GetProperty("responseToken").GetProperty("token").GetString().Should().NotBeNullOrEmpty();
     }
     
     [Fact]
@@ -121,8 +122,8 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         var responseRegister = await _factory.DoPost("user/register", requestRegister);
         var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
-        var userFromJson = await responseRegister.Content.ReadFromJsonAsync<User>();
-        var userInDb = await _dbContextInMemory.Users.FindAsync(userFromJson!.Id);
+        var userFromJson = await responseRegister.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
+        var userInDb = await _dbContextInMemory.Users.SingleAsync(u => u.Email == userFromJson!.Email);
         userInDb!.Active = false;
         await _dbContextInMemory.SaveChangesAsync();
         

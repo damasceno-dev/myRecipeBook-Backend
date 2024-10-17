@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
@@ -33,6 +34,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         result.RootElement.GetProperty("name").GetString().Should().Be(request.Name);
         result.RootElement.GetProperty("email").GetString().Should().Be(request.Email);
+        result.RootElement.GetProperty("responseToken").GetProperty("token").GetString().Should().NotBeNullOrEmpty();
     }
     
     [Fact]
@@ -41,8 +43,8 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         var request = RequestUserRegisterJsonBuilder.Build();
         
         var response = await _factory.DoPost("user/register", request);
-        var userFromJson = await response.Content.ReadFromJsonAsync<User>();
-        var userInDb = await _dbContextContainer.Users.FindAsync(userFromJson!.Id);
+        var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
+        var userInDb = await _dbContextContainer.Users.SingleAsync(u => u.Email == userFromJson!.Email);
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);

@@ -5,6 +5,7 @@ using System.Text.Json;
 using CommonTestUtilities.InLineData;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
@@ -36,6 +37,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         result.RootElement.GetProperty("name").GetString().Should().Be(request.Name);
         result.RootElement.GetProperty("email").GetString().Should().Be(request.Email);
+        result.RootElement.GetProperty("responseToken").GetProperty("token").GetString().Should().NotBeNullOrEmpty();
     }
     
     [Fact]
@@ -43,8 +45,8 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     {
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _factory.DoPost("user/register", request);
-        var userFromJson = await response.Content.ReadFromJsonAsync<User>();
-        var userInDb = await _dbContextInMemory.Users.FindAsync(userFromJson!.Id);
+        var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
+        var userInDb = await _dbContextInMemory.Users.SingleAsync(u => u.Email == userFromJson!.Email);
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);
