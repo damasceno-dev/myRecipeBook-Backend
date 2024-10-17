@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
 using Xunit;
 
@@ -120,7 +121,7 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         var responseRegister = await _factory.DoPost("user/register", requestRegister);
         var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
-        var userFromJson = await responseRegister.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
+        var userFromJson = await responseRegister.Content.ReadFromJsonAsync<User>();
         var userInDb = await _dbContextInMemory.Users.FindAsync(userFromJson!.Id);
         userInDb!.Active = false;
         await _dbContextInMemory.SaveChangesAsync();

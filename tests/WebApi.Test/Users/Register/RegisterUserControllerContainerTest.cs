@@ -5,6 +5,7 @@ using CommonTestUtilities.Requests;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
 using Xunit;
 
@@ -40,7 +41,7 @@ public class RegisterUserControllerContainerTest : IClassFixture<MyContainerFact
         var request = RequestUserRegisterJsonBuilder.Build();
         
         var response = await _factory.DoPost("user/register", request);
-        var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
+        var userFromJson = await response.Content.ReadFromJsonAsync<User>();
         var userInDb = await _dbContextContainer.Users.FindAsync(userFromJson!.Id);
         
         userInDb.Should().NotBeNull();

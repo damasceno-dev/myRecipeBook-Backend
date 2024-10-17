@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Infrastructure.Repositories;
+using MyRecipeBook.Infrastructure.Tokens;
 
 namespace MyRecipeBook.Infrastructure;
 
@@ -12,10 +13,20 @@ public static class InfraDependencyInjectionExtension
     {
         var testEnv = configuration.GetValue<bool>("IsTestEnvironment");
         AddRepositories(services);
+        AddToken(services, configuration);
         if (testEnv is false)
         {
             AddDbContext(services, configuration);
         }
+    }
+
+    private static void AddToken(IServiceCollection services, IConfiguration configuration)
+    {
+        var signKey = configuration.GetValue<string>("Settings:Token:SignKey");
+        var expirationTime = configuration.GetValue<int>("Settings:Token:ExpirationTimeInMinutes");
+        if (signKey is null || expirationTime == 0)
+            throw new ArgumentException("Invalid token sign key or expiration time");
+        services.AddScoped<ITokenGenerator>(options => new JsonWebTokenCreate(expirationTime, signKey));
     }
 
     private static void AddRepositories(IServiceCollection services)

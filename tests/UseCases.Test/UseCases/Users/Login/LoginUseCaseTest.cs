@@ -1,6 +1,7 @@
 using CommonTestUtilities.Cryptography;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
+using CommonTestUtilities.Token;
 using FluentAssertions;
 using Moq;
 using MyRecipeBook.Application.Services;
@@ -98,8 +99,9 @@ public class LoginUseCaseTest
     {
         var usersRepositoryMock = UserRepositoryBuilder.Build();
         var password = PasswordEncryptionBuilder.Build();
+        var token = JsonWebTokenBuilder.Build();
         var usersRepository = MockTestsConditions(request, condition, usersRepositoryMock, password);
-        return new UserLoginUseCase(usersRepository, password);
+        return new UserLoginUseCase(usersRepository, token, password);
     }
 
     private static IUsersRepository MockTestsConditions(RequestUserLoginJson request, TestCondition? condition, 
