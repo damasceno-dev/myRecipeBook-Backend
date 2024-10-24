@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyRecipeBook.Application.UseCases.Profile;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Communication.Requests;
@@ -34,6 +34,16 @@ namespace MyRecipeBook.Controllers
             userLoginUseCase)
         {
             var response = await userLoginUseCase.Execute(request);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("getProfileWithToken")]
+        [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetProfileWithToken(
+            [FromServices] UserProfileWithTokenUseCase userProfileWithTokenUseCase)
+        {
+            var response = await userProfileWithTokenUseCase.Execute();
             return Ok(response);
         }
     }
