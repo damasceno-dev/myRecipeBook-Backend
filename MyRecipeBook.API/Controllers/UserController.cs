@@ -4,6 +4,7 @@ using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Filters;
 
 namespace MyRecipeBook.Controllers
 {
@@ -38,6 +39,7 @@ namespace MyRecipeBook.Controllers
         }
 
         [HttpGet]
+        [MyCustomAuthorize]
         [Route("getProfileWithToken")]
         [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetProfileWithToken(
