@@ -89,5 +89,17 @@ namespace MyRecipeBook.Communication {
         {
             get { return ResourceManager.GetString("WRONG_PASSWORD", resourceCulture);}
         }
+        public static string TOKEN_EMPTY
+        {
+            get { return ResourceManager.GetString("TOKEN_EMPTY", resourceCulture);}
+        }
+        public static string TOKEN_EXPIRED
+        {
+            get { return ResourceManager.GetString("TOKEN_EXPIRED", resourceCulture);}
+        }
+        public static string TOKEN_WITH_NO_PERMISSION
+        {
+            get { return ResourceManager.GetString("TOKEN_WITH_NO_PERMISSION", resourceCulture);}
+        }
     }
 }

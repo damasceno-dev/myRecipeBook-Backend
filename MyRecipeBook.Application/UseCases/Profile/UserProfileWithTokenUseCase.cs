@@ -1,8 +1,10 @@
 using AutoMapper;
+using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Domain.Interfaces.Tokens;
+using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Profile;
 
@@ -34,7 +36,12 @@ public class UserProfileWithTokenUseCase
     {
         if (user is null)
         {
-            throw new ArgumentException("User does not exists");
+            throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_REGISTERED);
+        } 
+        
+        if (user.Active is false)
+        {
+            throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
         }
         return user;
     }

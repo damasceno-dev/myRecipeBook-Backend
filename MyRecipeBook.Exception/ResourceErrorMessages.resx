@@ -45,4 +45,13 @@
     <data name="WRONG_PASSWORD" xml:space="preserve">
         <value>Wrong password</value>
     </data>
+    <data name="TOKEN_EXPIRED" xml:space="preserve">
+        <value>Token expired</value>
+    </data>
+    <data name="TOKEN_EMPTY" xml:space="preserve">
+        <value>Token empty</value>
+    </data>
+    <data name="TOKEN_WITH_NO_PERMISSION" xml:space="preserve">
+        <value>Token with no permission</value>
+    </data>
 </root>
