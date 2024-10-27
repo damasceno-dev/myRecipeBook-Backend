@@ -16,6 +16,7 @@ public class AutoMapping : Profile
     private void DomainToResponse()
     {
         CreateMap<User, ResponseUserRegisterJson>();
+        CreateMap<User, ResponseUserProfileJson>();
     }
 
     private void RequestToDomain()
