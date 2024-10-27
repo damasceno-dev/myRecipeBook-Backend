@@ -5,6 +5,7 @@ using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.Login;
@@ -12,13 +13,13 @@ namespace MyRecipeBook.Application.UseCases.Users.Login;
 public class UserLoginUseCase
 {
     private readonly IUsersRepository _repository;
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenRepository _tokenRepository;
     private readonly PasswordEncryption _passwordEncryption;
 
-    public UserLoginUseCase(IUsersRepository repository, ITokenGenerator tokenGenerator, PasswordEncryption passwordEncryption)
+    public UserLoginUseCase(IUsersRepository repository, ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
     {
         _repository = repository;
-        _tokenGenerator = tokenGenerator;
+        _tokenRepository = tokenRepository;
         _passwordEncryption = passwordEncryption;
     }
     public async Task<ResponseUserLoginJson> Execute(RequestUserLoginJson request)
@@ -26,7 +27,7 @@ public class UserLoginUseCase
         Validate(request);
         var userToVerify = await _repository.GetExistingUserWithEmail(request.Email);
         var verifiedUser = VerifyUser(userToVerify, request.Password);
-        var userToken = _tokenGenerator.Generate(verifiedUser.Id);
+        var userToken = _tokenRepository.Generate(verifiedUser.Id);
         
         return new ResponseUserLoginJson
         {

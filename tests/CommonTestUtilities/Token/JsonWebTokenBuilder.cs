@@ -4,9 +4,9 @@ namespace CommonTestUtilities.Token;
 
 public class JsonWebTokenBuilder
 {
-    public static JsonWebTokenCreate Build()
+    public static JsonWebTokenRepository Build()
     {
         const string signKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
-        return new JsonWebTokenCreate(1000, signKey);
+        return new JsonWebTokenRepository(1000, signKey);
     }
 }

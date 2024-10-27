@@ -5,6 +5,7 @@ using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.Register;
@@ -15,14 +16,14 @@ public class UserRegisterUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly PasswordEncryption _passwordEncryption;
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenRepository _tokenRepository;
 
-    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper,ITokenGenerator tokenGenerator, PasswordEncryption passwordEncryption)
+    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper,ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _tokenGenerator = tokenGenerator;
+        _tokenRepository = tokenRepository;
         _passwordEncryption = passwordEncryption;
     }
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
@@ -32,7 +33,7 @@ public class UserRegisterUseCase
         
         var newUser = _mapper.Map<User>(request);
         newUser.Password = _passwordEncryption.HashPassword(request.Password);
-        var userToken = _tokenGenerator.Generate(newUser.Id);
+        var userToken = _tokenRepository.Generate(newUser.Id);
         
         await _repository.Register(newUser);
         await _unitOfWork.Commit();

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Infrastructure.Repositories;
 using MyRecipeBook.Infrastructure.Tokens;
 
@@ -26,7 +27,7 @@ public static class InfraDependencyInjectionExtension
         var expirationTime = configuration.GetValue<int>("Settings:Token:ExpirationTimeInMinutes");
         if (signKey is null || expirationTime == 0)
             throw new ArgumentException("Invalid token sign key or expiration time");
-        services.AddScoped<ITokenGenerator>(options => new JsonWebTokenCreate(expirationTime, signKey));
+        services.AddScoped<ITokenRepository>(options => new JsonWebTokenRepository(expirationTime, signKey));
     }
 
     private static void AddRepositories(IServiceCollection services)
