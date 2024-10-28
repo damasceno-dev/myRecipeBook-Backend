@@ -27,10 +27,6 @@ public class MyCustomAuthorizeFilter : IAsyncAuthorizationFilter
         try
         {
             var token = _tokenProvider.Value();
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new UnauthorizedAccessException(ResourceErrorMessages.TOKEN_EMPTY);
-            }
 
             var userId = _tokenRepository.ValidateAndGetUserIdentifier(token);
             var user = await _usersRepository.GetExistingUserWithId(userId);
@@ -38,6 +34,10 @@ public class MyCustomAuthorizeFilter : IAsyncAuthorizationFilter
             {
                 throw new UnauthorizedAccessException(ResourceErrorMessages.TOKEN_WITH_NO_PERMISSION);
             }
+        }
+        catch (TokenEmptyException)
+        {
+            context.Result = new UnauthorizedObjectResult(new ResponseErrorJson(ResourceErrorMessages.TOKEN_EMPTY));
         }
         catch (SecurityTokenExpiredException)
         {

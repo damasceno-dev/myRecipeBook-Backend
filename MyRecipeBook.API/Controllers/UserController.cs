@@ -42,6 +42,7 @@ namespace MyRecipeBook.Controllers
         [MyCustomAuthorize]
         [Route("getProfileWithToken")]
         [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetProfileWithToken(
             [FromServices] UserProfileWithTokenUseCase userProfileWithTokenUseCase)
         {

@@ -1,4 +1,5 @@
 using MyRecipeBook.Domain.Interfaces.Tokens;
+using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Tokens;
 
@@ -13,8 +14,17 @@ public class GetTokenValueFromRequest : ITokenProvider
     
     public string Value()
     {
-        var authentication = _contextAccessor.HttpContext!.Request.Headers.Authorization.ToString();
+        if (_contextAccessor.HttpContext is null)
+        {
+            throw new ArgumentException("Contexto nulo");
+        }
+        var authentication = _contextAccessor.HttpContext.Request.Headers.Authorization.ToString();
 
+        if (string.IsNullOrWhiteSpace(authentication))
+        {
+            throw new TokenEmptyException();
+        }
+        
         return authentication["Bearer ".Length..].Trim();
     }
 }
