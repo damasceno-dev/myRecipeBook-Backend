@@ -32,6 +32,7 @@ public class UserRegisterUseCase
         await VerifyIfActiveUserEmailAlreadyExists(request.Email);
         
         var newUser = _mapper.Map<User>(request);
+        newUser.Id = Guid.NewGuid();
         newUser.Password = _passwordEncryption.HashPassword(request.Password);
         var userToken = _tokenRepository.Generate(newUser.Id);
         
