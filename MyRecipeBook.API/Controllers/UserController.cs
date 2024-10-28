@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using MyRecipeBook.Application.UseCases.Profile;
 using MyRecipeBook.Application.UseCases.Users.Login;
+using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;

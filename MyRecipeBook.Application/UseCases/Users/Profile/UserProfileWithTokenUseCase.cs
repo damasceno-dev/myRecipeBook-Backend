@@ -6,7 +6,7 @@ using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Exception;
 
-namespace MyRecipeBook.Application.UseCases.Profile;
+namespace MyRecipeBook.Application.UseCases.Users.Profile;
 
 public class UserProfileWithTokenUseCase
 {
@@ -16,7 +16,7 @@ public class UserProfileWithTokenUseCase
     private readonly IMapper _mapper;
 
     public UserProfileWithTokenUseCase(ITokenProvider tokenProvider, ITokenRepository tokenRepository, IUsersRepository 
-            usersRepository, IMapper mapper)
+        usersRepository, IMapper mapper)
     {
         _usersRepository = usersRepository;
         _tokenProvider = tokenProvider;

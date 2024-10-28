@@ -12,7 +12,7 @@ public static class ApiDependencyInjectionExtension
     {
         AddSwaggerWithTokenReader(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
-        services.AddHttpContextAccessor();
+        services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
     }
 
     private static void AddSwaggerWithTokenReader(IServiceCollection services)

@@ -14,13 +14,13 @@ public class JsonWebTokenRepository : ITokenRepository
 
     private SymmetricSecurityKey PrivateSecurityKey =>
         new SymmetricSecurityKey(new UTF8Encoding().GetBytes(_signingKey));
-private  TokenValidationParameters ValidationParameters => 
-    new TokenValidationParameters
-    {
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        IssuerSigningKey = PrivateSecurityKey,
-    };
+    private  TokenValidationParameters ValidationParameters => 
+        new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            IssuerSigningKey = PrivateSecurityKey,
+        };
     public JsonWebTokenRepository(int expirationTimeInMinutes, string signingKey)
     {
         _expirationTimeInMinutes = expirationTimeInMinutes;
