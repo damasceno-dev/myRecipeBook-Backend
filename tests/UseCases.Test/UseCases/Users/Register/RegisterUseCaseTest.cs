@@ -82,7 +82,7 @@ public class RegisterUseCaseTest
         var unitOfWork = UnitOfWorkBuilder.Build();
         var password = PasswordEncryptionBuilder.Build();
         var mapper = MapperBuilder.Build();
-        var token = JsonWebTokenBuilder.Build();
+        var token = JsonWebTokenRepositoryBuilder.Build();
         return new UserRegisterUseCase(usersRepository.Object, unitOfWork, mapper, token, password);
     }
 }

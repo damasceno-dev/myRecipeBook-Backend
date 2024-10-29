@@ -1,8 +1,10 @@
+using Moq;
+using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Infrastructure.Tokens;
 
 namespace CommonTestUtilities.Token;
 
-public class JsonWebTokenBuilder
+public class JsonWebTokenRepositoryBuilder
 {
     public static JsonWebTokenRepository Build()
     {

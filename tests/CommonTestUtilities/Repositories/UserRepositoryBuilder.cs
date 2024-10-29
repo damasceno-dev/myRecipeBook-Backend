@@ -1,4 +1,5 @@
 using Moq;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
 
 namespace CommonTestUtilities.Repositories;

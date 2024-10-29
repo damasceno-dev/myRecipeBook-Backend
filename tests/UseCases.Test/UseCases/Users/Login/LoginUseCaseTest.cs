@@ -100,7 +100,7 @@ public class LoginUseCaseTest
     {
         var usersRepositoryMock = UserRepositoryBuilder.Build();
         var password = PasswordEncryptionBuilder.Build();
-        var token = JsonWebTokenBuilder.Build();
+        var token = JsonWebTokenRepositoryBuilder.Build();
         var usersRepository = MockTestsConditions(request, condition, usersRepositoryMock, password);
         return new UserLoginUseCase(usersRepository, token, password);
     }
