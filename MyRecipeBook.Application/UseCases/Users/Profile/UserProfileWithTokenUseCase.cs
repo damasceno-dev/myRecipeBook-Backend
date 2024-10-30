@@ -28,17 +28,13 @@ public class UserProfileWithTokenUseCase
         var token = _tokenProvider.Value();
         var id = _tokenRepository.ValidateAndGetUserIdentifier(token);
         var user = await _usersRepository.GetExistingUserWithId(id);
-        var verifiedUser = VerifyUser(user);
+        //user null verification is already done in the authorization filter
+        var verifiedUser = VerifyUser(user!);
         return _mapper.Map<ResponseUserProfileJson>(verifiedUser);
     }
 
-    private static User VerifyUser(User? user)
+    private static User VerifyUser(User user)
     {
-        if (user is null)
-        {
-            throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_REGISTERED);
-        } 
-        
         if (user.Active is false)
         {
             throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_ACTIVE);

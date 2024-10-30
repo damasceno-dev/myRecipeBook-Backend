@@ -21,7 +21,7 @@ public class UserProfileWithTokenUseCaseTest
     public async Task Success()
     {
         var validUser = new User {Name = "Valid user", Email = "valid@example.com"};
-        var useCase = CreateUserProfileWithTokenUseCase(TestCondition.ValidToken, validUser);
+        var useCase = CreateUserProfileWithTokenUseCase(validUser);
         var response = await useCase.Execute();
         
         response.Should().NotBeNull();
@@ -30,33 +30,21 @@ public class UserProfileWithTokenUseCaseTest
     }
     
     [Fact]
-    public async Task InvalidTokenOrId()
-    {
-        var useCase = CreateUserProfileWithTokenUseCase();
-        Func<Task> act = () => useCase.Execute();
-        
-        await act.Should().ThrowAsync<InvalidLoginException>().WithMessage(ResourceErrorMessages.EMAIL_NOT_REGISTERED);
-    }
-    
-    [Fact]
     public async Task InactiveUser()
     {
-        var validUser = new User {Name = "Valid user", Email = "valid@example.com", Active = false};
-        var useCase = CreateUserProfileWithTokenUseCase(TestCondition.ValidToken, validUser);
+        var inactiveUser = new User {Name = "Valid user", Email = "valid@example.com", Active = false};
+        var useCase = CreateUserProfileWithTokenUseCase(inactiveUser);
         Func<Task> act = () => useCase.Execute();
         
         await act.Should().ThrowAsync<InvalidLoginException>().WithMessage(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
     }
-    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(TestCondition? condition = null, User? 
+    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User? 
             mockUser = null)
     {
         var tokenProvider = JsonWebTokenProviderBuilder.Build();
         var tokenRepository = TokenRepositoryBuilder.Build();
         var usersRepositoryMock = UserRepositoryBuilder.Build();
-        if (condition == TestCondition.ValidToken)
-        {
-            usersRepositoryMock.Setup(u => u.GetExistingUserWithId(It.IsAny<Guid>())).ReturnsAsync(mockUser);
-        }
+        usersRepositoryMock.Setup(u => u.GetExistingUserWithId(It.IsAny<Guid>())).ReturnsAsync(mockUser);
         var mapper = MapperBuilder.Build();
         return new UserProfileWithTokenUseCase(tokenProvider, tokenRepository,usersRepositoryMock.Object, mapper);
     }
