@@ -42,6 +42,7 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
     
     private void AddToken(string? token)
     {
+        _httpClient.DefaultRequestHeaders.Authorization = null; //clear between requests
         if (string.IsNullOrWhiteSpace(token) is false)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

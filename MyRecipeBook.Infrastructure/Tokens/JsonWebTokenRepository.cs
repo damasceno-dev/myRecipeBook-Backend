@@ -9,7 +9,7 @@ namespace MyRecipeBook.Infrastructure.Tokens;
 
 public class JsonWebTokenRepository : ITokenRepository
 {
-    private readonly int _expirationTimeInMinutes;
+    private readonly double _expirationTimeInMinutes;
     private readonly string _signingKey;
 
     private SymmetricSecurityKey PrivateSecurityKey =>
@@ -20,8 +20,9 @@ public class JsonWebTokenRepository : ITokenRepository
             ValidateAudience = false,
             ValidateIssuer = false,
             IssuerSigningKey = PrivateSecurityKey,
+            ClockSkew = TimeSpan.Zero //for token expired test
         };
-    public JsonWebTokenRepository(int expirationTimeInMinutes, string signingKey)
+    public JsonWebTokenRepository(double expirationTimeInMinutes, string signingKey)
     {
         _expirationTimeInMinutes = expirationTimeInMinutes;
         _signingKey = signingKey;
@@ -30,7 +31,7 @@ public class JsonWebTokenRepository : ITokenRepository
     public string Generate(Guid specificGuid)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var claims = new List<Claim> { new Claim(ClaimTypes.Sid, specificGuid.ToString()) };
+        var claims = new List<Claim> { new(ClaimTypes.Sid, specificGuid.ToString()) };
 
         var tokenDescriptor = new SecurityTokenDescriptor()
         {

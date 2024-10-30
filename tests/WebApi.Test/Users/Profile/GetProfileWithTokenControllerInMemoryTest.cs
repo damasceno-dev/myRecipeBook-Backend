@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using CommonTestUtilities.InLineData;
-using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
@@ -13,6 +12,7 @@ using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Infrastructure;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WebApi.Test.Users.Profile;
 
@@ -20,10 +20,12 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
 {
     private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    public GetProfileWithTokenControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
+    public GetProfileWithTokenControllerInMemoryTest(MyInMemoryFactory inMemoryFactory, ITestOutputHelper testOutputHelper)
     {
         _factory = inMemoryFactory;
+        _testOutputHelper = testOutputHelper;
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -113,7 +115,52 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
             .EnumerateArray()
             .Should()
             .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
-    }    
+    } 
+    
+    [Theory]
+    [ClassData(typeof(TestCultures))]
+    public async Task TokenEmpty(string cultureFromRequest)
+    {
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EMPTY", new CultureInfo(cultureFromRequest));
+        var emptyToken = string.Empty;
 
-    //todo: token empty and expired token
+        var response = await _factory.DoGet("user/getProfileWithToken", token: emptyToken, culture:cultureFromRequest);
+        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        
+        _testOutputHelper.WriteLine(result.RootElement.GetProperty("errorMessages").ToString());
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        result.RootElement.GetProperty("errorMessages")
+            .EnumerateArray()
+            .Should()
+            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+    }   
+    [Theory]
+    [ClassData(typeof(TestCultures))]
+    public async Task TokenExpired(string cultureFromRequest)
+    {
+        var expiredToken = string.Empty;
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
+        var requestRegister = RequestUserRegisterJsonBuilder.Build();
+        await _factory.DoPost("user/register", requestRegister);
+        var user = await _dbContextInMemory.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        if (user is not null)
+        {
+            expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(user.Id);
+        }
+        else
+        {
+            Assert.Fail("User from test register is null");
+        }
+        // Wait to ensure the token is expired
+        await Task.Delay(TimeSpan.FromSeconds(0.1));
+
+        var response = await _factory.DoGet("user/getProfileWithToken", token: expiredToken, culture:cultureFromRequest);
+        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+        
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        result.RootElement.GetProperty("errorMessages")
+            .EnumerateArray()
+            .Should()
+            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+    }
 }

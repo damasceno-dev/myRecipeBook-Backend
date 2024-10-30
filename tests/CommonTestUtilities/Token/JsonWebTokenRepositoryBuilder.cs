@@ -11,4 +11,9 @@ public class JsonWebTokenRepositoryBuilder
         const string signKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
         return new JsonWebTokenRepository(1000, signKey);
     }
+    public static JsonWebTokenRepository BuildExpiredToken()
+    {
+        const string signKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
+        return new JsonWebTokenRepository(0.001, signKey);
+    }
 }
