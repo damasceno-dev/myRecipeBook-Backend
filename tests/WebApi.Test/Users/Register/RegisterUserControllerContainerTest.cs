@@ -6,7 +6,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication.Responses;
-using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
 using Xunit;
 

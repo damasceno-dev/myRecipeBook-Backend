@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -28,11 +29,31 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
 
     public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null)
     {
-        if (culture is not null)
+        AddCulture(culture);
+        return await _httpClient.PostAsJsonAsync(route, request);
+    }
+
+    public async Task<HttpResponseMessage> DoGet(string route, string? culture = null, string? token = null)
+    {
+        AddCulture(culture);
+        AddToken(token);
+        return await _httpClient.GetAsync(route);
+    }
+    
+    private void AddToken(string? token)
+    {
+        if (string.IsNullOrWhiteSpace(token) is false)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+    }
+
+    private void AddCulture(string? culture)
+    {
+        if (string.IsNullOrWhiteSpace(culture) is false)
         {
             _httpClient.DefaultRequestHeaders.AcceptLanguage.Clear();
             _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         }
-        return await _httpClient.PostAsJsonAsync(route, request);
     }
 }
