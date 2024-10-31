@@ -27,7 +27,7 @@ public class UserProfileWithTokenUseCase
     {
         var token = _tokenProvider.Value();
         var id = _tokenRepository.ValidateAndGetUserIdentifier(token);
-        var user = await _usersRepository.GetExistingUserWithId(id);
+        var user = await _usersRepository.GetExistingUserWithIdAsNoTracking(id);
         //user null verification is already done in the authorization filter
         var verifiedUser = VerifyUser(user!);
         return _mapper.Map<ResponseUserProfileJson>(verifiedUser);

@@ -26,8 +26,18 @@ internal class UsersRepository : IUsersRepository
         return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
     }
 
-    public async Task<User?> GetExistingUserWithId(Guid id)
+    public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid id)
     {
         return await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
+    }
+
+    public async Task<User> GetExistingUserWithId(Guid id)
+    {
+        return await _dbContext.Users.FirstAsync(u => u.Id.Equals(id));
+    }
+
+    public void UpdateUser(User user)
+    {
+        _dbContext.Users.Update(user);
     }
 }

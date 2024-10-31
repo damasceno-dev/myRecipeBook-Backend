@@ -4,6 +4,7 @@ using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
+using MyRecipeBook.Application.UseCases.Users.Update;
 
 namespace MyRecipeBook.Application;
 
@@ -31,6 +32,6 @@ public static class AppDependencyInjectionExtension
         services.AddScoped<UserRegisterUseCase>();
         services.AddScoped<UserLoginUseCase>();        
         services.AddScoped<UserProfileWithTokenUseCase>();
-
+        services.AddScoped<UserUpdateUseCase>();
     }
 }

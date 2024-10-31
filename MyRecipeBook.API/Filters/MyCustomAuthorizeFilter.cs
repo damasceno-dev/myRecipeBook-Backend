@@ -29,7 +29,7 @@ public class MyCustomAuthorizeFilter : IAsyncAuthorizationFilter
             var token = _tokenProvider.Value();
 
             var userId = _tokenRepository.ValidateAndGetUserIdentifier(token);
-            var user = await _usersRepository.GetExistingUserWithId(userId);
+            var user = await _usersRepository.GetExistingUserWithIdAsNoTracking(userId);
             if (user is null)
             {
                 throw new UnauthorizedAccessException(ResourceErrorMessages.TOKEN_WITH_NO_PERMISSION);
