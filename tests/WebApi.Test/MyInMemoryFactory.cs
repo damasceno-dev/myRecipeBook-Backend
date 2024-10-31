@@ -40,6 +40,13 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
         return await _httpClient.GetAsync(route);
     }
     
+    public async Task<HttpResponseMessage> DoPut<T>(string route, T request, string? culture = null, string? token = null)
+    {
+        AddCulture(culture);
+        AddToken(token);
+        return await _httpClient.PutAsJsonAsync(route, request);
+    }
+    
     private void AddToken(string? token)
     {
         _httpClient.DefaultRequestHeaders.Authorization = null; //clear between requests
@@ -57,4 +64,5 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
             _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         }
     }
+
 }

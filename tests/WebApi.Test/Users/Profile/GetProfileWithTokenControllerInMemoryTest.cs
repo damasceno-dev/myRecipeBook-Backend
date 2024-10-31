@@ -98,7 +98,8 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
             .Should()
             .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
     }
-    
+
+    #region TokenTests
     [Theory]
     [ClassData(typeof(TestCultures))]
     public async Task TokenWithNoPermission(string cultureFromRequest)
@@ -163,4 +164,8 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
             .Should()
             .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
     }
+    
+
+    #endregion
+    
 }
