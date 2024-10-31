@@ -13,10 +13,6 @@ namespace UseCases.Test.UseCases.Users.Profile;
 
 public class UserProfileWithTokenUseCaseTest
 {
-    private enum TestCondition
-    {
-        ValidToken
-    }
     [Fact]
     public async Task Success()
     {
