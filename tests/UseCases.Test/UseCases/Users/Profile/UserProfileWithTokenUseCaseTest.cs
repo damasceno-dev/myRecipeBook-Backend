@@ -39,9 +39,8 @@ public class UserProfileWithTokenUseCaseTest
     {
         var tokenProvider = new JsonWebTokenProviderBuilder().Build();
         var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
-        var usersRepositoryMock = UserRepositoryBuilder.Build();
-        usersRepositoryMock.Setup(u => u.GetExistingUserWithIdAsNoTracking(It.IsAny<Guid>())).ReturnsAsync(mockUser);
+        var usersRepository = new UserRepositoryBuilder().GetExistingUserWithIdAsNoTracking(mockUser).Build();
         var mapper = MapperBuilder.Build();
-        return new UserProfileWithTokenUseCase(tokenProvider, tokenRepository,usersRepositoryMock.Object, mapper);
+        return new UserProfileWithTokenUseCase(tokenProvider, tokenRepository,usersRepository, mapper);
     }
 }

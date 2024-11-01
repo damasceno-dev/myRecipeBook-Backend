@@ -87,17 +87,18 @@ public class UserUpdateUseCaseTest
     {
         var tokenProvider = new JsonWebTokenProviderBuilder().Build();
         var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
-        var usersRepositoryMock = UserRepositoryBuilder.Build();
+        var usersRepositoryBuilder = new UserRepositoryBuilder();
         if (user is not null)
         {
-            usersRepositoryMock.Setup(u => u.GetExistingUserWithId(It.IsAny<Guid>())).ReturnsAsync(user);
+            usersRepositoryBuilder.GetExistingUserWithId(user);
         }
         if (emailAlreadyExists)
         {
-            usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(user);
+            usersRepositoryBuilder.GetExistingUserWithEmail(user);
         }
+        var usersRepository = usersRepositoryBuilder.Build();
         var mapper = MapperBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        return new UserUpdateUseCase(usersRepositoryMock.Object, tokenProvider, tokenRepository, unitOfWork, mapper);
+        return new UserUpdateUseCase(usersRepository, tokenProvider, tokenRepository, unitOfWork, mapper);
     }
 }

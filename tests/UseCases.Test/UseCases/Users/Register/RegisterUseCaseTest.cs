@@ -74,15 +74,16 @@ public class RegisterUseCaseTest
     
     private static UserRegisterUseCase CreateUserRegisterUseCase(TestCondition? condition = null)
     {
-        var usersRepository = UserRepositoryBuilder.Build();
+        var usersRepositoryBuilder = new UserRepositoryBuilder();
         if (condition == TestCondition.EmailAlreadyExists)
         {
-            usersRepository.Setup(u => u.ExistsActiveUserWithEmail(It.IsAny<string>())).ReturnsAsync(true);
+            usersRepositoryBuilder.ExistsActiveUserWithEmail(true);
         }
+        var usersRepository = usersRepositoryBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
         var password = PasswordEncryptionBuilder.Build();
         var mapper = MapperBuilder.Build();
         var token = JsonWebTokenRepositoryBuilder.Build();
-        return new UserRegisterUseCase(usersRepository.Object, unitOfWork, mapper, token, password);
+        return new UserRegisterUseCase(usersRepository, unitOfWork, mapper, token, password);
     }
 }

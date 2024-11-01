@@ -98,36 +98,27 @@ public class LoginUseCaseTest
 
     private static UserLoginUseCase CreateUserLoginUseCase(RequestUserLoginJson request, TestCondition? condition = null)
     {
-        var usersRepositoryMock = UserRepositoryBuilder.Build();
         var password = PasswordEncryptionBuilder.Build();
         var token = JsonWebTokenRepositoryBuilder.Build();
-        var usersRepository = MockTestsConditions(request, condition, usersRepositoryMock, password);
+        var usersRepository = MockTestsConditions(request, condition, password);
         return new UserLoginUseCase(usersRepository, token, password);
     }
 
-    private static IUsersRepository MockTestsConditions(RequestUserLoginJson request, TestCondition? condition, 
-        Mock<IUsersRepository> usersRepositoryMock, PasswordEncryption password)
+    private static IUsersRepository MockTestsConditions(RequestUserLoginJson request, TestCondition? condition, PasswordEncryption password)
     {
         switch (condition)
         {
             case TestCondition.ValidLogin:
                 var validUser = new User {Name = "Valid User",Email = request.Email,Password = password.HashPassword(request.Password)};
-                usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(validUser);
-                break;
+                return new UserRepositoryBuilder().GetExistingUserWithEmail(validUser).Build();
             case TestCondition.InactiveUser:
                 var inactiveUser = new User {Name = "Inactive User",Email = request.Email,Password = password.HashPassword(request.Password), Active = false};
-                usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(inactiveUser);
-                break;
+                return new UserRepositoryBuilder().GetExistingUserWithEmail(inactiveUser).Build();
             case TestCondition.WrongPassword:
                 var wrongPassword = new User {Name = "Wrong Password User",Email = request.Email,Password = password.HashPassword("wrong pass")};
-                usersRepositoryMock.Setup(u => u.GetExistingUserWithEmail(It.IsAny<string>())).ReturnsAsync(wrongPassword);
-                break;
-            case null:
-                break;
+                return new UserRepositoryBuilder().GetExistingUserWithEmail(wrongPassword).Build();
             default:
-                throw new ArgumentOutOfRangeException(nameof(condition), condition, null);
+                return new UserRepositoryBuilder().Build();
         }
-
-        return usersRepositoryMock.Object;
     }
 }
