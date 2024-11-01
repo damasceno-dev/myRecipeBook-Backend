@@ -5,10 +5,14 @@ namespace CommonTestUtilities.Token;
 
 public class JsonWebTokenProviderBuilder
 {
-    public static ITokenProvider Build()
+    private readonly Mock<ITokenProvider> _repository;
+    public JsonWebTokenProviderBuilder()
     {
-        var mock = new Mock<ITokenProvider>();
-        mock.Setup(u => u.Value()).Returns("validToken");
-        return mock.Object;
+        _repository = new Mock<ITokenProvider>();
+    }
+    public ITokenProvider Build()
+    {
+        _repository.Setup(u => u.Value()).Returns("validToken");
+        return _repository.Object;
     }
 }

@@ -5,14 +5,22 @@ namespace CommonTestUtilities.Repositories;
 
 public class TokenRepositoryBuilder
 {
-    public static ITokenRepository Build()
+    private readonly Mock<ITokenRepository> _repository;
+    public TokenRepositoryBuilder()
     {
-        var tokenRepositoryMock = new Mock<ITokenRepository>();
-
-        tokenRepositoryMock
+        _repository = new Mock<ITokenRepository>();
+    }
+    public TokenRepositoryBuilder ValidateAndGetUserIdentifier(Guid id)
+    {
+        _repository
             .Setup(tr => tr.ValidateAndGetUserIdentifier(It.IsAny<string>()))
-            .Returns(Guid.NewGuid());
+            .Returns(id);
 
-        return tokenRepositoryMock.Object;
+        return this;
+    }
+
+    public ITokenRepository Build()
+    {
+        return _repository.Object;
     }
 }

@@ -85,8 +85,8 @@ public class UserUpdateUseCaseTest
     
     private static UserUpdateUseCase CreateUserUpdateUseCase(User? user = null, bool emailAlreadyExists = false)
     {
-        var tokenProvider = JsonWebTokenProviderBuilder.Build();
-        var tokenRepository = TokenRepositoryBuilder.Build();
+        var tokenProvider = new JsonWebTokenProviderBuilder().Build();
+        var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
         var usersRepositoryMock = UserRepositoryBuilder.Build();
         if (user is not null)
         {

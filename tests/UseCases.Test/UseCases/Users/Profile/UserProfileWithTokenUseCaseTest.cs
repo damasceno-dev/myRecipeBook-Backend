@@ -37,8 +37,8 @@ public class UserProfileWithTokenUseCaseTest
     private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User? 
             mockUser = null)
     {
-        var tokenProvider = JsonWebTokenProviderBuilder.Build();
-        var tokenRepository = TokenRepositoryBuilder.Build();
+        var tokenProvider = new JsonWebTokenProviderBuilder().Build();
+        var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
         var usersRepositoryMock = UserRepositoryBuilder.Build();
         usersRepositoryMock.Setup(u => u.GetExistingUserWithIdAsNoTracking(It.IsAny<Guid>())).ReturnsAsync(mockUser);
         var mapper = MapperBuilder.Build();

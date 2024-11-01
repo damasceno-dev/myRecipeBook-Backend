@@ -6,14 +6,13 @@ namespace CommonTestUtilities.Token;
 
 public class JsonWebTokenRepositoryBuilder
 {
+    const string SignKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
     public static JsonWebTokenRepository Build()
     {
-        const string signKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
-        return new JsonWebTokenRepository(1000, signKey);
+        return new JsonWebTokenRepository(1000, SignKey);
     }
     public static JsonWebTokenRepository BuildExpiredToken()
     {
-        const string signKey = "SymmetricSecurityKeyRequires32characterLongToMeetMinimalSizeForHMACSHA256";
-        return new JsonWebTokenRepository(0.001, signKey);
+        return new JsonWebTokenRepository(0.001, SignKey);
     }
 }
