@@ -1,9 +1,7 @@
 using CommonTestUtilities.Requests;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
-using MyRecipeBook.Application.UseCases.Users.Update;
 using MyRecipeBook.Communication;
-using MyRecipeBook.Communication.Requests;
 using Xunit;
 
 namespace Validators.Test.Users.ChangePassword;
@@ -30,7 +28,7 @@ public class UserChangePasswordFluentValidationTest
 
         result.IsValid.Should().BeFalse();
         result.Errors.Select(v => v.ErrorMessage)
-            .Should().Contain(ResourceErrorMessages.PASSWORD_EMPTY);
+            .Should().ContainSingle(ResourceErrorMessages.PASSWORD_EMPTY);
     }
     
     [Theory]
