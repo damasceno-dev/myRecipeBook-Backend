@@ -20,12 +20,10 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
     private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
-    private readonly ITestOutputHelper _testOutputHelper;
 
-    public UpdateUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory, ITestOutputHelper testOutputHelper)
+    public UpdateUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _testOutputHelper = testOutputHelper;
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -189,8 +187,7 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 
         var response = await _factory.DoPut("user/update",request: RequestUserUpdateJsonBuilder.Build(), token: emptyToken, culture:cultureFromRequest);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        
-        _testOutputHelper.WriteLine(result.RootElement.GetProperty("errorMessages").ToString());
+
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         result.RootElement.GetProperty("errorMessages")
             .EnumerateArray()
