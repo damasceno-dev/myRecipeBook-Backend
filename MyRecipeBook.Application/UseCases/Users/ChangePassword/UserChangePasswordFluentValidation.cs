@@ -1,4 +1,5 @@
 using FluentValidation;
+using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 
@@ -8,8 +9,7 @@ public class UserChangePasswordFluentValidation : AbstractValidator<RequestUserC
 {
     public UserChangePasswordFluentValidation()
     {
-        RuleFor(u => u.NewPassword.Length).GreaterThan(6).WithMessage(ResourceErrorMessages.PASSWORD_LENGTH);
-        RuleFor(u => u.NewPassword).NotEmpty().WithMessage(ResourceErrorMessages.PASSWORD_EMPTY);
+        RuleFor(u => u.NewPassword).ValidatePassword();
         RuleFor(u => u.CurrentPassword).NotEmpty().WithMessage(ResourceErrorMessages.PASSWORD_EMPTY);
     }
 }
