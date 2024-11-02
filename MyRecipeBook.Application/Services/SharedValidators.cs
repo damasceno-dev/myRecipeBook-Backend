@@ -10,6 +10,7 @@ public static class SharedValidators
     {
         return password
             .NotEmpty().WithMessage(ResourceErrorMessages.PASSWORD_EMPTY)
-            .MinimumLength(MinimumPasswordLength).WithMessage(ResourceErrorMessages.PASSWORD_LENGTH);
+            .Must(p => string.IsNullOrWhiteSpace(p) || p.Length >= MinimumPasswordLength)
+            .WithMessage(ResourceErrorMessages.PASSWORD_LENGTH);
     }
 }
