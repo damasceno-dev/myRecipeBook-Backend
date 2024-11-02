@@ -141,7 +141,7 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     [ClassData(typeof(TestCultures))]
     public async Task ErrorWrongPassword(string culture)    
     {
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("WRONG_PASSWORD", new CultureInfo(culture));
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("PASSWORD_WRONG", new CultureInfo(culture));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         await _factory.DoPost("user/register", requestRegister);
         var request = new RequestUserLoginJson {Email = requestRegister.Email,Password = "wrong.password123"};

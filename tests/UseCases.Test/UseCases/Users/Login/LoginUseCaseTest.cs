@@ -67,7 +67,7 @@ public class LoginUseCaseTest
         Func<Task> act = () => useCase.Execute(request);
         
         await act.Should().ThrowAsync<InvalidLoginException>()
-            .WithMessage(ResourceErrorMessages.WRONG_PASSWORD);
+            .WithMessage(ResourceErrorMessages.PASSWORD_WRONG);
     }
 
     [Fact]

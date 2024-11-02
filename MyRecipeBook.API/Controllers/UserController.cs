@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MyRecipeBook.Application.UseCases.Users.ChangePassword;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
@@ -63,6 +64,19 @@ namespace MyRecipeBook.Controllers
         {
             var response = await userUpdateUseCase.Execute(request);
             return Ok(response);
+        }
+
+        [HttpPut]
+        [MyCustomAuthorize]
+        [Route("changePassword")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> ChangePassword([FromServices] UserChangePasswordUseCase userChangePasswordUseCase, [FromBody] RequestUserChangePasswordJson request)
+        {
+            await userChangePasswordUseCase.Execute(request);
+            return NoContent();
         }
     }
 }

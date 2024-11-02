@@ -42,7 +42,7 @@
     <data name="EMAIL_NOT_ACTIVE" xml:space="preserve">
         <value>This e-mail is not active</value>
     </data>
-    <data name="WRONG_PASSWORD" xml:space="preserve">
+    <data name="PASSWORD_WRONG" xml:space="preserve">
         <value>Wrong password</value>
     </data>
     <data name="TOKEN_EXPIRED" xml:space="preserve">
@@ -53,5 +53,8 @@
     </data>
     <data name="TOKEN_WITH_NO_PERMISSION" xml:space="preserve">
         <value>Token with no permission</value>
+    </data>
+    <data name="PASSWORD_EMPTY" xml:space="preserve">
+        <value>Empty password</value>
     </data>
 </root>

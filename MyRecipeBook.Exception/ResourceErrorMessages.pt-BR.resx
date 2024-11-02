@@ -42,7 +42,7 @@
     <data name="EMAIL_NOT_REGISTERED" xml:space="preserve">
         <value>Esse e-mail não está cadastrado</value>
     </data>
-    <data name="WRONG_PASSWORD" xml:space="preserve">
+    <data name="PASSWORD_WRONG" xml:space="preserve">
         <value>Senha incorreta</value>
     </data>
     <data name="TOKEN_EMPTY" xml:space="preserve">
@@ -53,5 +53,8 @@
     </data>
     <data name="TOKEN_WITH_NO_PERMISSION" xml:space="preserve">
         <value>Token sem permissão</value>
+    </data>
+    <data name="PASSWORD_EMPTY" xml:space="preserve">
+        <value>Senha vazia</value>
     </data>
 </root>

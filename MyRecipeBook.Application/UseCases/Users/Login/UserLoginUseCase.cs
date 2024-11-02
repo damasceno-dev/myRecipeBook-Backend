@@ -51,7 +51,7 @@ public class UserLoginUseCase
         
         if (_passwordEncryption.VerifyPassword(requestPassword, validUser.Password) is false)
         {
-            throw new InvalidLoginException(ResourceErrorMessages.WRONG_PASSWORD);
+            throw new InvalidLoginException(ResourceErrorMessages.PASSWORD_WRONG);
         }
 
         return validUser;
