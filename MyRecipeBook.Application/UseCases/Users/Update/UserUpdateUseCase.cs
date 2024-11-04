@@ -54,7 +54,7 @@ public class UserUpdateUseCase
         }
     }
 
-    private void Validate(RequestUserUpdateJson request)
+    private static void Validate(RequestUserUpdateJson request)
     {
         var validation = new UserUpdateFluentValidation().Validate(request);
         if (!validation.IsValid)
