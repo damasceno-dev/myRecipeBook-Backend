@@ -1,10 +1,11 @@
 using System.Net;
+using MyRecipeBook.Communication;
 
 namespace MyRecipeBook.Exception;
 
 public class TokenEmptyException : MyRecipeBookException
 {
-    public TokenEmptyException() : base(string.Empty)
+    public TokenEmptyException() : base(ResourceErrorMessages.TOKEN_EMPTY)
     {
     }
 

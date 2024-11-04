@@ -35,10 +35,6 @@ public class MyCustomAuthorizeFilter : IAsyncAuthorizationFilter
                 throw new UnauthorizedAccessException(ResourceErrorMessages.TOKEN_WITH_NO_PERMISSION);
             }
         }
-        catch (TokenEmptyException)
-        {
-            context.Result = new UnauthorizedObjectResult(new ResponseErrorJson(ResourceErrorMessages.TOKEN_EMPTY));
-        }
         catch (SecurityTokenExpiredException)
         {
             context.Result = new UnauthorizedObjectResult(new ResponseErrorJson(ResourceErrorMessages.TOKEN_EXPIRED));

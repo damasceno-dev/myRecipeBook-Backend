@@ -12,7 +12,6 @@ using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Infrastructure;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace WebApi.Test.Users.Profile;
 
@@ -20,12 +19,10 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
 {
     private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
-    private readonly ITestOutputHelper _testOutputHelper;
 
-    public GetProfileWithTokenControllerInMemoryTest(MyInMemoryFactory inMemoryFactory, ITestOutputHelper testOutputHelper)
+    public GetProfileWithTokenControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _testOutputHelper = testOutputHelper;
         _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
@@ -127,8 +124,7 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
 
         var response = await _factory.DoGet("user/getProfileWithToken", token: emptyToken, culture:cultureFromRequest);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        
-        _testOutputHelper.WriteLine(result.RootElement.GetProperty("errorMessages").ToString());
+
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         result.RootElement.GetProperty("errorMessages")
             .EnumerateArray()
