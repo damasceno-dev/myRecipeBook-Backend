@@ -34,13 +34,15 @@ public class UserProfileWithTokenUseCaseTest
         
         await act.Should().ThrowAsync<InvalidLoginException>().WithMessage(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
     }
-    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User? 
-            mockUser = null)
+    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User? mockUser = null)
     {
-        var tokenProvider = new JsonWebTokenProviderBuilder().Build();
-        var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
-        var usersRepository = new UserRepositoryBuilder().GetExistingUserWithIdAsNoTracking(mockUser).Build();
+        var usersRepositoryBuilder = new UserRepositoryBuilder();
+        if (mockUser is not null)
+        {
+            usersRepositoryBuilder.GetLoggedUserWithToken(mockUser);
+        }
+        var usersRepository = usersRepositoryBuilder.Build();
         var mapper = MapperBuilder.Build();
-        return new UserProfileWithTokenUseCase(tokenProvider, tokenRepository,usersRepository, mapper);
+        return new UserProfileWithTokenUseCase(usersRepository, mapper);
     }
 }

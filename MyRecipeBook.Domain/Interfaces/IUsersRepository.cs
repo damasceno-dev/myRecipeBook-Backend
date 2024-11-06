@@ -9,5 +9,6 @@ public interface IUsersRepository
     Task<User?> GetExistingUserWithEmail(string email);
     Task<User?> GetExistingUserWithIdAsNoTracking(Guid id);
     Task<User> GetExistingUserWithId(Guid id);
+    Task<User> GetLoggedUserWithToken();
     void UpdateUser(User user);
 }

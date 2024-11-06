@@ -34,6 +34,11 @@ public class UserRepositoryBuilder
         _repository.Setup(u => u.ExistsActiveUserWithEmail(It.IsAny<string>())).ReturnsAsync(exists);
         return this;
     }
+    public UserRepositoryBuilder GetLoggedUserWithToken(User user)
+    {
+        _repository.Setup(u => u.GetLoggedUserWithToken()).ReturnsAsync(user);
+        return this;
+    }
 
     public IUsersRepository Build()
     {

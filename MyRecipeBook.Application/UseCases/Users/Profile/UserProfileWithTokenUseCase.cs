@@ -10,24 +10,17 @@ namespace MyRecipeBook.Application.UseCases.Users.Profile;
 
 public class UserProfileWithTokenUseCase
 {
-    private readonly ITokenProvider _tokenProvider;
-    private readonly ITokenRepository _tokenRepository;
     private readonly IUsersRepository _usersRepository;
     private readonly IMapper _mapper;
 
-    public UserProfileWithTokenUseCase(ITokenProvider tokenProvider, ITokenRepository tokenRepository, IUsersRepository 
-        usersRepository, IMapper mapper)
+    public UserProfileWithTokenUseCase( IUsersRepository usersRepository, IMapper mapper)
     {
         _usersRepository = usersRepository;
-        _tokenProvider = tokenProvider;
-        _tokenRepository = tokenRepository;
         _mapper = mapper;
     }
     public async Task<ResponseUserProfileJson> Execute()
     {
-        var token = _tokenProvider.Value();
-        var id = _tokenRepository.ValidateAndGetUserIdentifier(token);
-        var user = await _usersRepository.GetExistingUserWithIdAsNoTracking(id);
+        var user = await _usersRepository.GetLoggedUserWithToken();
         //user null verification is already done in the authorization filter
         var verifiedUser = VerifyUser(user!);
         return _mapper.Map<ResponseUserProfileJson>(verifiedUser);

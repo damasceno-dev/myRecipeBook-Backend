@@ -88,12 +88,10 @@ public class UserChangePasswordUseCaseTest
 
     private static UserChangePasswordUseCase CreateUserChangePasswordUseCase(User user)
     {
-        var tokenProvider = new JsonWebTokenProviderBuilder().Build();
-        var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(user.Id).Build();
-        var usersRepository = new UserRepositoryBuilder().GetExistingUserWithId(user).Build();
+        var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var passwordEncryption = PasswordEncryptionBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        return new UserChangePasswordUseCase(tokenProvider, tokenRepository, usersRepository, passwordEncryption, 
+        return new UserChangePasswordUseCase(usersRepository, passwordEncryption, 
             unitOfWork);
     }
 }

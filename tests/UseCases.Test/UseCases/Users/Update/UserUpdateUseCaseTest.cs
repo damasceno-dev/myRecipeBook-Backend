@@ -85,12 +85,10 @@ public class UserUpdateUseCaseTest
     
     private static UserUpdateUseCase CreateUserUpdateUseCase(User? user = null, bool emailAlreadyExists = false)
     {
-        var tokenProvider = new JsonWebTokenProviderBuilder().Build();
-        var tokenRepository = new TokenRepositoryBuilder().ValidateAndGetUserIdentifier(new Guid()).Build();
         var usersRepositoryBuilder = new UserRepositoryBuilder();
         if (user is not null)
         {
-            usersRepositoryBuilder.GetExistingUserWithId(user);
+            usersRepositoryBuilder.GetLoggedUserWithToken(user);
         }
         if (emailAlreadyExists)
         {
@@ -99,6 +97,6 @@ public class UserUpdateUseCaseTest
         var usersRepository = usersRepositoryBuilder.Build();
         var mapper = MapperBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        return new UserUpdateUseCase(usersRepository, tokenProvider, tokenRepository, unitOfWork, mapper);
+        return new UserUpdateUseCase(usersRepository, unitOfWork, mapper);
     }
 }

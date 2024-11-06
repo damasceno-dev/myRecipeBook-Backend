@@ -11,26 +11,20 @@ namespace MyRecipeBook.Application.UseCases.Users.ChangePassword;
 
 public class UserChangePasswordUseCase
 {
-    private readonly ITokenProvider _tokenProvider;
-    private readonly ITokenRepository _tokenRepository;
     private readonly IUsersRepository _usersRepository;
     private readonly PasswordEncryption _passwordEncryption;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UserChangePasswordUseCase(ITokenProvider tokenProvider, ITokenRepository tokenRepository, IUsersRepository
+    public UserChangePasswordUseCase(IUsersRepository
             usersRepository, PasswordEncryption passwordEncryption, IUnitOfWork unitOfWork)
     {
-        _tokenProvider = tokenProvider;
-        _tokenRepository = tokenRepository;
         _usersRepository = usersRepository;
         _passwordEncryption = passwordEncryption;
         _unitOfWork = unitOfWork;
     }
     public async Task Execute(RequestUserChangePasswordJson request)
     {
-        var token = _tokenProvider.Value();
-        var userId = _tokenRepository.ValidateAndGetUserIdentifier(token);
-        var user = await _usersRepository.GetExistingUserWithId(userId);
+        var user = await _usersRepository.GetLoggedUserWithToken();
         
         Validate(user, request);
 

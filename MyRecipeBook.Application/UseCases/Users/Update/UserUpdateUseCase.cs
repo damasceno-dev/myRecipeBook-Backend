@@ -13,25 +13,18 @@ namespace MyRecipeBook.Application.UseCases.Users.Update;
 public class UserUpdateUseCase
 {
     private readonly IUsersRepository _usersRepository;
-    private readonly ITokenProvider _tokenProvider;
-    private readonly ITokenRepository _tokenRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public UserUpdateUseCase(IUsersRepository usersRepository, ITokenProvider tokenProvider, ITokenRepository 
-            tokenRepository, IUnitOfWork unitOfWork, IMapper mapper)
+    public UserUpdateUseCase(IUsersRepository usersRepository, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _usersRepository = usersRepository;
-        _tokenProvider = tokenProvider;
-        _tokenRepository = tokenRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
     public async Task<ResponseUserProfileJson> Execute(RequestUserUpdateJson request)
     {
-        var token = _tokenProvider.Value();
-        var userId = _tokenRepository.ValidateAndGetUserIdentifier(token);
-        var user = await _usersRepository.GetExistingUserWithId(userId);
+        var user = await _usersRepository.GetLoggedUserWithToken();
         
         Validate(request);
         await ValidateIfEmailAlreadyExists(request.Email);
