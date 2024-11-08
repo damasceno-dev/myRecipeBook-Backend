@@ -13,12 +13,18 @@ public class ExceptionFilter : IExceptionFilter
         if (context.Exception is MyRecipeBookException exception)
         {
             context.HttpContext.Response.StatusCode = exception.GetStatusCode;
-            context.Result = new ObjectResult(new ResponseErrorJson(exception.GetErrors));
+            context.Result = new ObjectResult(new ResponseErrorJson(exception.GetErrors)
+            {
+                Method = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}"
+            });
         }
         else
         {
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Result = new ObjectResult(new ResponseErrorJson(ResourceErrorMessages.UNKOWN_ERROR));
+            context.Result = new ObjectResult(new ResponseErrorJson(ResourceErrorMessages.UNKOWN_ERROR)
+            {
+                Method = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}"
+            });
         }
     }
 }
