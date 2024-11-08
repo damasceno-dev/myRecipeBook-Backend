@@ -33,6 +33,7 @@ public static class InfraDependencyInjectionExtension
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<IRecipesRepository, RecipesRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
