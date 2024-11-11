@@ -27,7 +27,7 @@ public class AutoMapping : Profile
         CreateMap<RequestRecipeJson, Recipe>().ConvertUsing(request => MapRequestToRecipe(request));
             
     }
-    private Recipe MapRequestToRecipe(RequestRecipeJson request)
+    private static Recipe MapRequestToRecipe(RequestRecipeJson request)
     {
         return new Recipe
         {

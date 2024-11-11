@@ -37,7 +37,7 @@ public class RecipeRegisterUseCase
         
     }
 
-    private void Validate(RequestRecipeJson request)
+    private static void Validate(RequestRecipeJson request)
     {
         var result = new RecipeRegisterFluentValidation().Validate(request);
         if (result.IsValid is false)

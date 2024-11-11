@@ -71,7 +71,7 @@ namespace MyRecipeBook.Communication {
         
         public static string UNKOWN_ERROR
         {
-            get { return ResourceManager.GetString("UNKOWN_ERROR", resourceCulture);}
+            get { return ResourceManager.GetString("UNKNOWN_ERROR", resourceCulture);}
         }
         public static string EMAIL_ALREADY_EXISTS
         {
@@ -104,6 +104,63 @@ namespace MyRecipeBook.Communication {
         public static string TOKEN_WITH_NO_PERMISSION
         {
             get { return ResourceManager.GetString("TOKEN_WITH_NO_PERMISSION", resourceCulture);}
+        }
+        public static string RECIPE_TITLE_EMPTY {
+            get {
+                return ResourceManager.GetString("RECIPE_TITLE_EMPTY", resourceCulture);
+            }
+        }
+        public static string RECIPE_DIFFICULTY_NOT_IN_ENUM {
+            get {
+                return ResourceManager.GetString("RECIPE_DIFFICULTY_NOT_IN_ENUM", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_COOKING_TIME_NOT_IN_ENUM {
+            get {
+                return ResourceManager.GetString("RECIPE_COOKING_TIME_NOT_IN_ENUM", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_INGREDIENT_NOT_EMPTY {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_NOT_EMPTY", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_INSTRUCTION_STEP_GREATER_THAN_0 {
+            get {
+                return ResourceManager.GetString("RECIPE_INSTRUCTION_STEP_GREATER_THAN_0", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_INSTRUCTION_TEXT_NOT_EMPTY {
+            get {
+                return ResourceManager.GetString("RECIPE_INSTRUCTION_TEXT_NOT_EMPTY", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_INSTRUCTION_TEXT_LESS_THAN_2000 {
+            get {
+                return ResourceManager.GetString("RECIPE_INSTRUCTION_TEXT_LESS_THAN_2000", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_INSTRUCTION_DUPLICATE_STEP_INSTRUCTION {
+            get {
+                return ResourceManager.GetString("RECIPE_INSTRUCTION_DUPLICATE_STEP_INSTRUCTION", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_DISH_TYPE_NOT_IN_ENUM {
+            get {
+                return ResourceManager.GetString("RECIPE_DISH_TYPE_NOT_IN_ENUM", resourceCulture);
+            }
+        }
+        public static string RECIPE_AT_LEAST_ONE_INGREDIENT {
+            get {
+                return ResourceManager.GetString("RECIPE_AT_LEAST_ONE_INGREDIENT", resourceCulture);
+            }
         }
     }
 }

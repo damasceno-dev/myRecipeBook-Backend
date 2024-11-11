@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="NAME_NOT_EMPTY" xml:space="preserve">
-        <value>Name can not be empty.</value>
+        <value>Name can not be empty</value>
     </data>
     <data name="EMAIL_NOT_EMPTY" xml:space="preserve">
         <value>Email can not be empty</value>
@@ -31,7 +31,7 @@
         <value>Invalid password length</value>
     </data>
     <data name="UNKNOWN_ERROR" xml:space="preserve">
-        <value>Unkown error</value>
+        <value>Unknown error</value>
     </data>
     <data name="EMAIL_ALREADY_EXISTS" xml:space="preserve">
         <value>This email is already registered</value>
@@ -56,5 +56,35 @@
     </data>
     <data name="PASSWORD_EMPTY" xml:space="preserve">
         <value>Empty password</value>
+    </data>
+    <data name="RECIPE_TITLE_EMPTY" xml:space="preserve">
+        <value>Recipe title cannot be empty</value>
+    </data>
+        <data name="RECIPE_DIFFICULTY_NOT_IN_ENUM" xml:space="preserve">
+        <value>Recipe difficulty must be one of the defined values</value>
+    </data>
+        <data name="RECIPE_COOKING_TIME_NOT_IN_ENUM" xml:space="preserve">
+        <value>Recipe cooking time must be one of the defined values</value>
+    </data>
+        <data name="RECIPE_INGREDIENT_NOT_EMPTY" xml:space="preserve">
+        <value>Each ingredient must not be empty</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_STEP_GREATER_THAN_0" xml:space="preserve">
+        <value>Instruction step must be greater than 0</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_TEXT_NOT_EMPTY" xml:space="preserve">
+        <value>Instruction text must not be empty</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_TEXT_LESS_THAN_2000" xml:space="preserve">
+        <value>Instruction text must be less than 2000 characters</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_DUPLICATE_STEP_INSTRUCTION" xml:space="preserve">
+        <value>Each instruction step must be unique</value>
+    </data>
+        <data name="RECIPE_DISH_TYPE_NOT_IN_ENUM" xml:space="preserve">
+        <value>Dish type must be one of the defined values</value>
+    </data>
+        <data name="RECIPE_AT_LEAST_ONE_INGREDIENT" xml:space="preserve">
+        <value>Recipe ingredients must not be empty</value>
     </data>
 </root>

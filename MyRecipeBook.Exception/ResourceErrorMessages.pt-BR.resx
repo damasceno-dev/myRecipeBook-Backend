@@ -57,4 +57,34 @@
     <data name="PASSWORD_EMPTY" xml:space="preserve">
         <value>Senha vazia</value>
     </data>
+    <data name="RECIPE_TITLE_EMPTY" xml:space="preserve">
+        <value>O título da receita não pode ser vazio</value>
+    </data>
+        <data name="RECIPE_DIFFICULTY_NOT_IN_ENUM" xml:space="preserve">
+        <value>A dificuldade da receita deve estar entre os valores definidos</value>
+    </data>
+        <data name="RECIPE_COOKING_TIME_NOT_IN_ENUM" xml:space="preserve">
+        <value>O tempo de preparo da receita deve estar entre os valores definidos</value>
+    </data>
+        <data name="RECIPE_INGREDIENT_NOT_EMPTY" xml:space="preserve">
+        <value>Cada ingrediente não pode ser vazio</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_STEP_GREATER_THAN_0" xml:space="preserve">
+        <value>O passo da instrução deve ser maior que 0</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_TEXT_NOT_EMPTY" xml:space="preserve">
+        <value>O texto da instrução não pode ser vazio</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_TEXT_LESS_THAN_2000" xml:space="preserve">
+        <value>O texto da instrução deve ter menos de 2000 caracteres</value>
+    </data>
+        <data name="RECIPE_INSTRUCTION_DUPLICATE_STEP_INSTRUCTION" xml:space="preserve">
+        <value>Cada passo da instrução deve ser único</value>
+    </data>
+        <data name="RECIPE_DISH_TYPE_NOT_IN_ENUM" xml:space="preserve">
+        <value>O tipo de prato deve estar entre os valores definidos</value>
+    </data>
+    <data name="RECIPE_AT_LEAST_ONE_INGREDIENT" xml:space="preserve">
+        <value>A lista de ingredientes não pode ser vazia</value>
+    </data>
 </root>
