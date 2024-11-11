@@ -12,7 +12,7 @@ using Xunit;
 
 namespace UseCases.Test.UseCases.Users.Register;
 
-public class RegisterUseCaseTest
+public class UserRegisterUseCaseTest
 {
     private enum TestCondition
     {
