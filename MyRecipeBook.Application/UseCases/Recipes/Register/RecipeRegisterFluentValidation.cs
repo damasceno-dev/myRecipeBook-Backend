@@ -7,7 +7,6 @@ namespace MyRecipeBook.Application.UseCases.Recipes.Register;
 
 public class RecipeRegisterFluentValidation : AbstractValidator<RequestRecipeJson>
 {
-    //todo:finish constructing the use case
     //todo:do the use case tests
     //todo:do the integration tests
     private const int MaximumInstructionTextLength = SharedValidators.MaximumRecipeInstructionTextLength;

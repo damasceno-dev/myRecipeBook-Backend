@@ -31,6 +31,7 @@ public class AutoMapping : Profile
     {
         return new Recipe
         {
+            Id = Guid.NewGuid(),
             Title = request.Title,
             CookingTime = request.CookingTime,
             Difficulty = request.Difficulty,

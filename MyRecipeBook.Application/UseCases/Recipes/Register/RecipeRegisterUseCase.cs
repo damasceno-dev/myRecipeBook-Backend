@@ -29,6 +29,14 @@ public class RecipeRegisterUseCase
         var user = await _usersRepository.GetLoggedUserWithToken();
         var recipe = _mapper.Map<Recipe>(request);
         recipe.UserId = user.Id;
+        recipe.Instructions = recipe.Instructions
+            .OrderBy(instruction => instruction.Step) // Sort by existing step numbers and convert it to step by step
+            .Select((instruction, index) => new Instruction
+            {
+                Step = index + 1, 
+                Text = instruction.Text
+            })
+            .ToList();
         
         await _recipeRepository.Register(recipe);
         await _unitOfWork.Commit();
