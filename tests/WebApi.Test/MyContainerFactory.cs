@@ -14,6 +14,7 @@ namespace WebApi.Test;
 public class MyContainerFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly HttpClient _httpClient;
+    public MyRecipeBookDbContext RecipeDbContext { get; set; } = default!;
     public MyContainerFactory()
     {
         _httpClient = CreateClient();
@@ -47,7 +48,10 @@ public class MyContainerFactory : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _databaseContainer.StartAsync();
-        await Services.CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>().Database.MigrateAsync();
+        
+        var scope = Services.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<MyRecipeBookDbContext>().Database.MigrateAsync();
+        RecipeDbContext = scope.ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
     }
 
     public new async Task DisposeAsync()

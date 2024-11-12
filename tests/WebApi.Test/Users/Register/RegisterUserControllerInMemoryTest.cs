@@ -16,13 +16,11 @@ namespace WebApi.Test.Users.Register;
 
 public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
 
     public RegisterUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
     [Fact]
@@ -45,7 +43,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _factory.DoPost("user/register", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
-        var userInDb = await _dbContextInMemory.Users.SingleAsync(u => u.Email == userFromJson!.Email);
+        var userInDb = await _factory.RecipeDbContext.Users.SingleAsync(u => u.Email == userFromJson!.Email);
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);

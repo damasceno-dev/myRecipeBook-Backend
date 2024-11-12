@@ -13,6 +13,8 @@ namespace WebApi.Test;
 public class MyInMemoryFactory :  WebApplicationFactory<Program>
 {
     private readonly HttpClient _httpClient;
+    public MyRecipeBookDbContext RecipeDbContext { get; private set; } = default!;
+
     public MyInMemoryFactory()
     {
         _httpClient = CreateClient();
@@ -24,7 +26,14 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
                 var currentDbContext = s.SingleOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<MyRecipeBookDbContext>));
                 if (currentDbContext is not null) s.Remove(currentDbContext);
                 s.AddDbContext<MyRecipeBookDbContext>(d => d.UseInMemoryDatabase("TestDatabase"));
+                RecipeDbContext = s.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
             });
+        // InitializeDatabase(RecipeDbContext);
+    }
+
+    private void InitializeDatabase(MyRecipeBookDbContext dbContext)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null)

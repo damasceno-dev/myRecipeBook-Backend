@@ -18,13 +18,11 @@ namespace WebApi.Test.Users.ChangePassword;
 
 public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
 
     public ChangePasswordUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
 
     [Fact]
@@ -38,7 +36,7 @@ public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryF
         requestChangePassword.CurrentPassword = requestRegister.Password;
 
         var response = await _factory.DoPut("user/changePassword", request: requestChangePassword, token: validToken);
-        var userInDb = await _dbContextInMemory.Users.SingleAsync(u => u.Email == requestRegister.Email);
+        var userInDb = await _factory.RecipeDbContext.Users.SingleAsync(u => u.Email == requestRegister.Email);
 
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         PasswordEncryptionBuilder.Build().VerifyPassword(requestRegister.Password, userInDb.Password).Should().Be(false);
@@ -152,7 +150,7 @@ public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryF
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         await _factory.DoPost("user/register", requestRegister);
-        var user = await _dbContextInMemory.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        var user = await _factory.RecipeDbContext.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
         if (user is not null)
         {
             expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(user.Id);

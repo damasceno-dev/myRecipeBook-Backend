@@ -17,13 +17,10 @@ namespace WebApi.Test.Users.Profile;
 
 public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
-
     public GetProfileWithTokenControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
     [Fact]
@@ -75,12 +72,12 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
         var responseRegister = await _factory.DoPost("user/register", requestRegister);
         var resultRegister = await responseRegister.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
         var validToken = resultRegister!.ResponseToken.Token;
-        var user = await _dbContextInMemory.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        var user = await _factory.RecipeDbContext.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
         if (user is not null)
         {
             user.Active = false;
-            _dbContextInMemory.Users.Update(user);
-            await _dbContextInMemory.SaveChangesAsync();
+            _factory.RecipeDbContext.Users.Update(user);
+            await _factory.RecipeDbContext.SaveChangesAsync();
         }
         else
         {
@@ -139,7 +136,7 @@ public class GetProfileWithTokenControllerInMemoryTest : IClassFixture<MyInMemor
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         await _factory.DoPost("user/register", requestRegister);
-        var user = await _dbContextInMemory.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        var user = await _factory.RecipeDbContext.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
         if (user is not null)
         {
             expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(user.Id);

@@ -7,24 +7,19 @@ using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Responses;
-using MyRecipeBook.Infrastructure;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace WebApi.Test.Users.Update;
 
 public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
 
     public UpdateUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
     [Fact]
@@ -202,7 +197,7 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         await _factory.DoPost("user/register", requestRegister);
-        var user = await _dbContextInMemory.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        var user = await _factory.RecipeDbContext.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
         if (user is not null)
         {
             expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(user.Id);

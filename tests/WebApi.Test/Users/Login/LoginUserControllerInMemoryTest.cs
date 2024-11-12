@@ -18,13 +18,11 @@ namespace WebApi.Test.Users.Login;
 
 public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyRecipeBookDbContext _dbContextInMemory;
     private readonly MyInMemoryFactory _factory;
 
     public LoginUserControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
-        _dbContextInMemory = inMemoryFactory.Services.GetRequiredService<MyRecipeBookDbContext>();
     }
     
     [Fact]
@@ -53,7 +51,7 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         
         var response = await _factory.DoPost("user/login", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserLoginJson>();
-        var userInDb = await _dbContextInMemory.Users.FirstAsync(u => u.Email.Equals(userFromJson!.Email) && u.Name
+        var userInDb = await _factory.RecipeDbContext.Users.FirstAsync(u => u.Email.Equals(userFromJson!.Email) && u.Name
             .Equals(userFromJson.Name));
         
         userInDb.Should().NotBeNull();
@@ -123,9 +121,9 @@ public class LoginUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         var responseRegister = await _factory.DoPost("user/register", requestRegister);
         var request = new RequestUserLoginJson { Email = requestRegister.Email, Password = requestRegister.Password };
         var userFromJson = await responseRegister.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
-        var userInDb = await _dbContextInMemory.Users.SingleAsync(u => u.Email == userFromJson!.Email);
+        var userInDb = await _factory.RecipeDbContext.Users.SingleAsync(u => u.Email == userFromJson!.Email);
         userInDb!.Active = false;
-        await _dbContextInMemory.SaveChangesAsync();
+        await _factory.RecipeDbContext.SaveChangesAsync();
         
         var response = await _factory.DoPost("user/login", request, culture);
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
