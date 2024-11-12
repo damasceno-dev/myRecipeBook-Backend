@@ -1,19 +1,30 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using CommonTestUtilities.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
+using Xunit;
 using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
 namespace WebApi.Test;
 
-public class MyInMemoryFactory :  WebApplicationFactory<Program>
+public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly HttpClient _httpClient;
-    public MyRecipeBookDbContext RecipeDbContext { get; private set; } = default!;
+    private readonly HttpClient _httpClient ;
+    private MyRecipeBookDbContext _dbContext;
+    private User _user;
+    private Recipe _recipe;
+    private string _password;
+    
+    public MyRecipeBookDbContext GetDbContext() => _dbContext;
+    public User GetUser() => _user;
+    public Recipe GetRecipe() => _recipe;
+    public string GetPassword() => _password;
 
     public MyInMemoryFactory()
     {
@@ -26,16 +37,20 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
                 var currentDbContext = s.SingleOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<MyRecipeBookDbContext>));
                 if (currentDbContext is not null) s.Remove(currentDbContext);
                 s.AddDbContext<MyRecipeBookDbContext>(d => d.UseInMemoryDatabase("TestDatabase"));
-                RecipeDbContext = s.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
+                _dbContext = s.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
             });
-        // InitializeDatabase(RecipeDbContext);
     }
-
-    private void InitializeDatabase(MyRecipeBookDbContext dbContext)
+    
+    public async Task InitializeAsync()
     {
-        throw new NotImplementedException();
-    }
+        (_user, _password) = UserBuilder.Build();
+        _recipe = RecipeBuilder.Build(_user);
 
+        _dbContext.Users.Add(_user);
+        _dbContext.Recipes.Add(_recipe);
+        await _dbContext.SaveChangesAsync();
+    }
+    
     public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null)
     {
         AddCulture(culture);
@@ -73,5 +88,9 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>
             _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(culture));
         }
     }
-
+    
+    public new async Task DisposeAsync()
+    {
+        await Task.CompletedTask;
+    }
 }

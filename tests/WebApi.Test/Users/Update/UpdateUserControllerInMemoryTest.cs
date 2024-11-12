@@ -197,7 +197,7 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
         var requestRegister = RequestUserRegisterJsonBuilder.Build();
         await _factory.DoPost("user/register", requestRegister);
-        var user = await _factory.RecipeDbContext.Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
+        var user = await _factory.GetDbContext().Users.FirstOrDefaultAsync(u => u.Email == requestRegister.Email && u.Name == requestRegister.Name);
         if (user is not null)
         {
             expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(user.Id);

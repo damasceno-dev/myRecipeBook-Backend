@@ -43,7 +43,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
         var request = RequestUserRegisterJsonBuilder.Build();
         var response = await _factory.DoPost("user/register", request);
         var userFromJson = await response.Content.ReadFromJsonAsync<ResponseUserRegisterJson>();
-        var userInDb = await _factory.RecipeDbContext.Users.SingleAsync(u => u.Email == userFromJson!.Email);
+        var userInDb = await _factory.GetDbContext().Users.SingleAsync(u => u.Email == userFromJson!.Email);
         
         userInDb.Should().NotBeNull();
         userInDb!.Name.Should().Be(request.Name);
