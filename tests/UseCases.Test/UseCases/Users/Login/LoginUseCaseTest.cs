@@ -1,4 +1,5 @@
 using CommonTestUtilities.Cryptography;
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
@@ -17,23 +18,18 @@ namespace UseCases.Test.UseCases.Users.Login;
 
 public class LoginUseCaseTest
 {
-    private enum TestCondition
-    {
-        ValidLogin,
-        InactiveUser,
-        WrongPassword
-    }
-    
     [Fact]
     public async Task Success()
     {
+        var (user, password) = UserBuilder.Build();
         var request = RequestUserLoginJsonBuilder.Build();
-        var useCase = CreateUserLoginUseCase(request, TestCondition.ValidLogin);
+        request.Password = password;
+        var useCase = CreateUserLoginUseCase(user);
         var response = await useCase.Execute(request);
         
         response.Should().NotBeNull();
-        response.Email.Should().Be(request.Email);
-        response.Name.Should().Be("Valid User");
+        response.Email.Should().Be(user.Email);
+        response.Name.Should().Be(user.Name);
         response.ResponseToken.Token.Should().NotBeNullOrEmpty();
     }
 
@@ -41,7 +37,7 @@ public class LoginUseCaseTest
     public async Task ErrorEmailNotRegistered()
     {
         var request = RequestUserLoginJsonBuilder.Build();
-        var useCase = CreateUserLoginUseCase(request);
+        var useCase = CreateUserLoginUseCase(null);
         Func<Task> act = () => useCase.Execute(request);
         
         await act.Should().ThrowAsync<InvalidLoginException>()
@@ -51,8 +47,10 @@ public class LoginUseCaseTest
     [Fact]
     public async Task ErrorEmailNotActive()
     {
+        var (user, _) = UserBuilder.Build();
+        user.Active = false;
         var request = RequestUserLoginJsonBuilder.Build();
-        var useCase = CreateUserLoginUseCase(request, TestCondition.InactiveUser);
+        var useCase = CreateUserLoginUseCase(user);
         Func<Task> act = () => useCase.Execute(request);
         
         await act.Should().ThrowAsync<InvalidLoginException>()
@@ -62,8 +60,9 @@ public class LoginUseCaseTest
     [Fact]
     public async Task ErrorWrongPassword()
     {
+        var (user, _) = UserBuilder.Build();
         var request = RequestUserLoginJsonBuilder.Build();
-        var useCase = CreateUserLoginUseCase(request, TestCondition.WrongPassword);
+        var useCase = CreateUserLoginUseCase(user);
         Func<Task> act = () => useCase.Execute(request);
         
         await act.Should().ThrowAsync<InvalidLoginException>()
@@ -73,9 +72,10 @@ public class LoginUseCaseTest
     [Fact]
     public async Task ErrorEmptyEmail()
     {
+        var (user, _) = UserBuilder.Build();
         var request = RequestUserLoginJsonBuilder.Build();
         request.Email = " ";
-        var useCase = CreateUserLoginUseCase(request);
+        var useCase = CreateUserLoginUseCase(user);
         Func<Task> act = () => useCase.Execute(request);
         
         (await act.Should().ThrowAsync<OnValidationException>())
@@ -86,39 +86,21 @@ public class LoginUseCaseTest
     [Fact]
     public async Task ErrorInvalidEmail()
     {
+        var (user, _) = UserBuilder.Build();
         var request = RequestUserLoginJsonBuilder.Build();
         request.Email = "invalid_email.com";
-        var useCase = CreateUserLoginUseCase(request);
+        var useCase = CreateUserLoginUseCase(user);
         Func<Task> act = () => useCase.Execute(request);
         
         (await act.Should().ThrowAsync<OnValidationException>())
             .Where(e => e.GetErrors.Count == 1 && 
                         e.GetErrors.Contains(ResourceErrorMessages.EMAIL_INVALID));
     }
-
-    private static UserLoginUseCase CreateUserLoginUseCase(RequestUserLoginJson request, TestCondition? condition = null)
+    private static UserLoginUseCase CreateUserLoginUseCase(User? user)
     {
-        var password = PasswordEncryptionBuilder.Build();
+        var usersRepository = new UserRepositoryBuilder().GetExistingUserWithEmail(user).Build();
         var token = JsonWebTokenRepositoryBuilder.Build();
-        var usersRepository = MockTestsConditions(request, condition, password);
-        return new UserLoginUseCase(usersRepository, token, password);
-    }
-
-    private static IUsersRepository MockTestsConditions(RequestUserLoginJson request, TestCondition? condition, PasswordEncryption password)
-    {
-        switch (condition)
-        {
-            case TestCondition.ValidLogin:
-                var validUser = new User {Name = "Valid User",Email = request.Email,Password = password.HashPassword(request.Password)};
-                return new UserRepositoryBuilder().GetExistingUserWithEmail(validUser).Build();
-            case TestCondition.InactiveUser:
-                var inactiveUser = new User {Name = "Inactive User",Email = request.Email,Password = password.HashPassword(request.Password), Active = false};
-                return new UserRepositoryBuilder().GetExistingUserWithEmail(inactiveUser).Build();
-            case TestCondition.WrongPassword:
-                var wrongPassword = new User {Name = "Wrong Password User",Email = request.Email,Password = password.HashPassword("wrong pass")};
-                return new UserRepositoryBuilder().GetExistingUserWithEmail(wrongPassword).Build();
-            default:
-                return new UserRepositoryBuilder().Build();
-        }
+        var passwordEncryption = PasswordEncryptionBuilder.Build();
+        return new UserLoginUseCase(usersRepository, token, passwordEncryption);
     }
 }

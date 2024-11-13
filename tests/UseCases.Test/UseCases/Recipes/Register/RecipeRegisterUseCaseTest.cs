@@ -16,7 +16,6 @@ namespace UseCases.Test.UseCases.Recipes.Register;
 
 public class RecipeRegisterUseCaseTest
 {
-    
     [Fact]
     public async Task Success()
     {
@@ -29,7 +28,7 @@ public class RecipeRegisterUseCaseTest
         response.Title.Should().Be(request.Title);
     }
 
-        [Fact]
+    [Fact]
     public async void RecipeTitleEmpty()
     {
         var request = RequestRecipeRegisterJsonBuilder.Build();

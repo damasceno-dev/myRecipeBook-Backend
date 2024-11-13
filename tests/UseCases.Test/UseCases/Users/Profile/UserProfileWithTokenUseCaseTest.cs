@@ -1,3 +1,4 @@
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Token;
@@ -16,32 +17,29 @@ public class UserProfileWithTokenUseCaseTest
     [Fact]
     public async Task Success()
     {
-        var validUser = new User {Name = "Valid user", Email = "valid@example.com"};
-        var useCase = CreateUserProfileWithTokenUseCase(validUser);
+        var (user, _) = UserBuilder.Build();
+        var useCase = CreateUserProfileWithTokenUseCase(user);
+        
         var response = await useCase.Execute();
         
         response.Should().NotBeNull();
-        response.Email.Should().Be(validUser.Email);
-        response.Name.Should().Be(validUser.Name);
+        response.Email.Should().Be(user.Email);
+        response.Name.Should().Be(user.Name);
     }
     
     [Fact]
     public async Task InactiveUser()
     {
-        var inactiveUser = new User {Name = "Valid user", Email = "valid@example.com", Active = false};
+        var (inactiveUser, _) = UserBuilder.Build();
+        inactiveUser.Active = false;
         var useCase = CreateUserProfileWithTokenUseCase(inactiveUser);
         Func<Task> act = () => useCase.Execute();
         
         await act.Should().ThrowAsync<InvalidLoginException>().WithMessage(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
     }
-    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User? mockUser = null)
+    private static UserProfileWithTokenUseCase CreateUserProfileWithTokenUseCase(User user)
     {
-        var usersRepositoryBuilder = new UserRepositoryBuilder();
-        if (mockUser is not null)
-        {
-            usersRepositoryBuilder.GetLoggedUserWithToken(mockUser);
-        }
-        var usersRepository = usersRepositoryBuilder.Build();
+        var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var mapper = MapperBuilder.Build();
         return new UserProfileWithTokenUseCase(usersRepository, mapper);
     }

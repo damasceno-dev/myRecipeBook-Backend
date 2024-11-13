@@ -1,4 +1,5 @@
 using Bogus.DataSets;
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
@@ -19,9 +20,9 @@ public class UserUpdateUseCaseTest
     [Fact]
     public async Task Success()
     {
-        var currentUser = new User() { Name = "currentUser", Email = "currentEmail@email.com" };
+        var (user, _) = UserBuilder.Build();
         var request = RequestUserUpdateJsonBuilder.Build();
-        var useCase = CreateUserUpdateUseCase(currentUser);
+        var useCase = CreateUserUpdateUseCase(user);
         var response = await useCase.Execute(request);
         
         response.Should().NotBeNull();
@@ -73,9 +74,10 @@ public class UserUpdateUseCaseTest
     [Fact]
     public async Task EmailAlreadyExists()
     {
-        var currentUser = new User() { Name = "currentUser", Email = "currentEmail@email.com" };
+        
+        var (user, _) = UserBuilder.Build();
         var request = RequestUserUpdateJsonBuilder.Build();
-        var useCase = CreateUserUpdateUseCase(currentUser, true);
+        var useCase = CreateUserUpdateUseCase(user, true);
         
         Func<Task> act = () => useCase.Execute(request);
         
