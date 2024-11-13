@@ -11,6 +11,7 @@ public class TokenTestHelper
             { "user/changePassword", ("PUT", () => RequestUserChangePasswordJsonBuilder.Build()) },
             { "user/update", ("PUT", RequestUserUpdateJsonBuilder.Build) },
             { "user/getProfileWithToken", ("GET", () => default!) },
+            { "recipe/register", ("POST", RequestRecipeRegisterJsonBuilder.Build) },
         };
 
     public async Task<HttpResponseMessage> ExecuteRandomRoute(
@@ -26,6 +27,7 @@ public class TokenTestHelper
         {
             "GET" => await factory.DoGet(route, culture: culture, token: token),
             "PUT" => await factory.DoPut(route, requestBuilder?.Invoke(), culture: culture, token: token),
+            "POST" => await factory.DoPost(route, requestBuilder?.Invoke(), culture: culture, token: token),
             _ => throw new InvalidOperationException($"Unsupported HTTP method: {httpMethod}")
         };
     }
