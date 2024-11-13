@@ -8,7 +8,7 @@ public class TokenTestHelper
     private readonly Dictionary<string, (string HttpMethod, Func<object> RequestBuilder)> _routeConfigurations =
         new()
         {
-            { "user/changePassword", ("PUT", () => RequestUserChangePasswordJsonBuilder.Build(SharedValidators.MinimumPasswordLength + 1)) },
+            { "user/changePassword", ("PUT", () => RequestUserChangePasswordJsonBuilder.Build()) },
             { "user/update", ("PUT", RequestUserUpdateJsonBuilder.Build) },
             { "user/getProfileWithToken", ("GET", () => default!) },
         };

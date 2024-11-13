@@ -1,3 +1,4 @@
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
@@ -6,7 +7,6 @@ using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
-using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Enums;
 using MyRecipeBook.Exception;
 using Xunit;
@@ -162,9 +162,10 @@ public class RecipeRegisterUseCaseTest
 
     private static RecipeRegisterUseCase CreateRecipeRegisterUseCase()
     {
+        var (user, _) = UserBuilder.Build();
         var mapper = MapperBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(new User {Name = "test_user", Email = "test_user@test.com"}).Build();
+        var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var recipeRepository = new RecipeRepositoryBuilder().Build();
         return new RecipeRegisterUseCase(mapper, unitOfWork, usersRepository, recipeRepository);
     }

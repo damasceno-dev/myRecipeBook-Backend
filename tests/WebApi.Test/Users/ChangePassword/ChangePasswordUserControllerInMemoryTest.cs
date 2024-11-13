@@ -7,7 +7,6 @@ using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 using Xunit;
@@ -29,7 +28,7 @@ public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryF
         var registeredUser = _factory.GetUser();
         var currentPassword = _factory.GetPassword();
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(registeredUser.Id);
-        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build(SharedValidators.MinimumPasswordLength + 1);
+        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build();
         requestChangePassword.CurrentPassword = currentPassword;
 
         var response = await _factory.DoPut("user/changePassword", request: requestChangePassword, token: validToken);
@@ -51,7 +50,7 @@ public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryF
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("PASSWORD_EMPTY", new CultureInfo(cultureFromRequest));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build(SharedValidators.MinimumPasswordLength + 1);
+        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build();
         requestChangePassword.NewPassword = string.Empty;
 
         var response = await _factory.DoPut("user/changePassword", request: requestChangePassword, token: validToken, culture: cultureFromRequest);
@@ -88,7 +87,7 @@ public class ChangePasswordUserControllerInMemoryTest: IClassFixture<MyInMemoryF
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("PASSWORD_WRONG", new CultureInfo(cultureFromRequest));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build(SharedValidators.MinimumPasswordLength + 1);
+        var requestChangePassword = RequestUserChangePasswordJsonBuilder.Build();
         requestChangePassword.CurrentPassword = "wrong_password";
 
         var response = await _factory.DoPut("user/changePassword", request: requestChangePassword, token: validToken, culture: cultureFromRequest);

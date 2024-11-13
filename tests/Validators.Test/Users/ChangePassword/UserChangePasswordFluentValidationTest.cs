@@ -11,7 +11,7 @@ public class UserChangePasswordFluentValidationTest
     [Fact]
     public void Success()
     {
-        var request = RequestUserChangePasswordJsonBuilder.Build(6);
+        var request = RequestUserChangePasswordJsonBuilder.Build();
         var result = new UserChangePasswordFluentValidation().Validate(request);
 
         result.Should().NotBeNull();
@@ -22,7 +22,7 @@ public class UserChangePasswordFluentValidationTest
     [Fact]
     public void ErrorNewPasswordEmpty()
     {
-        var request = RequestUserChangePasswordJsonBuilder.Build(6);
+        var request = RequestUserChangePasswordJsonBuilder.Build();
         request.NewPassword = string.Empty;
         var result = new UserChangePasswordFluentValidation().Validate(request);
 

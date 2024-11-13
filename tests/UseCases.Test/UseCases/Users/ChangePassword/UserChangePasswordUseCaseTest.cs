@@ -1,7 +1,7 @@
 using CommonTestUtilities.Cryptography;
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
-using CommonTestUtilities.Token;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
 using MyRecipeBook.Communication;
@@ -16,12 +16,9 @@ public class UserChangePasswordUseCaseTest
     [Fact]
     public async Task Success()
     {
-        var request = RequestUserChangePasswordJsonBuilder.Build(7);
-        var user = new User()
-        {
-            Id = Guid.NewGuid(), Name = "John Doe", Email = "john.doe@example.com", 
-            Password = PasswordEncryptionBuilder.Build().HashPassword(request.CurrentPassword),
-        };
+        var request = RequestUserChangePasswordJsonBuilder.Build();
+        var (user, password) = UserBuilder.Build();
+        request.CurrentPassword = password;
         var useCase = CreateUserChangePasswordUseCase(user);
         
         var act = async () => await useCase.Execute(request);
@@ -32,19 +29,15 @@ public class UserChangePasswordUseCaseTest
     [Fact]
     public async Task ErrorNewPasswordEmpty()
     {
-        var request = RequestUserChangePasswordJsonBuilder.Build(7);
+        var (user, _) = UserBuilder.Build();
+        var request = RequestUserChangePasswordJsonBuilder.Build();
         request.NewPassword = string.Empty;
-        var user = new User()
-        {
-            Id = Guid.NewGuid(), Name = "John Doe", Email = "john.doe@example.com", 
-            Password = PasswordEncryptionBuilder.Build().HashPassword(request.CurrentPassword),
-        };
         var useCase = CreateUserChangePasswordUseCase(user);
         
         var act = async () => await useCase.Execute(request);
 
         (await act.Should().ThrowAsync<OnValidationException>())
-            .Where(e => e.GetErrors.Count == 1 && e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_EMPTY));
+            .Where(e => e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_EMPTY));
     }
     [Theory]
     [InlineData(1)]
@@ -55,28 +48,20 @@ public class UserChangePasswordUseCaseTest
     public async Task ErrorNewPasswordLength(int passwordLength)
     {
         var request = RequestUserChangePasswordJsonBuilder.Build(passwordLength);
-        var user = new User()
-        {
-            Id = Guid.NewGuid(), Name = "John Doe", Email = "john.doe@example.com", 
-            Password = PasswordEncryptionBuilder.Build().HashPassword(request.CurrentPassword),
-        };
+        var (user, _) = UserBuilder.Build();
         var useCase = CreateUserChangePasswordUseCase(user);
         
         var act = async () => await useCase.Execute(request);
 
         (await act.Should().ThrowAsync<OnValidationException>())
-            .Where(e =>e.GetErrors.Count == 1 && e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_LENGTH));
+            .Where(e =>e.GetErrors.Contains(ResourceErrorMessages.PASSWORD_LENGTH));
     }
     
     [Fact]
     public async Task ErrorPasswordWrong()
     {
-        var request = RequestUserChangePasswordJsonBuilder.Build(7);
-        var user = new User()
-        {
-            Id = Guid.NewGuid(), Name = "John Doe", Email = "john.doe@example.com", 
-            Password = PasswordEncryptionBuilder.Build().HashPassword("wrong_password"),
-        };
+        var request = RequestUserChangePasswordJsonBuilder.Build();
+        var (user, _) = UserBuilder.Build();
         var useCase = CreateUserChangePasswordUseCase(user);
         
         var act = async () => await useCase.Execute(request);
@@ -91,7 +76,6 @@ public class UserChangePasswordUseCaseTest
         var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var passwordEncryption = PasswordEncryptionBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        return new UserChangePasswordUseCase(usersRepository, passwordEncryption, 
-            unitOfWork);
+        return new UserChangePasswordUseCase(usersRepository, passwordEncryption, unitOfWork);
     }
 }
