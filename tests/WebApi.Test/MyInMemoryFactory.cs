@@ -51,9 +51,10 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         await _dbContext.SaveChangesAsync();
     }
     
-    public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null)
+    public async Task<HttpResponseMessage> DoPost<T>(string route, T request, string? culture = null, string? token = null)
     {
         AddCulture(culture);
+        AddToken(token);
         return await _httpClient.PostAsJsonAsync(route, request);
     }
 

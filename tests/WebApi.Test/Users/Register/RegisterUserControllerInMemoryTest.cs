@@ -54,8 +54,7 @@ public class RegisterUserControllerInMemoryTest : IClassFixture<MyInMemoryFactor
     [ClassData(typeof(TestCultures))]
     public async Task ErrorNameEmpty(string culture)
     {
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("NAME_NOT_EMPTY", new CultureInfo
-            (culture));
+        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("NAME_NOT_EMPTY", new CultureInfo(culture));
         var request = RequestUserRegisterJsonBuilder.Build();
         request.Name = "";
         
