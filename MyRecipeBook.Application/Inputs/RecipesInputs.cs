@@ -1,0 +1,425 @@
+using MyRecipeBook.Communication.Requests;
+using MyRecipeBook.Domain.Enums;
+
+namespace MyRecipeBook.Application.Inputs;
+
+public class RecipesInputs
+{
+    public static readonly List<RequestRecipeJson> RecipesList =
+    [
+        new()
+        {
+            Title = "Pasta Carbonara",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Spaghetti", "Eggs", "Parmesan Cheese", "Bacon", "Black Pepper" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Boil the spaghetti in salted water until al dente." },
+                new() { Step = 2, Text = "Cook the bacon until crispy." },
+                new() { Step = 3, Text = "Mix eggs and parmesan in a bowl." },
+                new() { Step = 4, Text = "Combine spaghetti with bacon and egg mixture." },
+                new() { Step = 5, Text = "Serve with black pepper and extra parmesan." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Grilled Cheese Sandwich",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Bread", "Cheddar Cheese", "Butter" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Butter one side of each bread slice." },
+                new() { Step = 2, Text = "Place cheese between the unbuttered sides of the bread." },
+                new() { Step = 3, Text = "Grill until golden and cheese is melted." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Chicken Stir Fry",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Chicken Breast", "Soy Sauce", "Vegetables", "Garlic", "Ginger" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Slice chicken and vegetables." },
+                new() { Step = 2, Text = "Stir-fry chicken in a hot pan with garlic and ginger." },
+                new() { Step = 3, Text = "Add vegetables and stir-fry until tender." },
+                new() { Step = 4, Text = "Pour soy sauce over and mix well." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner, DishType.Lunch }
+        },
+
+        new()
+        {
+            Title = "Blueberry Pancakes",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Flour", "Eggs", "Milk", "Blueberries", "Sugar" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mix flour, eggs, milk, and sugar into a batter." },
+                new() { Step = 2, Text = "Fold in the blueberries." },
+                new() { Step = 3, Text = "Cook pancakes on a greased skillet until golden." },
+                new() { Step = 4, Text = "Serve with syrup and extra blueberries." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast, DishType.Dessert }
+        },
+
+        new()
+        {
+            Title = "Veggie Burger",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Black Beans", "Breadcrumbs", "Onion", "Garlic", "Burger Buns" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mash black beans and mix with breadcrumbs, onion, and garlic." },
+                new() { Step = 2, Text = "Shape mixture into burger patties." },
+                new() { Step = 3, Text = "Cook patties on a grill or skillet." },
+                new() { Step = 4, Text = "Assemble burgers with buns and desired toppings." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Pasta Primavera",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Pasta", "Tomatoes", "Bell Peppers", "Parmesan Cheese", "Olive Oil" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Cook pasta according to package instructions." },
+                new() { Step = 2, Text = "Sauté vegetables in olive oil until tender." },
+                new() { Step = 3, Text = "Mix cooked pasta with sautéed vegetables and sprinkle parmesan cheese on top." },
+                new() { Step = 4, Text = "Serve immediately while hot." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch, DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Chicken Caesar Salad",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Romaine Lettuce", "Grilled Chicken", "Caesar Dressing", "Parmesan Cheese", "Croutons" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Chop romaine lettuce and place in a bowl." },
+                new() { Step = 2, Text = "Add grilled chicken, parmesan cheese, and croutons." },
+                new() { Step = 3, Text = "Drizzle Caesar dressing and toss gently to combine." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch }
+        },
+
+        new()
+        {
+            Title = "Avocado Toast",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Bread", "Avocado", "Salt", "Pepper", "Lemon Juice" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Toast the bread slices." },
+                new() { Step = 2, Text = "Mash avocado and spread on the toasted bread." },
+                new() { Step = 3, Text = "Sprinkle with salt, pepper, and a drizzle of lemon juice." },
+                new() { Step = 4, Text = "Serve as a quick snack or breakfast option." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Chocolate Chip Cookies",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Flour", "Butter", "Sugar", "Chocolate Chips", "Eggs", "Baking Soda" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Preheat the oven to 180°C (350°F)." },
+                new() { Step = 2, Text = "Mix all ingredients until a dough forms." },
+                new() { Step = 3, Text = "Drop spoonfuls of dough onto a baking sheet." },
+                new() { Step = 4, Text = "Bake for 10-12 minutes or until golden brown." },
+                new() { Step = 5, Text = "Cool on a wire rack before serving." }
+            },
+            DishTypes = new List<DishType> { DishType.Dessert, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Tomato Soup",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Tomatoes", "Onion", "Garlic", "Vegetable Stock", "Cream" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Sauté onion and garlic until fragrant." },
+                new() { Step = 2, Text = "Add tomatoes and vegetable stock, and simmer for 20 minutes." },
+                new() { Step = 3, Text = "Blend the soup until smooth and stir in cream." },
+                new() { Step = 4, Text = "Serve hot with a side of bread." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner, DishType.Lunch }
+        },
+
+        new()
+        {
+            Title = "Banana Pancakes",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Bananas", "Eggs", "Flour", "Milk", "Maple Syrup" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mash bananas in a mixing bowl." },
+                new() { Step = 2, Text = "Whisk in eggs, milk, and flour until smooth." },
+                new() { Step = 3, Text = "Pour batter onto a hot griddle and cook until golden." },
+                new() { Step = 4, Text = "Serve with a drizzle of maple syrup." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast }
+        },
+
+        new()
+        {
+            Title = "Pasta Primavera",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Pasta", "Tomatoes", "Bell Peppers", "Parmesan Cheese", "Olive Oil" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Cook pasta according to package instructions." },
+                new() { Step = 2, Text = "Sauté vegetables in olive oil until tender." },
+                new() { Step = 3, Text = "Mix cooked pasta with sautéed vegetables and sprinkle parmesan cheese on top." },
+                new() { Step = 4, Text = "Serve immediately while hot." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch, DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Chicken Caesar Salad",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Romaine Lettuce", "Grilled Chicken", "Caesar Dressing", "Parmesan Cheese", "Croutons" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Chop romaine lettuce and place in a bowl." },
+                new() { Step = 2, Text = "Add grilled chicken, parmesan cheese, and croutons." },
+                new() { Step = 3, Text = "Drizzle Caesar dressing and toss gently to combine." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch }
+        },
+        new()
+        {
+            Title = "Chocolate Chip Cookies",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Flour", "Butter", "Sugar", "Chocolate Chips", "Eggs", "Baking Soda" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Preheat the oven to 180°C (350°F)." },
+                new() { Step = 2, Text = "Mix all ingredients until a dough forms." },
+                new() { Step = 3, Text = "Drop spoonfuls of dough onto a baking sheet." },
+                new() { Step = 4, Text = "Bake for 10-12 minutes or until golden brown." },
+                new() { Step = 5, Text = "Cool on a wire rack before serving." }
+            },
+            DishTypes = new List<DishType> { DishType.Dessert, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Tomato Soup",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Tomatoes", "Onion", "Garlic", "Vegetable Stock", "Cream" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Sauté onion and garlic until fragrant." },
+                new() { Step = 2, Text = "Add tomatoes and vegetable stock, and simmer for 20 minutes." },
+                new() { Step = 3, Text = "Blend the soup until smooth and stir in cream." },
+                new() { Step = 4, Text = "Serve hot with a side of bread." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner, DishType.Lunch }
+        },
+
+        new()
+        {
+            Title = "Banana Pancakes",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Bananas", "Eggs", "Flour", "Milk", "Maple Syrup" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mash bananas in a mixing bowl." },
+                new() { Step = 2, Text = "Whisk in eggs, milk, and flour until smooth." },
+                new() { Step = 3, Text = "Pour batter onto a hot griddle and cook until golden." },
+                new() { Step = 4, Text = "Serve with a drizzle of maple syrup." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast }
+        },
+
+        new()
+        {
+            Title = "Vegetable Stir Fry",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Broccoli", "Carrots", "Bell Peppers", "Soy Sauce", "Garlic" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Heat oil in a wok and sauté garlic until fragrant." },
+                new() { Step = 2, Text = "Add vegetables and stir fry for 5-7 minutes." },
+                new() { Step = 3, Text = "Add soy sauce and stir fry for another 2 minutes." },
+                new() { Step = 4, Text = "Serve hot with rice or noodles." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch, DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Fruit Salad",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Apples", "Bananas", "Grapes", "Oranges", "Honey" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Chop all fruits into bite-sized pieces." },
+                new() { Step = 2, Text = "Mix the fruits in a bowl." },
+                new() { Step = 3, Text = "Drizzle honey over the fruits and toss gently." },
+                new() { Step = 4, Text = "Serve immediately or chill before serving." }
+            },
+            DishTypes = new List<DishType> { DishType.Dessert, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Beef Tacos",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Ground Beef", "Taco Shells", "Lettuce", "Cheese", "Sour Cream", "Salsa" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Cook ground beef in a pan until browned." },
+                new() { Step = 2, Text = "Season beef with taco seasoning and simmer." },
+                new() { Step = 3, Text = "Assemble tacos with beef, lettuce, cheese, sour cream, and salsa." },
+                new() { Step = 4, Text = "Serve with additional salsa on the side." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner, DishType.Snacks }
+        },
+
+        new()
+        {
+            Title = "Lemonade",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Lemons", "Sugar", "Water", "Ice" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Squeeze juice from lemons into a pitcher." },
+                new() { Step = 2, Text = "Add sugar and water, stirring until sugar dissolves." },
+                new() { Step = 3, Text = "Add ice cubes and serve chilled." }
+            },
+            DishTypes = new List<DishType> { DishType.Drinks }
+        },
+        new()
+        {
+            Title = "Classic Pancakes",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Flour", "Milk", "Eggs", "Sugar", "Butter", "Baking Powder" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mix flour, sugar, and baking powder in a bowl." },
+                new() { Step = 2, Text = "Whisk eggs and milk, then combine with the dry ingredients." },
+                new() { Step = 3, Text = "Heat butter in a pan and pour batter to form pancakes." },
+                new() { Step = 4, Text = "Cook until bubbles form, then flip and cook until golden." },
+                new() { Step = 5, Text = "Serve warm with syrup or your favorite toppings." }
+            },
+            DishTypes = new List<DishType> { DishType.Breakfast, DishType.Dessert }
+        },
+
+        new()
+        {
+            Title = "Vegetable Soup",
+            CookingTime = CookingTime.GreaterThan60Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Carrots", "Potatoes", "Onions", "Celery", "Vegetable Stock", "Herbs" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Chop all vegetables into small pieces." },
+                new() { Step = 2, Text = "Sauté onions and celery in a pot." },
+                new() { Step = 3, Text = "Add carrots, potatoes, and vegetable stock." },
+                new() { Step = 4, Text = "Simmer for 45 minutes or until vegetables are tender." },
+                new() { Step = 5, Text = "Season with herbs and serve hot." }
+            },
+            DishTypes = new List<DishType> { DishType.Lunch, DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Caesar Salad",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Romaine Lettuce", "Croutons", "Parmesan Cheese", "Caesar Dressing" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Wash and chop romaine lettuce." },
+                new() { Step = 2, Text = "Toss lettuce with croutons and Caesar dressing." },
+                new() { Step = 3, Text = "Sprinkle with Parmesan cheese and serve." }
+            },
+            DishTypes = new List<DishType> { DishType.Appetizers, DishType.Lunch }
+        },
+
+        new()
+        {
+            Title = "Chocolate Brownies",
+            CookingTime = CookingTime.Between30And60Minutes,
+            Difficulty = Difficulty.High,
+            Ingredients = new List<string> { "Chocolate", "Butter", "Sugar", "Eggs", "Flour", "Cocoa Powder" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Melt chocolate and butter together." },
+                new() { Step = 2, Text = "Whisk in sugar, eggs, and vanilla extract." },
+                new() { Step = 3, Text = "Fold in flour and cocoa powder until combined." },
+                new() { Step = 4, Text = "Pour batter into a greased pan and bake for 25 minutes." },
+                new() { Step = 5, Text = "Cool completely before slicing into squares." }
+            },
+            DishTypes = new List<DishType> { DishType.Dessert }
+        },
+
+        new()
+        {
+            Title = "Spaghetti Carbonara",
+            CookingTime = CookingTime.Between10And30Minutes,
+            Difficulty = Difficulty.Medium,
+            Ingredients = new List<string> { "Spaghetti", "Eggs", "Parmesan Cheese", "Pancetta", "Black Pepper" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Cook spaghetti in salted boiling water." },
+                new() { Step = 2, Text = "Fry pancetta until crispy." },
+                new() { Step = 3, Text = "Whisk eggs and Parmesan cheese in a bowl." },
+                new() { Step = 4, Text = "Drain pasta, reserving some cooking water." },
+                new() { Step = 5, Text = "Toss spaghetti with pancetta, egg mixture, and cooking water." }
+            },
+            DishTypes = new List<DishType> { DishType.Dinner }
+        },
+
+        new()
+        {
+            Title = "Garlic Bread",
+            CookingTime = CookingTime.LessThan10Minutes,
+            Difficulty = Difficulty.Low,
+            Ingredients = new List<string> { "Bread", "Garlic", "Butter", "Parsley" },
+            Instructions = new List<RequestRecipeInstructionJson>
+            {
+                new() { Step = 1, Text = "Mix minced garlic and parsley with softened butter." },
+                new() { Step = 2, Text = "Spread the mixture onto slices of bread." },
+                new() { Step = 3, Text = "Bake in the oven at 180°C (350°F) until crispy." }
+            },
+            DishTypes = new List<DishType> { DishType.Snacks, DishType.Appetizers }
+        }
+    ];
+}

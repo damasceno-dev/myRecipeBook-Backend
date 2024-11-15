@@ -7,6 +7,19 @@ namespace CommonTestUtilities.Entities;
 
 public class RecipeBuilder
 {
+    public static List<Recipe> RecipeCollection(User user, uint count = 10)
+    {
+        var recipes = new List<Recipe>();
+        if (count <= 0)
+            count = 2;
+
+        for (int i = 0; i < count; i++)
+        {
+            recipes.Add(Build(user));
+        }
+
+        return recipes;
+    }
     public static Recipe Build(User user)
     {
         return new Faker<Recipe>()

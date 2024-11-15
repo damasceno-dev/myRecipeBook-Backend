@@ -6,4 +6,8 @@ public class EnumTestHelper
     {
         return Enum.GetValues(typeof(T)).Cast<int>().Max() + 1;
     }
+    public static int EnumRange<T>() where T : Enum
+    {
+        return Enum.GetValues(typeof(T)).Cast<int>().Max();
+    }
 }

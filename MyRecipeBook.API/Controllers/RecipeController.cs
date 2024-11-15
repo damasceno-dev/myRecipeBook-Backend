@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
@@ -22,6 +21,19 @@ namespace MyRecipeBook.Controllers
         {
             var response = await registerUseCase.Execute(requestRecipe);
             return Created(string.Empty, response);
+        }
+
+        [HttpPost]
+        [Route("filter")]
+        [ProducesResponseType(typeof(List<ResponseShortRecipeJson>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> FilterRecipes([FromBody] RequestRecipeFilterJson requestRecipeFilter, [FromServices] RecipeFilterUseCase filterUseCase)
+        {
+            var response = await filterUseCase.Execute(requestRecipeFilter);
+            if (response.Count != 0)
+                return Ok(response);
+
+            return NoContent();
         }
     }
 }

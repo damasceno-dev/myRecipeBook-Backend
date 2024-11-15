@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services;
+using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
 using MyRecipeBook.Application.UseCases.Users.Login;
@@ -37,5 +38,6 @@ public static class AppDependencyInjectionExtension
         services.AddScoped<UserUpdateUseCase>();
         services.AddScoped<UserChangePasswordUseCase>();
         services.AddScoped<RecipeRegisterUseCase>();
+        services.AddScoped<RecipeFilterUseCase>();
     }
 }

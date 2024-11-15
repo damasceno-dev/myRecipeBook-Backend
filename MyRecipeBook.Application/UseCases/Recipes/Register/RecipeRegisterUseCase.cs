@@ -42,7 +42,6 @@ public class RecipeRegisterUseCase
         await _unitOfWork.Commit();
         
         return _mapper.Map<ResponseRecipeJson>(recipe);
-        
     }
 
     private static void Validate(RequestRecipeJson request)
@@ -54,4 +53,6 @@ public class RecipeRegisterUseCase
             throw new OnValidationException(erros);
         }
     }
+    
+    
 }
