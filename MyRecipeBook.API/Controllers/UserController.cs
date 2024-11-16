@@ -23,7 +23,6 @@ namespace MyRecipeBook.Controllers
         public async Task<IActionResult> Register([FromBody]RequestUserRegisterJson request, 
             [FromServices]UserRegisterUseCase userRegisterUseCase)
         {
-            //TODO: do a string converter
             var response = await userRegisterUseCase.Execute(request);
             return Created(string.Empty, response);
         }
