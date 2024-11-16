@@ -24,7 +24,7 @@ public class RecipeBuilder
     {
         return new Faker<Recipe>()
             .RuleFor(recipe => recipe.Id, Guid.NewGuid)
-            .RuleFor(recipe => recipe.Title, (f) => f.Lorem.Word())
+            .RuleFor(recipe => recipe.Title, f => $"{f.Commerce.ProductAdjective()} {f.Commerce.ProductMaterial()} {f.Commerce.ProductName()}")
             .RuleFor(recipe => recipe.CookingTime, (f) => f.PickRandom<CookingTime>())
             .RuleFor(recipe => recipe.Difficulty, (f) => f.PickRandom<Difficulty>())
             .RuleFor(recipe => recipe.Ingredients, (f) => f.Make(f.Random.Number(1, 5), () => new Ingredient

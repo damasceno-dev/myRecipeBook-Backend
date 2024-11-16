@@ -15,15 +15,15 @@ namespace WebApi.Test;
 
 public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly HttpClient _httpClient ;
+    private readonly HttpClient _httpClient;
     private MyRecipeBookDbContext _dbContext;
     private User _user;
-    private Recipe _recipe;
+    private List<Recipe> _recipes;
     private string _password;
     
     public MyRecipeBookDbContext GetDbContext() => _dbContext;
     public User GetUser() => _user;
-    public Recipe GetRecipe() => _recipe;
+    public List<Recipe> GetRecipes() => _recipes;
     public string GetPassword() => _password;
 
     public MyInMemoryFactory()
@@ -44,10 +44,10 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         (_user, _password) = UserBuilder.Build();
-        _recipe = RecipeBuilder.Build(_user);
+        _recipes = RecipeBuilder.RecipeCollection(_user);
 
         _dbContext.Users.Add(_user);
-        _dbContext.Recipes.Add(_recipe);
+        _dbContext.Recipes.AddRange(_recipes);
         await _dbContext.SaveChangesAsync();
     }
     

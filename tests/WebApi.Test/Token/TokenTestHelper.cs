@@ -12,6 +12,7 @@ public class TokenTestHelper
             { "user/update", ("PUT", RequestUserUpdateJsonBuilder.Build) },
             { "user/getProfileWithToken", ("GET", () => default!) },
             { "recipe/register", ("POST", RequestRecipeRegisterJsonBuilder.Build) },
+            { "recipe/filter", ("POST", RequestRecipeFilterJsonBuilder.Build) },
         };
 
     public async Task<HttpResponseMessage> ExecuteRandomRoute(

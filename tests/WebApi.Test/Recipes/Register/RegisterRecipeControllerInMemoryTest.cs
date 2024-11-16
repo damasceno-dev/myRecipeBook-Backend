@@ -16,7 +16,7 @@ using Xunit;
 
 namespace WebApi.Test.Recipes.Register;
 
-public class RegisterRecipeControllerInMemoryTest: IClassFixture<MyInMemoryFactory>
+public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
     private readonly MyInMemoryFactory _factory;
 
