@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
+using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
@@ -27,6 +28,8 @@ namespace MyRecipeBook.Controllers
         [Route("filter")]
         [ProducesResponseType(typeof(List<ResponseShortRecipeJson>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> FilterRecipes([FromBody] RequestRecipeFilterJson requestRecipeFilter, [FromServices] RecipeFilterUseCase filterUseCase)
         {
             var response = await filterUseCase.Execute(requestRecipeFilter);
@@ -35,5 +38,18 @@ namespace MyRecipeBook.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("getById/{recipeId}")]
+        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ResponseRecipeJson>> GetById([FromRoute] Guid recipeId, [FromServices]RecipeGetByIdUseCase getByIdUseCase)
+        {
+            var response = await getByIdUseCase.Execute(recipeId);
+            return Ok(response);
+        }
+        
     }
 }
+

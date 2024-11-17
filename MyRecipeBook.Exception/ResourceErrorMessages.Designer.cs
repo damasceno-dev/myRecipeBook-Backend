@@ -15,7 +15,7 @@ namespace MyRecipeBook.Communication {
     [System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ResourceErrorMessages {
-        
+
         private static System.Resources.ResourceManager resourceMan;
         
         private static System.Globalization.CultureInfo resourceCulture;
@@ -160,6 +160,13 @@ namespace MyRecipeBook.Communication {
         public static string RECIPE_AT_LEAST_ONE_INGREDIENT {
             get {
                 return ResourceManager.GetString("RECIPE_AT_LEAST_ONE_INGREDIENT", resourceCulture);
+            }
+        }
+
+        public static string RECIPE_NOT_FOUND
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_NOT_FOUND", resourceCulture);
             }
         }
     }

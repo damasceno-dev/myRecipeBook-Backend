@@ -3,7 +3,6 @@ using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Dtos;
 using MyRecipeBook.Domain.Entities;
-using MyRecipeBook.Domain.Enums;
 using DishType = MyRecipeBook.Domain.Entities.DishType;
 
 namespace MyRecipeBook.Application.Services;
@@ -20,10 +19,18 @@ public class AutoMapping : Profile
     {
         CreateMap<User, ResponseUserRegisterJson>();
         CreateMap<User, ResponseUserProfileJson>();
-        CreateMap<Recipe, ResponseRecipeJson>();
+        CreateMap<Recipe, ResponseRegisteredRecipeJson>();
         CreateMap<Recipe, ResponseShortRecipeJson>()
             .ForMember(dest => dest.QuantityIngredients, 
                 config => config.MapFrom(source => source.Ingredients.Count));
+        CreateMap<Recipe, ResponseRecipeJson>()
+            .ForMember(dest => dest.DishTypes,
+                config => config.MapFrom(source => source.DishTypes.Select(d => d.Type).ToList()))
+            .ForMember(dest => dest.Ingredients,
+                config => config.MapFrom(source => source.Ingredients.Select(i => i.Item).ToList()))
+            .ForMember(dest => dest.Instructions,
+                config => config.MapFrom(source => source.Instructions.Select(i => new ResponseInstructionJson {Step = i.Step, Text = i.Text}).ToList()));
+            
     }
 
     private void RequestToDomain()

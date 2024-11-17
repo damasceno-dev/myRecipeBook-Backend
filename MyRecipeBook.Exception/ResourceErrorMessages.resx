@@ -87,4 +87,7 @@
         <data name="RECIPE_AT_LEAST_ONE_INGREDIENT" xml:space="preserve">
         <value>Recipe ingredients must not be empty</value>
     </data>
+    <data name="RECIPE_NOT_FOUND" xml:space="preserve">
+        <value>Recipe not found</value>
+    </data>
 </root>

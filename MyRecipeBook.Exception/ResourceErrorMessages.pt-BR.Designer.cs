@@ -138,5 +138,11 @@ namespace MyRecipeBook.Exception {
                 return ResourceManager.GetString("RECIPE_AT_LEAST_ONE_INGREDIENT", resourceCulture);
             }
         }
+        public static string RECIPE_NOT_FOUND
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_NOT_FOUND", resourceCulture);
+            }
+        }
     }
 }

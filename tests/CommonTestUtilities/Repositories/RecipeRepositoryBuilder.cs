@@ -28,12 +28,16 @@ public class RecipeRepositoryBuilder
 
         _repository
             .Setup(repo => repo.FilterRecipe(It.IsAny<User>(), It.IsAny<FilterRecipeDto>()))
-            .ReturnsAsync(() =>
-            {
-                var filteredRecipes = RecipesRepository.RecipeFilterLogic(recipes.AsQueryable(), filterDto);
-                return filteredRecipes.ToList();
-            });
+            .ReturnsAsync(() => RecipesRepository.RecipeFilterLogic(recipes.AsQueryable(), filterDto).ToList());
 
+        return this;
+    }
+
+    public RecipeRepositoryBuilder GetById(List<Recipe> recipes, Guid recipeId)
+    {
+        _repository.Setup(repo => repo.GetById(It.IsAny<User>(), It.IsAny<Guid>()))
+            .ReturnsAsync((User user, Guid id) => recipes.AsQueryable().FirstOrDefault(r => r.Id == id));
+        
         return this;
     }
 

@@ -22,7 +22,7 @@ public class RecipeRegisterUseCase
         _recipeRepository = recipeRepository;
     }
 
-    public async Task<ResponseRecipeJson> Execute(RequestRecipeJson request)
+    public async Task<ResponseRegisteredRecipeJson> Execute(RequestRecipeJson request)
     {
         Validate(request);
         
@@ -41,7 +41,7 @@ public class RecipeRegisterUseCase
         await _recipeRepository.Register(recipe);
         await _unitOfWork.Commit();
         
-        return _mapper.Map<ResponseRecipeJson>(recipe);
+        return _mapper.Map<ResponseRegisteredRecipeJson>(recipe);
     }
 
     private static void Validate(RequestRecipeJson request)

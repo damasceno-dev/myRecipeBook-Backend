@@ -47,7 +47,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
         
         var response = await _factory.DoPost("recipe/register", request, token: validToken);
-        var recipeFromJson = await response.Content.ReadFromJsonAsync<ResponseRecipeJson>();
+        var recipeFromJson = await response.Content.ReadFromJsonAsync<ResponseRegisteredRecipeJson>();
         var recipeInDb = await _factory.GetDbContext().Recipes.SingleAsync(u => u.Id == recipeFromJson!.Id);
         
         recipeInDb.Should().NotBeNull();

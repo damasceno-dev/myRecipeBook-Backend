@@ -31,12 +31,11 @@ public class RecipesRepository : IRecipesRepository
 
         return await recipes.ToListAsync();
     }
-
     public static IQueryable<Recipe> RecipeFilterLogic(IQueryable<Recipe> recipes, FilterRecipeDto filter)
     {
         if (!string.IsNullOrWhiteSpace(filter.TitleIngredient))
         {
-            string titleIngredientLower = filter.TitleIngredient.ToLower();
+            var titleIngredientLower = filter.TitleIngredient.ToLower();
             recipes = recipes.Where(recipe =>
                 recipe.Title.ToLower().Contains(titleIngredientLower) ||
                 recipe.Ingredients.Any(i => i.Item.ToLower().Contains(titleIngredientLower)));
@@ -58,5 +57,21 @@ public class RecipesRepository : IRecipesRepository
         }
 
         return recipes;
+    }
+    
+    public async Task<Recipe?> GetById(User user,Guid id)
+    {
+        var recipes = _dbContext.Recipes
+            .AsNoTracking()
+            .Include(r => r.Ingredients)
+            .Include(r => r.Instructions)
+            .Include(r => r.DishTypes)
+            .Where(recipe => recipe.Id == id && recipe.UserId == user.Id);
+        return await RecipeGetByIdLogic(recipes, id);
+    }
+
+    public static async Task<Recipe?> RecipeGetByIdLogic(IQueryable<Recipe> recipes, Guid id)
+    {
+        return await recipes.FirstOrDefaultAsync(recipe => recipe.Id == id);
     }
 }

@@ -13,6 +13,7 @@ public class TokenTestHelper
             { "user/getProfileWithToken", ("GET", () => default!) },
             { "recipe/register", ("POST", RequestRecipeRegisterJsonBuilder.Build) },
             { "recipe/filter", ("POST", RequestRecipeFilterJsonBuilder.Build) },
+            { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
         };
 
     public async Task<HttpResponseMessage> ExecuteRandomRoute(
