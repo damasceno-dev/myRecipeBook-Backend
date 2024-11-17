@@ -1,9 +1,10 @@
 using CommonTestUtilities.Requests;
 using MyRecipeBook.Application.Services;
+using Xunit.Abstractions;
 
 namespace WebApi.Test.Token;
 
-public class TokenTestHelper
+public class TokenTestHelper(ITestOutputHelper output)
 {
     private readonly Dictionary<string, (string HttpMethod, Func<object> RequestBuilder)> _routeConfigurations =
         new()
@@ -16,6 +17,31 @@ public class TokenTestHelper
             { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
         };
 
+    public async Task<IEnumerable<(string Route, HttpResponseMessage Response)>> ExecuteAllRoutes(
+        MyInMemoryFactory factory,
+        string culture,
+        string? token)
+    {
+        var tasks = _routeConfigurations.Select(async routeConfig =>
+        {
+            var (route, (httpMethod, requestBuilder)) = routeConfig;
+            output.WriteLine($"Executing route: {route} with HTTP method: {httpMethod} for culture: {culture}");
+
+            var response = httpMethod switch
+            {
+                "GET" => await factory.DoGet(route, culture: culture, token: token),
+                "PUT" => await factory.DoPut(route, requestBuilder?.Invoke(), culture: culture, token: token),
+                "POST" => await factory.DoPost(route, requestBuilder?.Invoke(), culture: culture, token: token),
+                _ => throw new InvalidOperationException($"Unsupported HTTP method: {httpMethod}")
+            };
+            output.WriteLine($"Route: {route} executed with status: {response.StatusCode}");
+
+            return (route, response);
+        });
+
+        return await Task.WhenAll(tasks);
+    }
+    
     public async Task<HttpResponseMessage> ExecuteRandomRoute(
         MyInMemoryFactory factory,
         string culture,

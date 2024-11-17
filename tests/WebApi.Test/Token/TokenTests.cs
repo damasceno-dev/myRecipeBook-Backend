@@ -7,6 +7,7 @@ using FluentAssertions;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Tokens;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WebApi.Test.Token;
 
@@ -15,10 +16,10 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
     private readonly MyInMemoryFactory _factory;
     private readonly TokenTestHelper _helper;
 
-    public TokenTests(MyInMemoryFactory inMemoryFactory)
+    public TokenTests(MyInMemoryFactory inMemoryFactory, ITestOutputHelper output)
     {
         _factory = inMemoryFactory;
-        _helper = new TokenTestHelper();
+        _helper = new TokenTestHelper(output);
     }
     
     [Fact]
@@ -39,14 +40,17 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_WITH_NO_PERMISSION", new CultureInfo(cultureFromRequest));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(new Guid());
 
-        var response = await _helper.ExecuteRandomRoute(_factory, cultureFromRequest, validToken);
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        result.RootElement.GetProperty("errorMessages")
-            .EnumerateArray()
-            .Should()
-            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, validToken);
+        foreach (var (route, response) in responses)
+        {    
+            var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+            
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, $"Route: {route}");
+            result.RootElement.GetProperty("errorMessages")
+                .EnumerateArray()
+                .Should()
+                .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        }
     } 
     
     [Theory]
@@ -56,14 +60,17 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EMPTY", new CultureInfo(cultureFromRequest));
         var emptyToken = string.Empty;
 
-        var response = await _helper.ExecuteRandomRoute(_factory, cultureFromRequest, emptyToken);
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        result.RootElement.GetProperty("errorMessages")
-            .EnumerateArray()
-            .Should()
-            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, emptyToken);
+        foreach (var (route, response) in responses)
+        {    
+            var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+    
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, $"Route: {route}");
+            result.RootElement.GetProperty("errorMessages")
+                .EnumerateArray()
+                .Should()
+                .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        }
     }   
     [Theory]
     [ClassData(typeof(TestCultures))]
@@ -74,13 +81,16 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
         // Wait to ensure the token is expired
         await Task.Delay(TimeSpan.FromSeconds(0.1));
         
-        var response = await _helper.ExecuteRandomRoute(_factory, cultureFromRequest, expiredToken);
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        result.RootElement.GetProperty("errorMessages")
-            .EnumerateArray()
-            .Should()
-            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, expiredToken);
+        foreach (var (route, response) in responses)
+        {    
+            var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+            
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, $"Route: {route}");
+            result.RootElement.GetProperty("errorMessages")
+                .EnumerateArray()
+                .Should()
+                .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
+        }
     }
 }
