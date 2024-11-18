@@ -65,6 +65,13 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         return await _httpClient.GetAsync(route);
     }
     
+    public async Task<HttpResponseMessage> DoDelete(string route, string? culture = null, string? token = null)
+    {
+        AddCulture(culture);
+        AddToken(token);
+        return await _httpClient.DeleteAsync(route);
+    }
+    
     public async Task<HttpResponseMessage> DoPut<T>(string route, T request, string? culture = null, string? token = null)
     {
         AddCulture(culture);

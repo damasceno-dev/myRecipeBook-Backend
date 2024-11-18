@@ -5,23 +5,16 @@ using MyRecipeBook.Domain.Interfaces;
 
 namespace MyRecipeBook.Infrastructure.Repositories;
 
-public class RecipesRepository : IRecipesRepository
+public class RecipesRepository(MyRecipeBookDbContext dbContext): IRecipesRepository
 {
-    private readonly MyRecipeBookDbContext _dbContext;
-
-    public RecipesRepository(MyRecipeBookDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task Register(Recipe recipe)
     {
-        await _dbContext.Recipes.AddAsync(recipe);
+        await dbContext.Recipes.AddAsync(recipe);
     }
 
     public async Task<List<Recipe>> FilterRecipe(User user,FilterRecipeDto filter)
     {
-        var recipes = _dbContext
+        var recipes = dbContext
             .Recipes
             .AsNoTracking()
             .Include(recipe => recipe.Ingredients)
@@ -61,17 +54,18 @@ public class RecipesRepository : IRecipesRepository
     
     public async Task<Recipe?> GetById(User user,Guid id)
     {
-        var recipes = _dbContext.Recipes
+        var recipes = dbContext.Recipes
             .AsNoTracking()
             .Include(r => r.Ingredients)
             .Include(r => r.Instructions)
             .Include(r => r.DishTypes)
             .Where(recipe => recipe.Id == id && recipe.UserId == user.Id);
-        return await RecipeGetByIdLogic(recipes, id);
+        return await recipes.FirstOrDefaultAsync(recipe => recipe.Id == id);
     }
 
-    public static async Task<Recipe?> RecipeGetByIdLogic(IQueryable<Recipe> recipes, Guid id)
+    public async Task Delete(Guid id)
     {
-        return await recipes.FirstOrDefaultAsync(recipe => recipe.Id == id);
+        var recipe = await dbContext.Recipes.FirstAsync(r => r.Id == id);
+        dbContext.Recipes.Remove(recipe);
     }
 }

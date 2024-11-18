@@ -15,6 +15,7 @@ public class TokenTestHelper(ITestOutputHelper output)
             { "recipe/register", ("POST", RequestRecipeRegisterJsonBuilder.Build) },
             { "recipe/filter", ("POST", RequestRecipeFilterJsonBuilder.Build) },
             { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
+            { $"recipe/deleteById/{Guid.NewGuid}", ("DELETE", () => default!) },
         };
 
     public async Task<IEnumerable<(string Route, HttpResponseMessage Response)>> ExecuteAllRoutes(
@@ -30,6 +31,7 @@ public class TokenTestHelper(ITestOutputHelper output)
             var response = httpMethod switch
             {
                 "GET" => await factory.DoGet(route, culture: culture, token: token),
+                "DELETE" => await factory.DoDelete(route, culture: culture, token: token),
                 "PUT" => await factory.DoPut(route, requestBuilder?.Invoke(), culture: culture, token: token),
                 "POST" => await factory.DoPost(route, requestBuilder?.Invoke(), culture: culture, token: token),
                 _ => throw new InvalidOperationException($"Unsupported HTTP method: {httpMethod}")

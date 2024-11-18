@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
@@ -44,10 +45,21 @@ namespace MyRecipeBook.Controllers
         [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ResponseRecipeJson>> GetById([FromRoute] Guid recipeId, [FromServices]RecipeGetByIdUseCase getByIdUseCase)
+        public async Task<IActionResult> GetById([FromRoute] Guid recipeId, [FromServices]RecipeGetByIdUseCase getByIdUseCase)
         {
             var response = await getByIdUseCase.Execute(recipeId);
             return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("deleteById/{recipeId}")]
+        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteById([FromRoute] Guid recipeId, [FromServices] RecipeDeleteByIdUseCase deleteByIdUseCase)
+        {
+            await deleteByIdUseCase.Execute(recipeId);
+            return NoContent();
         }
         
     }

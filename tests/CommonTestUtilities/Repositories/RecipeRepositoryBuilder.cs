@@ -36,7 +36,19 @@ public class RecipeRepositoryBuilder
     public RecipeRepositoryBuilder GetById(List<Recipe> recipes, Guid recipeId)
     {
         _repository.Setup(repo => repo.GetById(It.IsAny<User>(), It.IsAny<Guid>()))
-            .ReturnsAsync((User user, Guid id) => recipes.AsQueryable().FirstOrDefault(r => r.Id == id));
+            .ReturnsAsync((User user,Guid id) => recipes.AsQueryable().FirstOrDefault(r => r.Id == id));
+        
+        return this;
+    }
+    public RecipeRepositoryBuilder DeleteById(List<Recipe> recipes, Guid recipeId)
+    {
+        _repository.Setup(repo => repo.Delete(It.IsAny<Guid>()))
+            .Returns((Guid id) =>
+            {
+                var recipe = recipes.AsQueryable().First(r => r.Id == id);
+                recipes.Remove(recipe);
+                return Task.CompletedTask;
+            });
         
         return this;
     }

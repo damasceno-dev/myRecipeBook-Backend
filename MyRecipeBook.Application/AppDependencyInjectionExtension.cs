@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services;
+using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
@@ -41,5 +42,6 @@ public static class AppDependencyInjectionExtension
         services.AddScoped<RecipeRegisterUseCase>();
         services.AddScoped<RecipeFilterUseCase>();
         services.AddScoped<RecipeGetByIdUseCase>();
+        services.AddScoped<RecipeDeleteByIdUseCase>();
     }
 }
