@@ -55,7 +55,7 @@ public class RecipesRepository(MyRecipeBookDbContext dbContext): IRecipesReposit
     
     public async Task<Recipe?> GetByIdAsNoTracking(User user,Guid id)
     {
-        return await GetRecipeByIdLogic()
+        return await GetRecipeQuery()
             .AsNoTracking()
             .Where(recipe => recipe.Id == id && recipe.UserId == user.Id)
             .FirstOrDefaultAsync(recipe => recipe.Id == id);
@@ -63,9 +63,17 @@ public class RecipesRepository(MyRecipeBookDbContext dbContext): IRecipesReposit
     
     public async Task<Recipe?> GetById(User user,Guid id)
     {
-        return await GetRecipeByIdLogic()
-            .Where(recipe => recipe.Id == id && recipe.UserId == user.Id)
-            .FirstOrDefaultAsync(recipe => recipe.Id == id);
+        return await GetRecipeQuery()
+                        .Where(recipe => recipe.Id == id && recipe.UserId == user.Id)
+                        .FirstOrDefaultAsync(recipe => recipe.Id == id);
+    }
+
+    public async Task<List<Recipe>> GetByUser(User user, int numberOfRecipes)
+    {
+        return await GetRecipeQuery()
+                        .Where(r => r.Active && r.UserId == user.Id)
+                        .OrderByDescending(r => r.CreatedOn).Take(numberOfRecipes)
+                        .ToListAsync();
     }
 
     public async Task Delete(Guid id)
@@ -79,11 +87,11 @@ public class RecipesRepository(MyRecipeBookDbContext dbContext): IRecipesReposit
         dbContext.Recipes.Update(recipe);
     }
 
-    private IIncludableQueryable<Recipe, IList<DishType>> GetRecipeByIdLogic()
+    private IIncludableQueryable<Recipe, IList<DishType>> GetRecipeQuery()
     {
         return dbContext.Recipes
-            .Include(r => r.Ingredients)
-            .Include(r => r.Instructions)
-            .Include(r => r.DishTypes);
+                .Include(r => r.Ingredients)
+                .Include(r => r.Instructions)
+                .Include(r => r.DishTypes);
     }
 }

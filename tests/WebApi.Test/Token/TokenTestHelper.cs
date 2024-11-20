@@ -17,6 +17,7 @@ public class TokenTestHelper(ITestOutputHelper output)
             { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
             { $"recipe/deleteById/{Guid.NewGuid}", ("DELETE", () => default!) },
             { $"recipe/update/{Guid.NewGuid}", ("PUT", () => default!) },
+            { $"recipe/getByUser/{new Random().Next(1,10)}", ("GET", () => default!) },
         };
 
     public async Task<IEnumerable<(string Route, HttpResponseMessage Response)>> ExecuteAllRoutes(

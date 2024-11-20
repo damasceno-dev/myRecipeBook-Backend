@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
+using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Application.UseCases.Recipes.Update;
 using MyRecipeBook.Communication.Requests;
@@ -46,9 +47,21 @@ namespace MyRecipeBook.Controllers
         [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetById([FromRoute] Guid recipeId, [FromServices]RecipeGetByIdUseCase getByIdUseCase)
+        public async Task<IActionResult> GetById([FromRoute]Guid recipeId, [FromServices]RecipeGetByIdUseCase getByIdUseCase)
         {
             var response = await getByIdUseCase.Execute(recipeId);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("getByUser/{numberOfRecipes}")]
+        [ProducesResponseType(typeof(List<ResponseShortRecipeJson>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetByUser([FromRoute]int numberOfRecipes, [FromServices]RecipeGetByUserUseCase getByUserUseCase)
+        {
+            var response = await getByUserUseCase.Execute(numberOfRecipes);
             return Ok(response);
         }
 
@@ -73,10 +86,7 @@ namespace MyRecipeBook.Controllers
             var response = await recipeUpdateUseCase.Execute(recipeId, newRecipe);
             return Ok(response);
         }
-        
-        
-        //todo: integration tests for recipe update
-        //todo: get recipes with take route => need to receive the number of recipes to take, and orderbydescending on created
+        //todo: watch videos again
         //todo: push and view sonar cloud metrics
     }
 }

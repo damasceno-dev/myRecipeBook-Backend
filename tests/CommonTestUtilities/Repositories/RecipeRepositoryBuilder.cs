@@ -71,6 +71,20 @@ public class RecipeRepositoryBuilder
         
         return this;
     }
+    
+    public RecipeRepositoryBuilder GetByUser(List<Recipe> recipes, int numberOfRecipes)
+    {
+        _repository.Setup(repo => repo.GetByUser(It.IsAny<User>(), It.IsAny<int>()))
+            .ReturnsAsync((User user, int n) =>
+            {
+                return recipes
+                    .OrderByDescending(r => r.CreatedOn)
+                    .Take(numberOfRecipes)
+                    .ToList();
+            });
+        
+        return this;
+    }
 
     public IRecipesRepository Build()
     {

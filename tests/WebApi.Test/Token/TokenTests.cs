@@ -11,17 +11,11 @@ using Xunit.Abstractions;
 
 namespace WebApi.Test.Token;
 
-public class TokenTests : IClassFixture<MyInMemoryFactory>
+public class TokenTests(MyInMemoryFactory inMemoryFactory, ITestOutputHelper output)
+    : IClassFixture<MyInMemoryFactory>
 {
-    private readonly MyInMemoryFactory _factory;
-    private readonly TokenTestHelper _helper;
+    private readonly TokenTestHelper _helper = new(output);
 
-    public TokenTests(MyInMemoryFactory inMemoryFactory, ITestOutputHelper output)
-    {
-        _factory = inMemoryFactory;
-        _helper = new TokenTestHelper(output);
-    }
-    
     [Fact]
     public void ErrorNullContext()
     {
@@ -40,7 +34,7 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_WITH_NO_PERMISSION", new CultureInfo(cultureFromRequest));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(new Guid());
 
-        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, validToken);
+        var responses = await _helper.ExecuteAllRoutes(inMemoryFactory, cultureFromRequest, validToken);
         foreach (var (route, response) in responses)
         {    
             var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
@@ -60,7 +54,7 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EMPTY", new CultureInfo(cultureFromRequest));
         var emptyToken = string.Empty;
 
-        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, emptyToken);
+        var responses = await _helper.ExecuteAllRoutes(inMemoryFactory, cultureFromRequest, emptyToken);
         foreach (var (route, response) in responses)
         {    
             var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
@@ -77,11 +71,11 @@ public class TokenTests : IClassFixture<MyInMemoryFactory>
     public async Task TokenExpired(string cultureFromRequest)
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("TOKEN_EXPIRED", new CultureInfo(cultureFromRequest));
-        var expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(_factory.GetUser().Id);
+        var expiredToken = JsonWebTokenRepositoryBuilder.BuildExpiredToken().Generate(inMemoryFactory.GetUser().Id);
         // Wait to ensure the token is expired
         await Task.Delay(TimeSpan.FromSeconds(0.1));
         
-        var responses = await _helper.ExecuteAllRoutes(_factory, cultureFromRequest, expiredToken);
+        var responses = await _helper.ExecuteAllRoutes(inMemoryFactory, cultureFromRequest, expiredToken);
         foreach (var (route, response) in responses)
         {    
             var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());

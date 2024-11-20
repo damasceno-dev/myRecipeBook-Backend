@@ -90,4 +90,7 @@
     <data name="RECIPE_NOT_FOUND" xml:space="preserve">
         <value>Recipe not found</value>
     </data>
+    <data name="RECIPE_NUMBER_GREATER_THAN_0" xml:space="preserve">
+        <value>Number of recipes must be greater than zero</value>
+    </data>
 </root>

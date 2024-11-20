@@ -169,5 +169,11 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("RECIPE_NOT_FOUND", resourceCulture);
             }
         }
+        public static string RECIPE_NUMBER_GREATER_THAN_0
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_NUMBER_GREATER_THAN_0", resourceCulture);
+            }
+        }
     }
 }
