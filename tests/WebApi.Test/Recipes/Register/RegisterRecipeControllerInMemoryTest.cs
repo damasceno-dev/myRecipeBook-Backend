@@ -28,7 +28,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     [Fact]
     public async Task SuccessFromResponseBodyContainer()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
         
         var response = await _factory.DoPost("recipe/register", request, token: validToken);
@@ -43,7 +43,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     [Fact]
     private async Task SuccessFromJsonSerializeInMemory()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
         
         var response = await _factory.DoPost("recipe/register", request, token: validToken);
@@ -60,7 +60,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     public async Task ErrorTitleEmpty(string culture)
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_TITLE_EMPTY", new CultureInfo(culture));
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Title = string.Empty;
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
         
@@ -84,7 +84,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
         var notInEnumCookingTime = ResourceErrorMessages.ResourceManager.GetString("RECIPE_COOKING_TIME_NOT_IN_ENUM", new CultureInfo(culture));
         List<string?> expectedErrorMessages = [notInEnumDishType, notInEnumDifficulty, notInEnumCookingTime ];
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.DishTypes.Add((DishType)EnumTestHelper.OutOfRangeEnum<DishType>());
         request.Difficulty = (Difficulty)EnumTestHelper.OutOfRangeEnum<Difficulty>();
         request.CookingTime = (CookingTime)EnumTestHelper.OutOfRangeEnum<CookingTime>();
@@ -105,7 +105,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_AT_LEAST_ONE_INGREDIENT", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Ingredients = [];
         
         var response = await _factory.DoPost("recipe/register", request, token: validToken, culture: culture);
@@ -124,7 +124,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INGREDIENT_NOT_EMPTY", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Ingredients = ["   "];
         
         var response = await _factory.DoPost("recipe/register", request, token: validToken, culture: culture);
@@ -143,7 +143,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INSTRUCTION_STEP_GREATER_THAN_0", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 0, Text = "Chop onions" }
@@ -165,7 +165,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INSTRUCTION_TEXT_NOT_EMPTY", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = " " }
@@ -187,7 +187,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INSTRUCTION_TEXT_LESS_THAN_2000", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         var overLimitText = new string('a', SharedValidators.MaximumRecipeInstructionTextLength + 1);
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
@@ -210,7 +210,7 @@ public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFact
     {
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INSTRUCTION_DUPLICATE_STEP_INSTRUCTION", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = "Step 1" },

@@ -3,6 +3,7 @@ using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
+using MyRecipeBook.Application.UseCases.Recipes.Update;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Filters;
@@ -61,7 +62,22 @@ namespace MyRecipeBook.Controllers
             await deleteByIdUseCase.Execute(recipeId);
             return NoContent();
         }
+
+        [HttpPut]
+        [Route("update/{recipeId}")]
+        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Update([FromBody] RequestRecipeJson newRecipe, [FromRoute] Guid recipeId, [FromServices]RecipeUpdateUseCase recipeUpdateUseCase)
+        {
+            var response = await recipeUpdateUseCase.Execute(recipeId, newRecipe);
+            return Ok(response);
+        }
         
+        
+        //todo: integration tests for recipe update
+        //todo: get recipes with take route => need to receive the number of recipes to take, and orderbydescending on created
+        //todo: push and view sonar cloud metrics
     }
 }
 

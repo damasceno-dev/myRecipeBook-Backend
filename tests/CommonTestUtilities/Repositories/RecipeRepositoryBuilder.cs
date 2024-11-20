@@ -1,3 +1,4 @@
+using AutoMapper;
 using Moq;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Dtos;
@@ -33,6 +34,13 @@ public class RecipeRepositoryBuilder
         return this;
     }
 
+    public RecipeRepositoryBuilder GetByIdAsNoTracking(List<Recipe> recipes, Guid recipeId)
+    {
+        _repository.Setup(repo => repo.GetByIdAsNoTracking(It.IsAny<User>(), It.IsAny<Guid>()))
+            .ReturnsAsync((User user,Guid id) => recipes.AsQueryable().FirstOrDefault(r => r.Id == id));
+        
+        return this;
+    }
     public RecipeRepositoryBuilder GetById(List<Recipe> recipes, Guid recipeId)
     {
         _repository.Setup(repo => repo.GetById(It.IsAny<User>(), It.IsAny<Guid>()))
@@ -48,6 +56,17 @@ public class RecipeRepositoryBuilder
                 var recipe = recipes.AsQueryable().First(r => r.Id == id);
                 recipes.Remove(recipe);
                 return Task.CompletedTask;
+            });
+        
+        return this;
+    }
+    
+    public RecipeRepositoryBuilder Update(IMapper mapper,Recipe? recipeToUpdate, RequestRecipeJson newRecipe)
+    {
+        _repository.Setup(repo => repo.Update(It.IsAny<Recipe>()))
+            .Callback((Recipe recipe) =>
+            {
+                mapper.Map(newRecipe, recipeToUpdate);
             });
         
         return this;

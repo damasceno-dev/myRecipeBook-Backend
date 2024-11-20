@@ -12,10 +12,11 @@ public class TokenTestHelper(ITestOutputHelper output)
             { "user/changePassword", ("PUT", () => RequestUserChangePasswordJsonBuilder.Build()) },
             { "user/update", ("PUT", RequestUserUpdateJsonBuilder.Build) },
             { "user/getProfileWithToken", ("GET", () => default!) },
-            { "recipe/register", ("POST", RequestRecipeRegisterJsonBuilder.Build) },
+            { "recipe/register", ("POST", RequestRecipeJsonBuilder.Build) },
             { "recipe/filter", ("POST", RequestRecipeFilterJsonBuilder.Build) },
             { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
             { $"recipe/deleteById/{Guid.NewGuid}", ("DELETE", () => default!) },
+            { $"recipe/update/{Guid.NewGuid}", ("PUT", () => default!) },
         };
 
     public async Task<IEnumerable<(string Route, HttpResponseMessage Response)>> ExecuteAllRoutes(

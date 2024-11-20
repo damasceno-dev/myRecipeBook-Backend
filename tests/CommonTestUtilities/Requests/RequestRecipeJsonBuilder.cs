@@ -4,7 +4,7 @@ using MyRecipeBook.Domain.Enums;
 
 namespace CommonTestUtilities.Requests;
 
-public class RequestRecipeRegisterJsonBuilder
+public class RequestRecipeJsonBuilder
 {
     public static RequestRecipeJson Build()
     {

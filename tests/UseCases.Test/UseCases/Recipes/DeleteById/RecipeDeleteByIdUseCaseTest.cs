@@ -44,7 +44,7 @@ public class RecipeDeleteByIdUseCaseTest
         var unitOfWorkRepository = UnitOfWorkBuilder.Build();
         var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var recipeRepositoryBuilder = new RecipeRepositoryBuilder();
-        recipeRepositoryBuilder.GetById(recipes, request);
+        recipeRepositoryBuilder.GetByIdAsNoTracking(recipes, request);
         recipeRepositoryBuilder.DeleteById(recipes, request);
         var recipeRepository = recipeRepositoryBuilder.Build();
         return new RecipeDeleteByIdUseCase(usersRepository, recipeRepository, unitOfWorkRepository);

@@ -37,7 +37,7 @@ public class AutoMapping : Profile
     {
         CreateMap<RequestUserRegisterJson, User>()
             .ForMember(u => u.Password, config => config.Ignore());
-        CreateMap<RequestRecipeJson, Recipe>().ConvertUsing(request => MapRequestToRecipe(request));
+        CreateMap<RequestRecipeJson, Recipe>().ConvertUsing(MapRequestToRecipe);
         CreateMap<RequestRecipeFilterJson, FilterRecipeDto>().ConvertUsing(request => MapRequestRecipeFilterToFilterDto(request));
     }
 
@@ -49,23 +49,47 @@ public class AutoMapping : Profile
         var dishTypes = requestRecipe.DishTypes.Distinct().ToList();
         return new FilterRecipeDto(titleIngredient, cookingTimes, difficulties, dishTypes);
     }
-    private static Recipe MapRequestToRecipe(RequestRecipeJson request)
+    
+    /// <summary>
+    /// Method used for both registering and updating a recipe
+    /// </summary>
+    /// <param name="request">New recipe to register or update</param>
+    /// <param name="existingRecipe">If there is an existing recipe, it updates it.
+    /// Otherwise, it creates a new one.</param>
+    /// <returns></returns>
+    private static Recipe MapRequestToRecipe(RequestRecipeJson request, Recipe? existingRecipe = null)
     {
-        return new Recipe
+        var recipe = existingRecipe ?? new Recipe
         {
-            Id = Guid.NewGuid(),
-            Title = request.Title,
-            CookingTime = request.CookingTime,
-            Difficulty = request.Difficulty,
-        
-            Ingredients = request.Ingredients.Select(ingredient => new Ingredient { Item = ingredient }).ToList(),
-            Instructions = request.Instructions.Select(instruction => new Instruction
-            {
-                Step = instruction.Step,
-                Text = instruction.Text
-            }).ToList(),
-            DishTypes = request.DishTypes.Select(dishType => new DishType { Type = dishType }).ToList()
+            Id = existingRecipe?.Id ?? Guid.NewGuid()
         };
+
+        // Map primitive properties
+        recipe.Title = request.Title;
+        recipe.CookingTime = request.CookingTime;
+        recipe.Difficulty = request.Difficulty;
+
+        // Map Ingredients
+        recipe.Ingredients = request.Ingredients
+            .Select(ingredient => new Ingredient { Item = ingredient })
+            .ToList();
+
+        // Map Instructions with ordering
+        recipe.Instructions = request.Instructions
+            .OrderBy(instruction => instruction.Step)
+            .Select((instruction, index) => new Instruction
+            {
+                Step = index + 1,
+                Text = instruction.Text
+            })
+            .ToList();
+
+        // Map DishTypes
+        recipe.DishTypes = request.DishTypes
+            .Select(dishType => new DishType { Type = dishType })
+            .ToList();
+
+        return recipe;
     }
 
 }

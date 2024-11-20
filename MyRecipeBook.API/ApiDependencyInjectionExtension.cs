@@ -6,8 +6,7 @@ namespace MyRecipeBook;
 
 public static class ApiDependencyInjectionExtension
 {
-    
-    const string AuthenticationType = "Bearer";
+    private const string AuthenticationType = "Bearer";
     public static void AddApi(this IServiceCollection services)
     {
         AddSwaggerWithTokenReader(services);

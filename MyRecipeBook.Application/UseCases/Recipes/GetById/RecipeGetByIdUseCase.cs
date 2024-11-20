@@ -12,7 +12,7 @@ public class RecipeGetByIdUseCase(IUsersRepository usersRepository, IRecipesRepo
     public async Task<ResponseRecipeJson> Execute(Guid id)
     {
         var user = await usersRepository.GetLoggedUserWithToken();
-        var recipe = await recipesRepository.GetById(user, id);
+        var recipe = await recipesRepository.GetByIdAsNoTracking(user, id);
         Validate(recipe);
         return mapper.Map<ResponseRecipeJson>(recipe);
     }

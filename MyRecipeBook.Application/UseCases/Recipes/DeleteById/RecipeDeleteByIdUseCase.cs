@@ -10,7 +10,7 @@ public class RecipeDeleteByIdUseCase(IUsersRepository usersRepository, IRecipesR
     public async Task Execute(Guid recipeId)
     {
         var user = await usersRepository.GetLoggedUserWithToken();
-        var recipe = await recipesRepository.GetById(user, recipeId);
+        var recipe = await recipesRepository.GetByIdAsNoTracking(user, recipeId);
         Validate(recipe);
         await recipesRepository.Delete(recipeId);
         await unitOfWork.Commit();

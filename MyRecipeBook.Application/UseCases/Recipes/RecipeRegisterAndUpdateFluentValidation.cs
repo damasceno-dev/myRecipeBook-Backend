@@ -3,12 +3,12 @@ using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;
 
-namespace MyRecipeBook.Application.UseCases.Recipes.Register;
+namespace MyRecipeBook.Application.UseCases.Recipes;
 
-public class RecipeRegisterFluentValidation : AbstractValidator<RequestRecipeJson>
+public class RecipeRegisterAndUpdateFluentValidation : AbstractValidator<RequestRecipeJson>
 {
     private const int MaximumInstructionTextLength = SharedValidators.MaximumRecipeInstructionTextLength;
-    public RecipeRegisterFluentValidation()
+    public RecipeRegisterAndUpdateFluentValidation()
     {
         RuleFor(recipe => recipe.Title).NotEmpty().WithMessage(ResourceErrorMessages.RECIPE_TITLE_EMPTY);
         RuleFor(recipe => recipe.Difficulty).IsInEnum().WithMessage(ResourceErrorMessages.RECIPE_DIFFICULTY_NOT_IN_ENUM);

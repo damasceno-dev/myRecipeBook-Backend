@@ -13,7 +13,6 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddApi();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 

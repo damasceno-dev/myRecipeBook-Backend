@@ -19,7 +19,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async Task Success()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         var useCase = CreateRecipeRegisterUseCase();
         var response =  await useCase.Execute(request);
 
@@ -31,7 +31,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeTitleEmpty()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Title = string.Empty;
         
         var useCase = CreateRecipeRegisterUseCase();
@@ -47,7 +47,7 @@ public class RecipeRegisterUseCaseTest
         var outOfRangeDishType = (DishType)EnumTestHelper.OutOfRangeEnum<DishType>();
         var outOfRangeDifficulty = (Difficulty)EnumTestHelper.OutOfRangeEnum<Difficulty>();
         var outOfRangeCookingTime = (CookingTime)EnumTestHelper.OutOfRangeEnum<CookingTime>();
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.DishTypes.Add(outOfRangeDishType);
         request.Difficulty = outOfRangeDifficulty;
         request.CookingTime = outOfRangeCookingTime;
@@ -69,7 +69,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeIngredientListEmpty()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Ingredients = [];
         
         var useCase = CreateRecipeRegisterUseCase();
@@ -82,7 +82,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeIngredientItemEmpty()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Ingredients = ["    "];
         var useCase = CreateRecipeRegisterUseCase();
         var act = async () => await useCase.Execute(request);
@@ -94,7 +94,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionStepGreaterThanZero()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 0, Text = "Chop onions" }
@@ -111,7 +111,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionTextNotEmpty()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = string.Empty }
@@ -128,7 +128,7 @@ public class RecipeRegisterUseCaseTest
     public async void RecipeInstructionTextLessThan2000Characters()
     {
         var overLimitText = new string('a', SharedValidators.MaximumRecipeInstructionTextLength + 1);
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = overLimitText }
@@ -144,7 +144,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionStepMustBeUnique()
     {
-        var request = RequestRecipeRegisterJsonBuilder.Build();
+        var request = RequestRecipeJsonBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = "Step 1" },

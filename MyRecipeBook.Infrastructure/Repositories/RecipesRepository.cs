@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using MyRecipeBook.Domain.Dtos;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
@@ -52,20 +53,37 @@ public class RecipesRepository(MyRecipeBookDbContext dbContext): IRecipesReposit
         return recipes;
     }
     
+    public async Task<Recipe?> GetByIdAsNoTracking(User user,Guid id)
+    {
+        return await GetRecipeByIdLogic()
+            .AsNoTracking()
+            .Where(recipe => recipe.Id == id && recipe.UserId == user.Id)
+            .FirstOrDefaultAsync(recipe => recipe.Id == id);
+    }    
+    
     public async Task<Recipe?> GetById(User user,Guid id)
     {
-        var recipes = dbContext.Recipes
-            .AsNoTracking()
-            .Include(r => r.Ingredients)
-            .Include(r => r.Instructions)
-            .Include(r => r.DishTypes)
-            .Where(recipe => recipe.Id == id && recipe.UserId == user.Id);
-        return await recipes.FirstOrDefaultAsync(recipe => recipe.Id == id);
+        return await GetRecipeByIdLogic()
+            .Where(recipe => recipe.Id == id && recipe.UserId == user.Id)
+            .FirstOrDefaultAsync(recipe => recipe.Id == id);
     }
 
     public async Task Delete(Guid id)
     {
         var recipe = await dbContext.Recipes.FirstAsync(r => r.Id == id);
         dbContext.Recipes.Remove(recipe);
+    }
+
+    public void Update(Recipe recipe)
+    {
+        dbContext.Recipes.Update(recipe);
+    }
+
+    private IIncludableQueryable<Recipe, IList<DishType>> GetRecipeByIdLogic()
+    {
+        return dbContext.Recipes
+            .Include(r => r.Ingredients)
+            .Include(r => r.Instructions)
+            .Include(r => r.DishTypes);
     }
 }

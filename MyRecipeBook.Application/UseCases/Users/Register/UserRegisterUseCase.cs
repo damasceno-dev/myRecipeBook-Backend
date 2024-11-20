@@ -10,34 +10,20 @@ using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.Register;
 
-public class UserRegisterUseCase
+public class UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper, ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
 {
-    private readonly IUsersRepository _repository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly PasswordEncryption _passwordEncryption;
-    private readonly ITokenRepository _tokenRepository;
-
-    public UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper,ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
-    {
-        _repository = repository;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-        _tokenRepository = tokenRepository;
-        _passwordEncryption = passwordEncryption;
-    }
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
         Validate(request);
         await VerifyIfActiveUserEmailAlreadyExists(request.Email);
         
-        var newUser = _mapper.Map<User>(request);
+        var newUser = mapper.Map<User>(request);
         newUser.Id = Guid.NewGuid();
-        newUser.Password = _passwordEncryption.HashPassword(request.Password);
-        var userToken = _tokenRepository.Generate(newUser.Id);
+        newUser.Password = passwordEncryption.HashPassword(request.Password);
+        var userToken = tokenRepository.Generate(newUser.Id);
         
-        await _repository.Register(newUser);
-        await _unitOfWork.Commit();
+        await repository.Register(newUser);
+        await unitOfWork.Commit();
 
         return new ResponseUserRegisterJson
         {
@@ -49,7 +35,7 @@ public class UserRegisterUseCase
 
     private async Task VerifyIfActiveUserEmailAlreadyExists(string newUserEmail)
     {
-        var userAlreadyExists = await _repository.ExistsActiveUserWithEmail(newUserEmail);
+        var userAlreadyExists = await repository.ExistsActiveUserWithEmail(newUserEmail);
         if (userAlreadyExists)
         {
             throw new ConflictException($"{newUserEmail} - {ResourceErrorMessages.EMAIL_ALREADY_EXISTS}");
