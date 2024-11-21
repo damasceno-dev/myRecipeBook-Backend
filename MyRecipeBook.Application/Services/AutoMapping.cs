@@ -56,12 +56,12 @@ public class AutoMapping : Profile
     /// <param name="request">New recipe to register or update</param>
     /// <param name="existingRecipe">If there is an existing recipe, it updates it.
     /// Otherwise, it creates a new one.</param>
-    /// <returns></returns>
+    /// <returns>Recipe object</returns>
     private static Recipe MapRequestToRecipe(RequestRecipeJson request, Recipe? existingRecipe = null)
     {
         var recipe = existingRecipe ?? new Recipe
         {
-            Id = existingRecipe?.Id ?? Guid.NewGuid()
+            Id = Guid.NewGuid()
         };
 
         // Map primitive properties

@@ -38,3 +38,16 @@ public class TestPasswordLengthsAndCultures : IEnumerable<object[]>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
+public class TestEnvironments : IEnumerable<object[]>
+{
+    private static readonly string[] Environments = ["Development", "Production"];
+    public IEnumerator<object[]> GetEnumerator()
+    {
+            foreach (var environment in Environments)
+            {
+                yield return new object[] { environment };
+            }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}

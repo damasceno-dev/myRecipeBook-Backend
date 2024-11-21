@@ -16,12 +16,20 @@ namespace WebApi.Test;
 public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly HttpClient _httpClient;
-    private MyRecipeBookDbContext _dbContext;
     private User _user;
     private List<Recipe> _recipes;
     private string _password;
     
-    public MyRecipeBookDbContext GetDbContext() => _dbContext;
+    private MyRecipeBookDbContext? _dbContext;
+    public MyRecipeBookDbContext GetDbContext()
+    {
+        if (_dbContext == null)
+        {
+            throw new InvalidOperationException("DbContext has not been initialized.");
+        }
+
+        return _dbContext;
+    }
     public User GetUser() => _user;
     public List<Recipe> GetRecipes() => _recipes;
     public string GetPassword() => _password;

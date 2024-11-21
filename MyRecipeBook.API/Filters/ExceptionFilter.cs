@@ -20,7 +20,7 @@ public class ExceptionFilter : IExceptionFilter
             });
         }
         else
-        {;
+        {
             var errorMessage = environment?.EnvironmentName == "Development" ? context.Exception.Message : ResourceErrorMessages.UNKOWN_ERROR;
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Result = new ObjectResult(new ResponseErrorJson(errorMessage)
