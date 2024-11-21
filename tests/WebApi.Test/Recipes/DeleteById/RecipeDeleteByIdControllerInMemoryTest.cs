@@ -21,7 +21,7 @@ public class RecipeDeleteByIdControllerInMemoryTest(MyInMemoryFactory factory) :
         
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         
-        factory.GetRecipes().FirstOrDefault(r => r.Id == recipeId).Should();
+        factory.GetDbContext().Recipes.FirstOrDefault(r => r.Id == recipeId).Should().BeNull();
     }
     
     [Theory]

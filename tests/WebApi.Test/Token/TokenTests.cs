@@ -11,8 +11,7 @@ using Xunit.Abstractions;
 
 namespace WebApi.Test.Token;
 
-public class TokenTests(MyInMemoryFactory inMemoryFactory, ITestOutputHelper output)
-    : IClassFixture<MyInMemoryFactory>
+public class TokenTests(MyInMemoryFactory inMemoryFactory, ITestOutputHelper output) : IClassFixture<MyInMemoryFactory>
 {
     private readonly TokenTestHelper _helper = new(output);
 

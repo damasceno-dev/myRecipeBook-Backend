@@ -1,3 +1,4 @@
+=> Can be used in the application project, to test the running api
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Enums;
 

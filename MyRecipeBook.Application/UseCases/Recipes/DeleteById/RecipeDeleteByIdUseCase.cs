@@ -16,7 +16,7 @@ public class RecipeDeleteByIdUseCase(IUsersRepository usersRepository, IRecipesR
         await unitOfWork.Commit();
     }
 
-    private void Validate(Recipe? recipe)
+    private static void Validate(Recipe? recipe)
     {
         if (recipe is null)
         {

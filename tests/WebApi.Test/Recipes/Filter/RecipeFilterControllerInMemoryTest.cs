@@ -49,7 +49,7 @@ public class RecipeFilterControllerInMemoryTest(MyInMemoryFactory factory) : ICl
         recipeInDb.Should().NotBeNull();
         recipeInDb!.Title.Should().Be(request.TitleIngredient);
         recipeInDb!.Id.Should().NotBeEmpty();
-        recipeInDb!.Ingredients.Count().Should().Be(expectedRecipe.Ingredients.Count);
+        recipeInDb!.Ingredients.Count.Should().Be(expectedRecipe.Ingredients.Count);
     }
     
     [Fact]

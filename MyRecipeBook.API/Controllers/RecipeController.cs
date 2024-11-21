@@ -86,8 +86,6 @@ namespace MyRecipeBook.Controllers
             var response = await recipeUpdateUseCase.Execute(recipeId, newRecipe);
             return Ok(response);
         }
-        //todo: watch videos again
-        //todo: push and view sonar cloud metrics
     }
 }
 
