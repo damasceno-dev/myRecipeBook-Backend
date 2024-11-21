@@ -14,7 +14,7 @@ using Xunit;
 
 namespace WebApi.Test.Filters;
 
-public class UnknownException
+public class UnknownExceptionTests
 {
     [Theory]
     [ClassData(typeof(TestEnvironments))]

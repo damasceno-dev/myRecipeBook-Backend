@@ -7,27 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\MyRecipeBook.Application\MyRecipeBook.Application.csproj" />
-      <ProjectReference Include="..\..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
-      <ProjectReference Include="..\..\MyRecipeBook.Infrastructure\MyRecipeBook.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\MyRecipeBook.Application\MyRecipeBook.Application.csproj" />
+        <ProjectReference Include="..\..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
+        <ProjectReference Include="..\..\MyRecipeBook.Infrastructure\MyRecipeBook.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="13.0.1" />
-      <PackageReference Include="Bogus" Version="35.6.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-      <PackageReference Include="Moq" Version="4.20.72" />
-
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Bogus" Version="35.6.1" />
+        <PackageReference Include="Moq" Version="4.20.72" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>
-
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\8.0.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
 </Project>
+

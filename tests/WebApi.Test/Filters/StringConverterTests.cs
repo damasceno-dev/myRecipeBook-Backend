@@ -12,9 +12,11 @@ public class StringConverterTests
     [Fact]
     public void Read_ShouldReturnNull_WhenJsonValueIsNull()
     {
-        var json = "null"; 
+        var json = "null"; // Simulate a null JSON value
         var utf8Bytes = System.Text.Encoding.UTF8.GetBytes(json);
         var reader = new Utf8JsonReader(utf8Bytes);
+
+        reader.Read(); // Move to the 'Null' token
 
         var result = _converter.Read(ref reader, typeof(string), new JsonSerializerOptions());
 
@@ -28,6 +30,8 @@ public class StringConverterTests
         var utf8Bytes = System.Text.Encoding.UTF8.GetBytes(json);
         var reader = new Utf8JsonReader(utf8Bytes);
 
+        reader.Read(); // Move to the 'String' token
+
         var result = _converter.Read(ref reader, typeof(string), new JsonSerializerOptions());
 
         result.Should().Be("This is a test", "The converter should trim and replace extra white spaces");
@@ -39,8 +43,9 @@ public class StringConverterTests
         var json = "\"\""; // JSON empty string
         var utf8Bytes = System.Text.Encoding.UTF8.GetBytes(json);
         var reader = new Utf8JsonReader(utf8Bytes);
-        reader.Read(); // Move to the first token
-        
+
+        reader.Read(); // Move to the 'String' token
+
         var result = _converter.Read(ref reader, typeof(string), new JsonSerializerOptions());
 
         result.Should().Be("", "The converter should return an empty string when the JSON value is an empty string");
