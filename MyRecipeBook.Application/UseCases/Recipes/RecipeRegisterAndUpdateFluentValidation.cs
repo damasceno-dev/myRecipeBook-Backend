@@ -14,7 +14,7 @@ public class RecipeRegisterAndUpdateFluentValidation : AbstractValidator<Request
         RuleFor(recipe => recipe.Difficulty).IsInEnum().WithMessage(ResourceErrorMessages.RECIPE_DIFFICULTY_NOT_IN_ENUM);
         RuleFor(recipe => recipe.CookingTime).IsInEnum().WithMessage(ResourceErrorMessages.RECIPE_COOKING_TIME_NOT_IN_ENUM);
         RuleFor(recipe => recipe.Ingredients.Count).GreaterThan(0).WithMessage(ResourceErrorMessages.RECIPE_AT_LEAST_ONE_INGREDIENT);
-        RuleForEach(recipe => recipe.Ingredients).NotEmpty().WithMessage(ResourceErrorMessages.RECIPE_INGREDIENT_NOT_EMPTY);
+        RuleForEach(recipe => recipe.Ingredients).ValidateIngredient();
         RuleForEach(recipe => recipe.Instructions).ChildRules(instructionRule =>
         {
             instructionRule.RuleFor(instruction => instruction.Step).GreaterThan(0).WithMessage(ResourceErrorMessages.RECIPE_INSTRUCTION_STEP_GREATER_THAN_0);

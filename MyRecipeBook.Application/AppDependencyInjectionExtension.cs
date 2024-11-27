@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
+using MyRecipeBook.Application.UseCases.Recipes.GenerateWithAI;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
@@ -47,5 +48,6 @@ public static class AppDependencyInjectionExtension
         services.AddScoped<RecipeDeleteByIdUseCase>();
         services.AddScoped<RecipeUpdateUseCase>();
         services.AddScoped<RecipeGetByUserUseCase>();
+        services.AddScoped<RecipeGenerateWithAIUseCase>();
     }
 }

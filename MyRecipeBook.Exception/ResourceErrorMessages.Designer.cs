@@ -175,5 +175,35 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("RECIPE_NUMBER_GREATER_THAN_0", resourceCulture);
             }
         }
+        public static string RECIPE_INGREDIENT_INVALID_START_CHARACTER
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_INVALID_START_CHARACTER", resourceCulture);
+            }
+        }
+        public static string RECIPE_INGREDIENT_MAXIMUM_WORD_COUNT
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_MAXIMUM_WORD_COUNT", resourceCulture);
+            }
+        }
+        public static string RECIPE_INGREDIENT_INVALID_CHARACTER
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_INVALID_CHARACTER", resourceCulture);
+            }
+        }
+        public static string RECIPE_INGREDIENT_INVALID_SEPARATORS
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_INVALID_SEPARATORS", resourceCulture);
+            }
+        }
+        public static string RECIPE_INGREDIENT_UNEXPECTED_ERROR
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_UNEXPECTED_ERROR", resourceCulture);
+            }
+        }
     }
 }

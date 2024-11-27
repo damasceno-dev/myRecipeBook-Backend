@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="RECIPE_GENERATOR_STARTING_MESSAGE" xml:space="preserve">
+        <value>Você é um gerador de receitas. Baseado na seguinte lista de ingredientes: {ingredientsList}, crie uma receita.
+            Inclua:
+                - Um título.
+                - Um tempo de preparo, escolhendo um dos seguintes valores numéricos: 
+                    0 = LessThan10Minutes, 
+                    1 = Between10And30Minutes, 
+                    2 = Between30And60Minutes, 
+                    3 = GreaterThan60Minutes.
+                - Uma dificuldade, escolhendo um dos seguintes valores numéricos: 
+                    0 = Low, 
+                    1 = Medium, 
+                    2 = High.
+                - A lista de ingredientes com o nome dos itens.
+                - Instruções passo a passo.
+                - Tipo de prato, escolhidos dos valores numéricos (pode escolher mais de um):
+                    0 = Appetizers, 
+                    1 = Breakfast, 
+                    2 = Dessert, 
+                    3 = Dinner, 
+                    4 = Drinks, 
+                    5 = Lunch, 
+                    6 = Snacks.
+            Uma lista de objetos Dish Type. Cada objeto deve incluir:
+            {{
+            ""Type"": (valor numérico representando o Dish Type)
+            }}:
+                    0 = Appetizers, 
+                    1 = Breakfast, 
+                    2 = Dessert, 
+                    3 = Dinner, 
+                    4 = Drinks, 
+                    5 = Lunch, 
+                    6 = Snacks.
+        Responda estritamente no formato JSON, seguindo estritamente o seguinte esquema:
+        {{
+            ""Title"": ""string"",
+            ""CookingTime"": ""int"", // Valor numérico representando o enum
+            ""Difficulty"": ""int"", // Valor numérico representando o enum
+            ""Ingredients"": [{{ ""Item"": ""string"" }}],
+            ""Instructions"": [{{ ""Step"": ""int"", ""Text"": ""string"" }}],
+            ""DishTypes"": [{{ ""Type"": ""int"" }}] // Lista de objetos dishType
+        }}</value>
+    </data>
+</root>

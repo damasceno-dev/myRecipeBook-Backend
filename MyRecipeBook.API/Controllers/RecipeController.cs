@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
+using MyRecipeBook.Application.UseCases.Recipes.GenerateWithAI;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
@@ -84,6 +85,17 @@ namespace MyRecipeBook.Controllers
         public async Task<IActionResult> Update([FromBody] RequestRecipeJson newRecipe, [FromRoute] Guid recipeId, [FromServices]RecipeUpdateUseCase recipeUpdateUseCase)
         {
             var response = await recipeUpdateUseCase.Execute(recipeId, newRecipe);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("generateWithAI")]
+        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GenerateWithAI([FromBody]RequestRecipeIngredientsForAIJson ingredients, [FromServices]RecipeGenerateWithAIUseCase recipeGenerateWithAIUseCase)
+        {
+            var response = await recipeGenerateWithAIUseCase.Execute(ingredients);
             return Ok(response);
         }
     }

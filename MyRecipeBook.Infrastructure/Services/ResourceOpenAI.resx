@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="RECIPE_GENERATOR_STARTING_MESSAGE" xml:space="preserve">
+        <value>You are a recipe generator. Based on the following ingredients: {ingredientsList}, create a recipe.
+                - A title.
+                - A cooking time, chosen from the following numeric values: 
+                    0 = LessThan10Minutes, 
+                    1 = Between10And30Minutes, 
+                    2 = Between30And60Minutes, 
+                    3 = GreaterThan60Minutes.
+                - A difficulty level, chosen from the following numeric values: 
+                    0 = Low, 
+                    1 = Medium, 
+                    2 = High.
+                - A list of ingredients with item names.
+                - Step-by-step instructions with a maximum of 2000 characters each.
+                - A list of valid dish type objects. Each dish type object must include:
+            {{
+            ""Type"": (numeric value representing the dish type enum)
+            }}:
+                    0 = Appetizers, 
+                    1 = Breakfast, 
+                    2 = Dessert, 
+                    3 = Dinner, 
+                    4 = Drinks, 
+                    5 = Lunch, 
+                    6 = Snacks.
+        Respond strictly in JSON format matching this schema:
+        {{
+            ""Title"": ""string"",
+            ""CookingTime"": ""int"", // Numeric value representing the enum
+            ""Difficulty"": ""int"", // Numeric value representing the enum
+            ""Ingredients"": [{{ ""Item"": ""string"" }}],
+            ""Instructions"": [{{ ""Step"": ""int"", ""Text"": ""string"" }}],
+            ""DishTypes"": [{{ ""Type"": ""int"" }}] // List of valid dish type objects
+        }}</value>
+    </data>
+</root>

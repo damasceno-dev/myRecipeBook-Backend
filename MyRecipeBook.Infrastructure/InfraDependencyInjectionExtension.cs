@@ -2,9 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Domain.Interfaces.OpenAI;
 using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Infrastructure.Repositories;
+using MyRecipeBook.Infrastructure.Services;
 using MyRecipeBook.Infrastructure.Tokens;
+using OpenAI.Chat;
 
 namespace MyRecipeBook.Infrastructure;
 
@@ -19,6 +22,8 @@ public static class InfraDependencyInjectionExtension
         {
             AddDbContext(services, configuration);
         }
+
+        AddOpenAI(services);
     }
 
     private static void AddToken(IServiceCollection services, IConfiguration configuration)
@@ -53,5 +58,14 @@ public static class InfraDependencyInjectionExtension
         connectionString = connectionString.Replace("$$password$$", envPassword);
 
         services.AddDbContext<MyRecipeBookDbContext>(options =>{options.UseNpgsql(connectionString);});
+    }
+    
+    private static void AddOpenAI(IServiceCollection services)
+    {
+        services.AddScoped<IRecipeAIGenerator, ChatGptService>();
+        
+        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
+        var openAIKey = Environment.GetEnvironmentVariable("OPEN_API_KEY");
+        services.AddScoped(option => new ChatClient(ChatGptService.ChatModel, openAIKey));
     }
 }

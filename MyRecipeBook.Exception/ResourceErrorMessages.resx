@@ -93,4 +93,19 @@
     <data name="RECIPE_NUMBER_GREATER_THAN_0" xml:space="preserve">
         <value>Number of recipes must be greater than zero</value>
     </data>
+    <data name="RECIPE_INGREDIENT_INVALID_SEPARATORS" xml:space="preserve">
+        <value>Ingredients must only contain words separated by spaces. Invalid separators like `-`, `/`, or `_` are not allowed</value>
+    </data>
+    <data name="RECIPE_INGREDIENT_INVALID_START_CHARACTER" xml:space="preserve">
+        <value>Ingredients must start with a valid number, fraction, or word</value>
+    </data>
+    <data name="RECIPE_INGREDIENT_MAXIMUM_WORD_COUNT" xml:space="preserve">
+        <value>Maximum word count exceeded</value>
+    </data>
+    <data name="RECIPE_INGREDIENT_INVALID_CHARACTER" xml:space="preserve">
+        <value>Ingredients must only contain letters, numbers, and spaces. Special characters are not allowed, except in fractions like `3/4`</value>
+    </data>
+    <data name="RECIPE_INGREDIENT_UNEXPECTED_ERROR" xml:space="preserve">
+        <value>Unexpected error during ingredient validation</value>
+    </data>
 </root>

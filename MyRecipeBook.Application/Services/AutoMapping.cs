@@ -30,7 +30,13 @@ public class AutoMapping : Profile
                 config => config.MapFrom(source => source.Ingredients.Select(i => i.Item).ToList()))
             .ForMember(dest => dest.Instructions,
                 config => config.MapFrom(source => source.Instructions.Select(i => new ResponseInstructionJson {Step = i.Step, Text = i.Text}).ToList()));
-            
+        CreateMap<RecipeDto, ResponseRecipeGeneratedJson>()
+            .ForMember(dest => dest.DishTypes,
+                config => config.MapFrom(source => source.DishTypes.Select(d => d.Type).ToList()))
+            .ForMember(dest => dest.Ingredients,
+                config => config.MapFrom(source => source.Ingredients.Select(i => i.Item).ToList()))
+            .ForMember(dest => dest.Instructions,
+                config => config.MapFrom(source => source.Instructions.Select(i => new ResponseInstructionJson {Step = i.Step, Text = i.Text}).ToList()));
     }
 
     private void RequestToDomain()
