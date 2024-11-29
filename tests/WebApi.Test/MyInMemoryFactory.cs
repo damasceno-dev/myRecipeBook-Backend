@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CommonTestUtilities.Entities;
+using CommonTestUtilities.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -38,17 +39,30 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     {
         _httpClient = CreateClient();
     }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Test").ConfigureTestServices(s =>
             { 
                 var currentDbContext = s.SingleOrDefault(sd => sd.ServiceType == typeof(DbContextOptions<MyRecipeBookDbContext>));
                 if (currentDbContext is not null) s.Remove(currentDbContext);
-                s.AddDbContext<MyRecipeBookDbContext>(d => d.UseInMemoryDatabase("TestDatabase"));
-                _dbContext = s.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
+                AddDatabase(s);
+                AddOpenAIMock(s);
             });
     }
-    
+
+    private static void AddOpenAIMock(IServiceCollection service)
+    {
+        var chatGptMockRecipeGenerator = new ChatGptServiceBuilder().GenerateAIRecipe(RecipeDtoBuilder.Build()).Build();
+        service.AddScoped(_ => chatGptMockRecipeGenerator);
+    }
+
+    private void AddDatabase(IServiceCollection service)
+    {
+        service.AddDbContext<MyRecipeBookDbContext>(d => d.UseInMemoryDatabase("TestDatabase"));
+        _dbContext = service.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<MyRecipeBookDbContext>();
+    }
+
     public async Task InitializeAsync()
     {
         if (_dbContext == null)

@@ -205,5 +205,11 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("RECIPE_INGREDIENT_UNEXPECTED_ERROR", resourceCulture);
             }
         }
+        public static string RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT", resourceCulture);
+            }
+        }
     }
 }

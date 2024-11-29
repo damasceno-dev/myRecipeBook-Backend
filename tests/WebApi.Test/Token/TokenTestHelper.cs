@@ -14,6 +14,7 @@ public class TokenTestHelper(ITestOutputHelper output)
             { "user/getProfileWithToken", ("GET", () => default!) },
             { "recipe/register", ("POST", RequestRecipeJsonBuilder.Build) },
             { "recipe/filter", ("POST", RequestRecipeFilterJsonBuilder.Build) },
+            { "recipe/generateWithAI", ("POST", () => RequestRecipeIngredientsForAIJsonBuilder.Build()) },
             { $"recipe/getById/{Guid.NewGuid}", ("GET", () => default!) },
             { $"recipe/deleteById/{Guid.NewGuid}", ("DELETE", () => default!) },
             { $"recipe/update/{Guid.NewGuid}", ("PUT", () => default!) },

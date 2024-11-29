@@ -144,5 +144,11 @@ namespace MyRecipeBook.Exception {
                 return ResourceManager.GetString("RECIPE_NOT_FOUND", resourceCulture);
             }
         }
+        public static string RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT
+        {
+            get {
+                return ResourceManager.GetString("RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT", resourceCulture);
+            }
+        }
     }
 }

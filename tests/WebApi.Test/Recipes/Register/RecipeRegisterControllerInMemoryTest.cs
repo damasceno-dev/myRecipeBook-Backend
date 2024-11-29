@@ -16,11 +16,11 @@ using Xunit;
 
 namespace WebApi.Test.Recipes.Register;
 
-public class RegisterRecipeControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
+public class RecipeRegisterControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 {
     private readonly MyInMemoryFactory _factory;
 
-    public RegisterRecipeControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
+    public RecipeRegisterControllerInMemoryTest(MyInMemoryFactory inMemoryFactory)
     {
         _factory = inMemoryFactory;
     }

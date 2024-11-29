@@ -21,9 +21,9 @@ public static class InfraDependencyInjectionExtension
         if (testEnv is false)
         {
             AddDbContext(services, configuration);
+            AddOpenAI(services);
         }
 
-        AddOpenAI(services);
     }
 
     private static void AddToken(IServiceCollection services, IConfiguration configuration)
@@ -66,6 +66,6 @@ public static class InfraDependencyInjectionExtension
         
         DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
         var openAIKey = Environment.GetEnvironmentVariable("OPEN_API_KEY");
-        services.AddScoped(option => new ChatClient(ChatGptService.ChatModel, openAIKey));
+        services.AddScoped(_ => new ChatClient(ChatGptService.ChatModel, openAIKey));
     }
 }

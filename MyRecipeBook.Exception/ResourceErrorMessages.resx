@@ -108,4 +108,7 @@
     <data name="RECIPE_INGREDIENT_UNEXPECTED_ERROR" xml:space="preserve">
         <value>Unexpected error during ingredient validation</value>
     </data>
+    <data name="RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT" xml:space="preserve">
+        <value>Maximum number of ingredients exceeded</value>
+    </data>
 </root>

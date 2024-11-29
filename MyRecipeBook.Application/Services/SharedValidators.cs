@@ -9,7 +9,7 @@ public static partial class SharedValidators
     public const int MinimumPasswordLength = 6;
     public const int MaximumRecipeInstructionTextLength = 2000;
     public const int MaximumRecipeIngredients = 10;
-    public const int MaximumRecipeIngredientWords = 5;
+    private const int MaximumRecipeIngredientWords = 5;
 
     private static string? LastValidationError { get; set; }
     public static IRuleBuilderOptions<T, string> ValidatePassword<T>(this IRuleBuilder<T, string> password)
@@ -46,15 +46,15 @@ public static partial class SharedValidators
             return false;
         }
         
-        if (ContainsInvalidSeparators(ingredient))
-        {
-            errorMessage = ResourceErrorMessages.RECIPE_INGREDIENT_INVALID_SEPARATORS;
-            return false;
-        }
-        
         if (!StartsWithValidCharacter(ingredient))
         {
             errorMessage = ResourceErrorMessages.RECIPE_INGREDIENT_INVALID_START_CHARACTER;
+            return false;
+        }
+        
+        if (ContainsInvalidSeparators(ingredient))
+        {
+            errorMessage = ResourceErrorMessages.RECIPE_INGREDIENT_INVALID_SEPARATORS;
             return false;
         }
         
