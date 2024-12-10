@@ -482,3 +482,17 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform provider-related files
+.terraform/
+
+# Ignore Terraform lock file
+.terraform.lock.hcl
+
+# Optional: Ignore any `.DS_Store` file created by macOS
+.DS_Store
+
