@@ -489,7 +489,7 @@ $RECYCLE.BIN/
 
 # Ignore Terraform provider-related files
 .terraform/
-
+**/.terraform/
 # Ignore Terraform lock file
 .terraform.lock.hcl
 
