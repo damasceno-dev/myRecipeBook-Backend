@@ -7,14 +7,23 @@ using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Recipes.GetById;
 
-public class RecipeGetByIdUseCase(IUsersRepository usersRepository, IRecipesRepository recipesRepository, IMapper mapper)
+public class RecipeGetByIdUseCase(IUsersRepository usersRepository, IRecipesRepository recipesRepository, IMapper mapper, IStorageService storageService)
 {
     public async Task<ResponseRecipeJson> Execute(Guid id)
     {
         var user = await usersRepository.GetLoggedUserWithToken();
         var recipe = await recipesRepository.GetByIdAsNoTracking(user, id);
         Validate(recipe);
-        return mapper.Map<ResponseRecipeJson>(recipe);
+        
+        var response = mapper.Map<ResponseRecipeJson>(recipe);
+        
+        if (string.IsNullOrWhiteSpace(recipe!.ImageIdentifier) is false)
+        {
+            var imageUrl = await storageService.GetFileUrl(user, recipe.ImageIdentifier);
+            response.ImageUrl = imageUrl;
+        }
+        
+        return response;
     }
 
     private static void Validate(Recipe? recipe)

@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class InfraDependencyInjectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
         var testEnv = configuration.GetValue<bool>("IsTestEnvironment");
         AddRepositories(services);
         AddToken(services, configuration);
@@ -22,6 +24,7 @@ public static class InfraDependencyInjectionExtension
         {
             AddDbContext(services, configuration);
             AddOpenAI(services);
+            AddAwsStorage(services);
         }
 
     }
@@ -44,7 +47,6 @@ public static class InfraDependencyInjectionExtension
 
     private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
     {
-        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
         var envPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
         
         if (envPassword is null)
@@ -57,15 +59,37 @@ public static class InfraDependencyInjectionExtension
         
         connectionString = connectionString.Replace("$$password$$", envPassword);
 
-        services.AddDbContext<MyRecipeBookDbContext>(options =>{options.UseNpgsql(connectionString);});
+        services.AddDbContext<MyRecipeBookDbContext>(options => options.UseNpgsql(connectionString));
     }
     
     private static void AddOpenAI(IServiceCollection services)
     {
         services.AddScoped<IRecipeAIGenerator, ChatGptService>();
         
-        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
         var openAIKey = Environment.GetEnvironmentVariable("OPEN_API_KEY");
         services.AddScoped(_ => new ChatClient(ChatGptService.ChatModel, openAIKey));
+    }
+    
+    private static void AddAwsStorage(IServiceCollection services)
+    {
+        var awsConfig = Environment.GetEnvironmentVariable("AWS_S3_CONFIG");
+
+        if (string.IsNullOrWhiteSpace(awsConfig))
+            throw new ArgumentException("Invalid AWS connection string");
+        
+        var configParts = awsConfig.Split(';')
+            .Select(part => part.Split('='))
+            .ToDictionary(kv => kv[0], kv => kv[1]);
+
+        var accessKey = configParts.GetValueOrDefault("AccessKey");
+        var secretKey = configParts.GetValueOrDefault("SecretKey");
+        var bucketName = configParts.GetValueOrDefault("BucketName");
+        var region = configParts.GetValueOrDefault("Region");
+
+        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey) ||string.IsNullOrWhiteSpace(bucketName))
+            throw new ArgumentException("Invalid AWS connection string values");
+        
+        var s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
+        services.AddScoped<IStorageService>(c => new AwsStorageService(s3Client, bucketName));
     }
 }

@@ -4,6 +4,7 @@ using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GenerateWithAI;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+using MyRecipeBook.Application.UseCases.Recipes.ImageUpdateCover;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Application.UseCases.Recipes.Update;
 using MyRecipeBook.Communication.Requests;
@@ -44,7 +45,7 @@ namespace MyRecipeBook.Controllers
         }
 
         [HttpGet]
-        [Route("getById/{recipeId}")]
+        [Route("getById/{recipeId:guid}")]
         [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
@@ -55,7 +56,7 @@ namespace MyRecipeBook.Controllers
         }
 
         [HttpGet]
-        [Route("getByUser/{numberOfRecipes}")]
+        [Route("getByUser/{numberOfRecipes:int}")]
         [ProducesResponseType(typeof(List<ResponseShortRecipeJson>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
@@ -67,8 +68,8 @@ namespace MyRecipeBook.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteById/{recipeId}")]
-        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status204NoContent)]
+        [Route("deleteById/{recipeId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteById([FromRoute] Guid recipeId, [FromServices] RecipeDeleteByIdUseCase deleteByIdUseCase)
@@ -78,7 +79,7 @@ namespace MyRecipeBook.Controllers
         }
 
         [HttpPut]
-        [Route("update/{recipeId}")]
+        [Route("update/{recipeId:guid}")]
         [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
@@ -97,6 +98,17 @@ namespace MyRecipeBook.Controllers
         {
             var response = await recipeGenerateWithAIUseCase.Execute(ingredients);
             return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("/update/image/{recipeId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateImage(IFormFile file, [FromRoute]Guid recipeId, [FromServices]RecipeUpdateImageUseCase recipeUpdateImageUseCase)
+        {
+            await recipeUpdateImageUseCase.Execute(file, recipeId);
+            return NoContent();
         }
     }
 }

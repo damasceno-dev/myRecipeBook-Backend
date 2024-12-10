@@ -211,5 +211,11 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT", resourceCulture);
             }
         }
+        public static string IMAGE_INVALID_TYPE
+        {
+            get {
+                return ResourceManager.GetString("IMAGE_INVALID_TYPE", resourceCulture);
+            }
+        }
     }
 }

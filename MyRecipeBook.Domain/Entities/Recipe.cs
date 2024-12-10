@@ -10,6 +10,7 @@ public class Recipe : EntityBase
     public IList<Ingredient> Ingredients { get; set; } = [];
     public IList<Instruction> Instructions { get; set; } = [];
     public IList<DishType> DishTypes { get; set; } = [];
+    public string? ImageIdentifier { get; set; }
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using FileTypeChecker.Extensions;
+using FileTypeChecker.Types;
 using FluentValidation;
 using MyRecipeBook.Communication;
 
@@ -10,7 +12,21 @@ public static partial class SharedValidators
     public const int MaximumRecipeInstructionTextLength = 2000;
     public const int MaximumRecipeIngredients = 10;
     private const int MaximumRecipeIngredientWords = 5;
+    
+    public static (bool isValidImage, string extension) ValidateImageAndGetExtension(this Stream file)
+    {
+        if (file.Is<JointPhotographicExpertsGroup>())
+        {
+            return (true, JointPhotographicExpertsGroup.TypeExtension);
+        }
 
+        if (file.Is<PortableNetworkGraphic>())
+        {
+            return (true, PortableNetworkGraphic.TypeExtension);
+        }
+
+        return (false, string.Empty);
+    }
     private static string? LastValidationError { get; set; }
     public static IRuleBuilderOptions<T, string> ValidatePassword<T>(this IRuleBuilder<T, string> password)
     {

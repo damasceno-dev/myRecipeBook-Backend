@@ -8,28 +8,30 @@ using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Recipes.Filter;
 
-public class RecipeFilterUseCase
+public class RecipeFilterUseCase(IUsersRepository usersRepository, IRecipesRepository recipesRepository, IMapper mapper, IStorageService storageService)
 {
-    private readonly IUsersRepository _usersRepository;
-    private readonly IRecipesRepository _recipesRepository;
-    private readonly IMapper _mapper;
-
-    public RecipeFilterUseCase(IUsersRepository usersRepository, IRecipesRepository recipesRepository, IMapper mapper)
-    {
-        _usersRepository = usersRepository;
-        _recipesRepository = recipesRepository;
-        _mapper = mapper;
-    }
-
     public async Task<List<ResponseShortRecipeJson>> Execute(RequestRecipeFilterJson requestRecipe)
     {
         Validate(requestRecipe);
 
-        var user = await _usersRepository.GetLoggedUserWithToken();
-        var filter = _mapper.Map<FilterRecipeDto>(requestRecipe);
-        var recipesFiltered = await _recipesRepository.FilterRecipe(user,filter);
+        var user = await usersRepository.GetLoggedUserWithToken();
+        var filter = mapper.Map<FilterRecipeDto>(requestRecipe);
+        var recipesFiltered = await recipesRepository.FilterRecipe(user,filter);
 
-        return recipesFiltered.Select(recipe => _mapper.Map<ResponseShortRecipeJson>(recipe)).ToList();
+        var response = new List<ResponseShortRecipeJson>(); 
+        
+        foreach (var recipe in recipesFiltered)
+        {
+            var shortRecipeJson = mapper.Map<ResponseShortRecipeJson>(recipe);
+            if (string.IsNullOrWhiteSpace(recipe.ImageIdentifier) is false)
+            {
+                var imageUrl = await storageService.GetFileUrl(user, recipe.ImageIdentifier);
+                shortRecipeJson.ImageUrl = imageUrl;
+            }
+            response.Add(shortRecipeJson);
+        }
+
+        return response;
     }
 
     private static void Validate(RequestRecipeFilterJson requestRecipe)

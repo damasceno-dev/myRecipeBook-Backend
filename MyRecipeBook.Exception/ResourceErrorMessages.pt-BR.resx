@@ -111,4 +111,7 @@
     <data name="RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT" xml:space="preserve">
         <value>Número máximo de ingredientes excedido</value>
     </data>
+    <data name="IMAGE_INVALID_TYPE" xml:space="preserve">
+        <value>Apenas os tipos .jpg e .png são aceitos como imagem</value>
+    </data>
 </root>

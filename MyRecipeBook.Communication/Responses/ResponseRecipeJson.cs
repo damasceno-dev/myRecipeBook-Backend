@@ -9,6 +9,7 @@ public class ResponseRecipeJson
     public string Title { get; set; } = string.Empty;
     public CookingTime? CookingTime { get; set; }
     public Difficulty? Difficulty { get; set; }
+    public string? ImageUrl { get; set; }
     public IList<string> Ingredients { get; set; } = [];
     public IList<ResponseInstructionJson> Instructions { get; set; } = [];
     public IList<DishType> DishTypes { get; set; } = [];
