@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using MyRecipeBook.Domain.Interfaces.Tokens;
+using MyRecipeBook.Filters;
 using MyRecipeBook.Tokens;
 
 namespace MyRecipeBook;
@@ -9,12 +10,12 @@ public static class ApiDependencyInjectionExtension
     private const string AuthenticationType = "Bearer";
     public static void AddApi(this IServiceCollection services)
     {
-        AddSwaggerWithTokenReader(services);
+        AddSwaggerWithTokenReaderAndOperationFilter(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
         services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
     }
 
-    private static void AddSwaggerWithTokenReader(IServiceCollection services)
+    private static void AddSwaggerWithTokenReaderAndOperationFilter(IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
@@ -46,6 +47,8 @@ public static class ApiDependencyInjectionExtension
                     new List<string>()
                 }
             });
+
+            options.OperationFilter<SwaggerRequestRecipeFormInstructionsFilter>();
         });
     }
 }

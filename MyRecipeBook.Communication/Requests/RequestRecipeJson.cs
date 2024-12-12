@@ -1,4 +1,5 @@
-using MyRecipeBook.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
 using MyRecipeBook.Domain.Enums;
 using DishType = MyRecipeBook.Domain.Enums.DishType;
 
@@ -10,6 +11,7 @@ public class RequestRecipeJson
     public CookingTime? CookingTime { get; set; }
     public Difficulty? Difficulty { get; set; }
     public IList<string> Ingredients { get; set; } = [];
+    [ModelBinder(typeof(JsonModelBinder))]
     public IList<RequestRecipeInstructionJson> Instructions { get; set; } = [];
     public IList<DishType> DishTypes { get; set; } = [];
 }
