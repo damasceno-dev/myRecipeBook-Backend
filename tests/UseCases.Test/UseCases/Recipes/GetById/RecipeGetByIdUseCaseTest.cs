@@ -1,6 +1,7 @@
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
+using CommonTestUtilities.Services;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Communication;
@@ -45,6 +46,7 @@ public class RecipeGetByIdUseCaseTest
         var mapper = MapperBuilder.Build();
         var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var recipeRepository = new RecipeRepositoryBuilder().GetByIdAsNoTracking(recipes,request).Build();
-        return new RecipeGetByIdUseCase(usersRepository, recipeRepository, mapper);
+        var storageService = new StorageServiceBuilder().GetFileUrl(recipes).Build();
+        return new RecipeGetByIdUseCase(usersRepository, recipeRepository, mapper, storageService);
     }
 }

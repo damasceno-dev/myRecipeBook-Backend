@@ -1,7 +1,9 @@
 using CommonTestUtilities.Entities;
+using CommonTestUtilities.FormFile;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
+using CommonTestUtilities.Services;
 using FluentAssertions;
 using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
@@ -19,7 +21,22 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async Task Success()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
+        var useCase = CreateRecipeRegisterUseCase();
+        var response =  await useCase.Execute(request);
+
+        response.Should().NotBeNull();
+        response.Id.Should().NotBeEmpty();
+        response.Title.Should().Be(request.Title);
+    }    
+    
+    [Theory]
+    [InlineData("jpgImage.jpg")]
+    [InlineData("pngImage.png")]
+    public async Task SuccessWithImage(string imageName)
+    {
+        var file = FormFileBuilder.Build(imageName);
+        var request = RequestRecipeFormBuilder.Build(file);
         var useCase = CreateRecipeRegisterUseCase();
         var response =  await useCase.Execute(request);
 
@@ -27,11 +44,24 @@ public class RecipeRegisterUseCaseTest
         response.Id.Should().NotBeEmpty();
         response.Title.Should().Be(request.Title);
     }
+    [Fact]
+    
+    public async Task ErrorInvalidFileType()
+    {
+        var useCase = CreateRecipeRegisterUseCase();
+        var file = FormFileBuilder.Build("textFile.txt");
+        var request = RequestRecipeFormBuilder.Build(file);
+        
+        var act = async () => await useCase.Execute(request);
+        
+        var exception = await act.Should().ThrowAsync<OnValidationException>();
+        exception.And.GetErrors.Should().ContainSingle(ResourceErrorMessages.IMAGE_INVALID_TYPE);
+    }
 
     [Fact]
     public async void RecipeTitleEmpty()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Title = string.Empty;
         
         var useCase = CreateRecipeRegisterUseCase();
@@ -47,7 +77,7 @@ public class RecipeRegisterUseCaseTest
         var outOfRangeDishType = (DishType)EnumTestHelper.OutOfRangeEnum<DishType>();
         var outOfRangeDifficulty = (Difficulty)EnumTestHelper.OutOfRangeEnum<Difficulty>();
         var outOfRangeCookingTime = (CookingTime)EnumTestHelper.OutOfRangeEnum<CookingTime>();
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.DishTypes.Add(outOfRangeDishType);
         request.Difficulty = outOfRangeDifficulty;
         request.CookingTime = outOfRangeCookingTime;
@@ -69,7 +99,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeIngredientListEmpty()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Ingredients = [];
         
         var useCase = CreateRecipeRegisterUseCase();
@@ -82,7 +112,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeIngredientItemEmpty()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Ingredients = ["    "];
         var useCase = CreateRecipeRegisterUseCase();
         var act = async () => await useCase.Execute(request);
@@ -94,7 +124,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionStepGreaterThanZero()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 0, Text = "Chop onions" }
@@ -111,7 +141,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionTextNotEmpty()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = string.Empty }
@@ -128,7 +158,7 @@ public class RecipeRegisterUseCaseTest
     public async void RecipeInstructionTextLessThan2000Characters()
     {
         var overLimitText = new string('a', SharedValidators.MaximumRecipeInstructionTextLength + 1);
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = overLimitText }
@@ -144,7 +174,7 @@ public class RecipeRegisterUseCaseTest
     [Fact]
     public async void RecipeInstructionStepMustBeUnique()
     {
-        var request = RequestRecipeJsonBuilder.Build();
+        var request = RequestRecipeFormBuilder.Build();
         request.Instructions = new List<RequestRecipeInstructionJson>
         {
             new() { Step = 1, Text = "Step 1" },
@@ -166,6 +196,7 @@ public class RecipeRegisterUseCaseTest
         var unitOfWork = UnitOfWorkBuilder.Build();
         var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var recipeRepository = new RecipeRepositoryBuilder().Build();
-        return new RecipeRegisterUseCase(mapper, unitOfWork, usersRepository, recipeRepository);
+        var storageService = new StorageServiceBuilder().Upload().Build();
+        return new RecipeRegisterUseCase(mapper, unitOfWork, usersRepository, recipeRepository, storageService);
     }
 }

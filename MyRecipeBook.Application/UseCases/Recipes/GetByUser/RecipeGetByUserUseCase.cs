@@ -3,7 +3,7 @@ using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Exception;
 
-namespace MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+namespace MyRecipeBook.Application.UseCases.Recipes.GetByUser;
 
 public class RecipeGetByUserUseCase(IRecipesRepository recipesRepository, IUsersRepository usersRepository, IMapper mapper, IStorageService storageService)
 { 

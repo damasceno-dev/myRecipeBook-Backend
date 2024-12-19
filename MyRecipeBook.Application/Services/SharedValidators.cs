@@ -54,13 +54,14 @@ public static partial class SharedValidators
 
     private static bool IsValidIngredient(string ingredient, out string? errorMessage)
     {
-        ingredient = NormalizeSpaces(ingredient);
-        
         if (string.IsNullOrWhiteSpace(ingredient))
         {
             errorMessage = ResourceErrorMessages.RECIPE_INGREDIENT_NOT_EMPTY;
             return false;
         }
+        
+        ingredient = NormalizeSpaces(ingredient);
+        
         
         if (!StartsWithValidCharacter(ingredient))
         {

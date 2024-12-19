@@ -5,7 +5,7 @@ using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GenerateWithAI;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
-using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+using MyRecipeBook.Application.UseCases.Recipes.GetByUser;
 using MyRecipeBook.Application.UseCases.Recipes.ImageUpdateCover;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Application.UseCases.Recipes.Update;

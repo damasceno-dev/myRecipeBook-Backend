@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
 using CommonTestUtilities.InLineData;
 using CommonTestUtilities.Requests;
@@ -8,7 +7,6 @@ using CommonTestUtilities.Token;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MyRecipeBook.Communication;
-using MyRecipeBook.Domain.Entities;
 using Xunit;
 
 namespace WebApi.Test.Recipes.Update;
@@ -40,7 +38,6 @@ public class RecipeUpdateControllerInMemoryTest(MyInMemoryFactory factory): ICla
             .Select(e => e.GetInt32())
             .Should().BeEquivalentTo(request.DishTypes.Cast<int>());
     }
-
         
     [Fact]
     public async Task SuccessFromJsonSerializeInMemory()

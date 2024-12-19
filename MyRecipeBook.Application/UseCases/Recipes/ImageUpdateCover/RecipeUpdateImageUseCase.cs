@@ -18,13 +18,10 @@ public class RecipeUpdateImageUseCase(IStorageService storageService, IRecipesRe
         ValidateRecipe(recipe);
         var fileExtension = ValidateFileAndGetExtension(fileStream);
 
-        if (string.IsNullOrWhiteSpace(recipe!.ImageIdentifier))
-        {
-            recipe.ImageIdentifier = $"{Guid.NewGuid()}.{fileExtension}";
-            recipesRepository.Update(recipe);
-            await unitOfWork.Commit();
-        }
+        recipe!.ImageIdentifier = $"{Guid.NewGuid()}.{fileExtension}";
+        recipesRepository.Update(recipe);
         
+        await unitOfWork.Commit();
         await storageService.Upload(user, fileStream, recipe.ImageIdentifier);
     }
 

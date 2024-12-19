@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
 using Xunit;
@@ -48,7 +51,14 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
                 if (currentDbContext is not null) s.Remove(currentDbContext);
                 AddDatabase(s);
                 AddOpenAIMock(s);
+                AddAwsStorageMock(s);
             });
+    }
+
+    private static void AddAwsStorageMock(IServiceCollection service)
+    {
+        var awsStorageMock = new StorageServiceBuilder().Upload().Delete().GetFileUrl().Build();
+        service.AddScoped(_ => awsStorageMock);
     }
 
     private static void AddOpenAIMock(IServiceCollection service)
@@ -84,6 +94,58 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         AddToken(token);
         return await _httpClient.PostAsJsonAsync(route, request);
     }
+    
+    public async Task<HttpResponseMessage> DoPostRecipeForm(string route, RequestRecipeForm request, string? culture = null, string? token = null)
+    {
+        AddCulture(culture);
+        AddToken(token);
+    
+        using var content = new MultipartFormDataContent();
+        
+        if (request.ImageFile != null)
+        {
+            var streamContent = new StreamContent(request.ImageFile.OpenReadStream());
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(request.ImageFile.ContentType);
+            content.Add(streamContent, nameof(request.ImageFile), request.ImageFile.FileName);
+        }
+    
+        if (!string.IsNullOrWhiteSpace(request.Title))
+        {
+            content.Add(new StringContent(request.Title), nameof(request.Title));
+        }
+    
+        if (request.CookingTime != null)
+        {
+            var cookingTimeValue = Convert.ToInt32(request.CookingTime);
+            content.Add(new StringContent(cookingTimeValue.ToString()), nameof(request.CookingTime));
+        }
+    
+        if (request.Difficulty != null)
+        {
+            var difficultyValue = Convert.ToInt32(request.Difficulty);
+            content.Add(new StringContent(difficultyValue.ToString()), nameof(request.Difficulty));
+        }
+    
+        foreach (var dishType in request.DishTypes)
+        {
+            var dishTypeValue = Convert.ToInt32(dishType); // Keeps it simple for invalid enums
+            content.Add(new StringContent(dishTypeValue.ToString()), $"{nameof(request.DishTypes)}[]");
+        }
+    
+        foreach (var ingredient in request.Ingredients)
+        {
+            content.Add(new StringContent(ingredient), $"{nameof(request.Ingredients)}[]");
+        }
+    
+        if (request.Instructions.Any())
+        {
+            var instructionsJson = JsonSerializer.Serialize(request.Instructions);
+            content.Add(new StringContent(instructionsJson, Encoding.UTF8, "application/json"), nameof(request.Instructions));
+        }
+        
+        return await _httpClient.PostAsync(route, content);
+    }
+
 
     public async Task<HttpResponseMessage> DoGet(string route, string? culture = null, string? token = null)
     {
@@ -103,7 +165,17 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     {
         AddCulture(culture);
         AddToken(token);
-        return await _httpClient.PutAsJsonAsync(route, request);
+        var response = await _httpClient.PutAsJsonAsync(route, request);
+        Console.WriteLine($"Response Status: {response.StatusCode}");
+        Console.WriteLine($"Response Content: {await response.Content.ReadAsStringAsync()}");
+        return response;
+    }
+    public async Task<HttpResponseMessage> DoPutMultipartForm(string route, MultipartFormDataContent content, string? culture = null, string? token = null)
+    {
+        AddCulture(culture);
+        AddToken(token);
+        var response =  await _httpClient.PutAsync(route, content);
+        return response;
     }
     
     private void AddToken(string? token)

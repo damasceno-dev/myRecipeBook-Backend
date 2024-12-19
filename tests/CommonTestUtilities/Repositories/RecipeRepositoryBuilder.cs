@@ -48,6 +48,13 @@ public class RecipeRepositoryBuilder
         
         return this;
     }
+    public RecipeRepositoryBuilder GetById(Recipe recipe)
+    {
+        _repository.Setup(repo => repo.GetById(It.IsAny<User>(), It.IsAny<Guid>()))
+            .ReturnsAsync(recipe);
+        
+        return this;
+    }
     public RecipeRepositoryBuilder DeleteById(List<Recipe> recipes, Guid recipeId)
     {
         _repository.Setup(repo => repo.Delete(It.IsAny<Guid>()))

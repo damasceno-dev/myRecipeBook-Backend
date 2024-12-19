@@ -11,7 +11,7 @@ namespace MyRecipeBook.Application.UseCases.Recipes.Register;
 
 public class RecipeRegisterUseCase(IMapper mapper, IUnitOfWork unitOfWork, IUsersRepository usersRepository, IRecipesRepository recipeRepository, IStorageService storageService)
 {
-    public async Task<ResponseRegisteredRecipeJson> Execute(RequestRecipeForm request)
+    public async Task<ResponseRecipeJson> Execute(RequestRecipeForm? request)
     {
         Validate(request);
         
@@ -19,18 +19,22 @@ public class RecipeRegisterUseCase(IMapper mapper, IUnitOfWork unitOfWork, IUser
         var recipe = mapper.Map<Recipe>(request);
         recipe.UserId = user.Id;
 
+        var response = mapper.Map<ResponseRecipeJson>(recipe);
+        
         if (request.ImageFile is not null)
         {
             var fileStream = request.ImageFile.OpenReadStream();
             var fileExtension = ValidateFileAndGetExtension(fileStream);
             recipe.ImageIdentifier = $"{Guid.NewGuid()}.{fileExtension}";
             await storageService.Upload(user, fileStream, recipe.ImageIdentifier);
+            var imageUrl = await storageService.GetFileUrl(user, recipe.ImageIdentifier);
+            response.ImageUrl = imageUrl;
         }
         
         await recipeRepository.Register(recipe);
         await unitOfWork.Commit();
         
-        return mapper.Map<ResponseRegisteredRecipeJson>(recipe);
+        return response;
     }
     
     private static string ValidateFileAndGetExtension(Stream file)
@@ -45,7 +49,7 @@ public class RecipeRegisterUseCase(IMapper mapper, IUnitOfWork unitOfWork, IUser
         return extension;
     }
 
-    private static void Validate(RequestRecipeJson request)
+    private static void Validate(RequestRecipeJson? request)
     {
         var result = new RecipeRegisterAndUpdateFluentValidation().Validate(request);
         if (result.IsValid is false)

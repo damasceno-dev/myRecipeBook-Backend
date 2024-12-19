@@ -1,7 +1,7 @@
 using FluentValidation;
 using MyRecipeBook.Communication;
 
-namespace MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+namespace MyRecipeBook.Application.UseCases.Recipes.GetByUser;
 
 public class RecipeGetByUserFluentValidation : AbstractValidator<int>
 {

@@ -1,5 +1,5 @@
 using FluentAssertions;
-using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+using MyRecipeBook.Application.UseCases.Recipes.GetByUser;
 using MyRecipeBook.Communication;
 using Xunit;
 

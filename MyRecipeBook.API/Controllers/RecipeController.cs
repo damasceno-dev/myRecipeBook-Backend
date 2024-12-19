@@ -3,7 +3,7 @@ using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Application.UseCases.Recipes.GenerateWithAI;
 using MyRecipeBook.Application.UseCases.Recipes.GetById;
-using MyRecipeBook.Application.UseCases.Recipes.GetRecipes;
+using MyRecipeBook.Application.UseCases.Recipes.GetByUser;
 using MyRecipeBook.Application.UseCases.Recipes.ImageUpdateCover;
 using MyRecipeBook.Application.UseCases.Recipes.Register;
 using MyRecipeBook.Application.UseCases.Recipes.Update;
@@ -20,10 +20,10 @@ namespace MyRecipeBook.Controllers
     {
         [HttpPost]
         [Route("register")]
-        [ProducesResponseType(typeof(ResponseRegisteredRecipeJson), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RegisterRecipe([FromForm] RequestRecipeForm requestRecipe, [FromServices]RecipeRegisterUseCase registerUseCase)
+        public async Task<IActionResult> RegisterRecipe([FromForm] RequestRecipeForm? requestRecipe, [FromServices]RecipeRegisterUseCase registerUseCase)
         {
             var response = await registerUseCase.Execute(requestRecipe);
             return Created(string.Empty, response);

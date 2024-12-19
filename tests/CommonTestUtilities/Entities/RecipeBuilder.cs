@@ -7,15 +7,25 @@ namespace CommonTestUtilities.Entities;
 
 public class RecipeBuilder
 {
-    public static List<Recipe> RecipeCollection(User user, uint count = 10)
+    public static List<Recipe> RecipeCollection(User user, uint count = 10, double imageIdentifierPercentage = 0.0)
     {
-        var recipes = new List<Recipe>();
         if (count <= 0)
             count = 2;
 
-        for (int i = 0; i < count; i++)
+        var recipes = new List<Recipe>();
+        var faker = new Faker();
+
+        for (var i = 0; i < count; i++)
         {
-            recipes.Add(Build(user));
+            var recipe = Build(user);
+            
+            // Assign an ImageIdentifier based on the percentage
+            if (faker.Random.Double(0, 1) <= imageIdentifierPercentage)
+            {
+                recipe.ImageIdentifier = faker.Random.Bool() ? $"{Guid.NewGuid()}.jpg" : $"{Guid.NewGuid()}.png";
+            }
+
+            recipes.Add(recipe);
         }
 
         return recipes;

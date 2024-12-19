@@ -3,7 +3,6 @@ using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
-using MyRecipeBook.Application.UseCases.Recipes.GetById;
 using MyRecipeBook.Application.UseCases.Recipes.Update;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Communication.Requests;

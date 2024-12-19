@@ -1,5 +1,6 @@
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
+using CommonTestUtilities.Services;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Recipes.DeleteById;
 using MyRecipeBook.Communication;
@@ -47,6 +48,7 @@ public class RecipeDeleteByIdUseCaseTest
         recipeRepositoryBuilder.GetByIdAsNoTracking(recipes, request);
         recipeRepositoryBuilder.DeleteById(recipes, request);
         var recipeRepository = recipeRepositoryBuilder.Build();
-        return new RecipeDeleteByIdUseCase(usersRepository, recipeRepository, unitOfWorkRepository);
+        var storageService = new StorageServiceBuilder().Delete().Build();
+        return new RecipeDeleteByIdUseCase(usersRepository, recipeRepository, unitOfWorkRepository, storageService);
     }
 }

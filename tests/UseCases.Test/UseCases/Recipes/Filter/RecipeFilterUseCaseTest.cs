@@ -2,6 +2,7 @@ using CommonTestUtilities.Entities;
 using CommonTestUtilities.Mapper;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
+using CommonTestUtilities.Services;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Recipes.Filter;
 using MyRecipeBook.Communication;
@@ -20,7 +21,7 @@ public class RecipeFilterUseCaseTest
     public async Task Success()
     {
         var (user, _) = UserBuilder.Build();
-        var recipes = RecipeBuilder.RecipeCollection(user);
+        var recipes = RecipeBuilder.RecipeCollection(user, imageIdentifierPercentage: 0.8);
         var request = RequestRecipeFilterJsonBuilder.BuildFromList(recipes);
         var useCase = CreateRecipeFilterUseCase(user,recipes,request);
         
@@ -32,6 +33,16 @@ public class RecipeFilterUseCaseTest
             recipe.Id.Should().NotBeEmpty();
             recipe.Title.Should().Contain(request.TitleIngredient);
             recipe.QuantityIngredients.Should().Be(recipes.First(r => r.Title == request.TitleIngredient).Ingredients.Count);
+            var correspondingRecipe = recipes.First(r => r.Id == recipe.Id);
+            if (!string.IsNullOrWhiteSpace(correspondingRecipe.ImageIdentifier))
+            {
+                recipe.ImageUrl.Should().NotBeNullOrWhiteSpace();
+                recipe.ImageUrl.Should().MatchRegex(@"\.(jpg|png)$");
+            }
+            else
+            {
+                recipe.ImageUrl.Should().BeNullOrWhiteSpace();
+            }
         });
     }
     
@@ -64,6 +75,7 @@ public class RecipeFilterUseCaseTest
         var mapper = MapperBuilder.Build();
         var usersRepository = new UserRepositoryBuilder().GetLoggedUserWithToken(user).Build();
         var recipeRepository = new RecipeRepositoryBuilder().FilterRecipe(recipes,request).Build();
-        return new RecipeFilterUseCase(usersRepository, recipeRepository, mapper);
+        var storageService = new StorageServiceBuilder().GetFileUrl(recipes).Build();
+        return new RecipeFilterUseCase(usersRepository, recipeRepository, mapper,storageService);
     }
 }
