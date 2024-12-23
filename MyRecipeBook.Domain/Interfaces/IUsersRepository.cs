@@ -11,4 +11,5 @@ public interface IUsersRepository
     Task<User> GetExistingUserWithId(Guid id);
     Task<User> GetLoggedUserWithToken();
     void UpdateUser(User user);
+    Task DeleteAccount(Guid id);
 }

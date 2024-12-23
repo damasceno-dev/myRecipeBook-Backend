@@ -5,51 +5,55 @@ using MyRecipeBook.Domain.Interfaces.Tokens;
 
 namespace MyRecipeBook.Infrastructure.Repositories;
 
-internal class UsersRepository : IUsersRepository
+internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider tokenProvider, ITokenRepository tokenRepository)
+    : IUsersRepository
 {
-    private readonly MyRecipeBookDbContext _dbContext;
-    private readonly ITokenProvider _tokenProvider;
-    private readonly ITokenRepository _tokenRepository;
-
-    public UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider tokenProvider, ITokenRepository tokenRepository)
-    {
-        _dbContext = dbContext;
-        _tokenProvider = tokenProvider;
-        _tokenRepository = tokenRepository;
-    }
     public async Task Register(User newUser)
     {
-        await _dbContext.Users.AddAsync(newUser);
+        await dbContext.Users.AddAsync(newUser);
     }
     public async Task<bool> ExistsActiveUserWithEmail(string email)
     {
-        return await _dbContext.Users.AnyAsync(u => u.Email.Equals(email) && u.Active);
+        return await dbContext.Users.AnyAsync(u => u.Email.Equals(email) && u.Active);
     }
 
     public async Task<User?> GetExistingUserWithEmail(string email)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+        return await dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
     }
 
     public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid id)
     {
-        return await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
+        return await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
     }
 
     public async Task<User> GetExistingUserWithId(Guid id)
     {
-        return await _dbContext.Users.FirstAsync(u => u.Id.Equals(id));
+        return await dbContext.Users.FirstAsync(u => u.Id.Equals(id));
     }
 
     public Task<User> GetLoggedUserWithToken()
     {
-        var token = _tokenProvider.Value();
-        var userId = _tokenRepository.ValidateAndGetUserIdentifier(token);
-        return _dbContext.Users.AsNoTracking().FirstAsync(u => u.Id.Equals(userId));
+        var token = tokenProvider.Value();
+        var userId = tokenRepository.ValidateAndGetUserIdentifier(token);
+        return dbContext.Users.AsNoTracking().FirstAsync(u => u.Id.Equals(userId));
     }
 
     public void UpdateUser(User user)
     {
-        _dbContext.Users.Update(user);
+        dbContext.Users.Update(user);
+    }
+
+    public async Task DeleteAccount(Guid userId)
+    {
+        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        if (user is null)
+            return;
+
+        var recipes = dbContext.Recipes.Where(recipe => recipe.UserId == user.Id);
+
+        dbContext.Recipes.RemoveRange(recipes);
+
+        dbContext.Users.Remove(user);
     }
 }

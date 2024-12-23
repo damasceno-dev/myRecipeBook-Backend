@@ -1,5 +1,5 @@
 on main.tf, define an aws user profile able to create, upload and download files from s3 service
 on .env, define the credentials of this profile (access key and secret key) and the bucket name (e. g.: recipeBookS3bucket)
 terraform init
-terraform plan
-terraform apply  => set the same bucket name and a prefix of your choice (e.g.: recipeBook)
+terraform plan -var="prefix=myrecipebook"
+terraform apply -var="prefix=myrecipebook"

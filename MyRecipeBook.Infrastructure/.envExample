@@ -1,3 +1,4 @@
 DB_PASSWORD=
 OPEN_API_KEY=
 AWS_S3_CONFIG=AccessKey=my-access-key;SecretKey=my-secret-key;BucketName=my-bucket-name;Region=region-name
+AWS_SQS_DELETE_USER_URL=

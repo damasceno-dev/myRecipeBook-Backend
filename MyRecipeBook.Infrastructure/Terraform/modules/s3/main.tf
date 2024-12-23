@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "s3" {
-  bucket = var.bucket_name
+  bucket = "${var.prefix}-s3-bucket"
 }
 
 resource "aws_s3_bucket_versioning" "s3_versioning" {

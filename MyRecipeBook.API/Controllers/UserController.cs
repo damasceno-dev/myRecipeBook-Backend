@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
+using MyRecipeBook.Application.UseCases.Users.Delete;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
@@ -75,6 +76,17 @@ namespace MyRecipeBook.Controllers
         public async Task<IActionResult> ChangePassword([FromServices] UserChangePasswordUseCase userChangePasswordUseCase, [FromBody] RequestUserChangePasswordJson request)
         {
             await userChangePasswordUseCase.Execute(request);
+            return NoContent();
+        }
+        
+        [HttpDelete]
+        [MyCustomAuthorize]
+        [Route("delete")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> QueueUserDeletion([FromServices]UserQueueDeletionUseCase userQueueDeletion)
+        {
+            await userQueueDeletion.Execute();
             return NoContent();
         }
     }

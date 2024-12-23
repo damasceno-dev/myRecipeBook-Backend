@@ -1,4 +1,5 @@
 using Amazon.S3;
+using Amazon.SQS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ public static class InfraDependencyInjectionExtension
             AddDbContext(services, configuration);
             AddOpenAI(services);
             AddAwsStorage(services);
+            AddAwsQueue(services);
         }
 
     }
@@ -91,5 +93,14 @@ public static class InfraDependencyInjectionExtension
         
         var s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
         services.AddScoped<IStorageService>(c => new AwsStorageService(s3Client, bucketName));
+    }
+    private static void AddAwsQueue(IServiceCollection services)
+    {
+        var queueUrl = Environment.GetEnvironmentVariable("AWS_SQS_DELETE_USER_URL");
+
+        if (string.IsNullOrWhiteSpace(queueUrl))
+            throw new ArgumentException("Invalid AWS SQS Delete user url");
+        
+        services.AddSingleton<IDeleteUserQueue>(_ => new AwsSimpleQueueService(new AmazonSQSClient(), queueUrl));
     }
 }

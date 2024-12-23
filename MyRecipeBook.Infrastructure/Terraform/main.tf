@@ -21,6 +21,15 @@ provider "aws" {
 module "s3" {
   source = "./modules/s3"
   prefix = var.prefix
-  bucket_name = var.bucket_name
-  versioning  = var.versioning
+}
+
+module "sqs" {
+  source = "./modules/sqs"
+  prefix                       = var.prefix
+  delay_seconds                = 0
+  message_retention_seconds    = 345600
+  visibility_timeout_seconds   = 30
+  receive_wait_time_seconds    = 10
+  max_receive_count            = 5
+  dlq_message_retention_seconds = 1209600
 }

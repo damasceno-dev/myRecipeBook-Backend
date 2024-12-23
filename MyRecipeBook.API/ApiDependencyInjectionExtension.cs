@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using MyRecipeBook.BackgroundServices;
 using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Filters;
 using MyRecipeBook.Tokens;
@@ -13,6 +14,7 @@ public static class ApiDependencyInjectionExtension
         AddSwaggerWithTokenReaderAndOperationFilter(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
         services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
+        services.AddHostedService<AwsQueueDeleteUserBackgroundService>();
     }
 
     private static void AddSwaggerWithTokenReaderAndOperationFilter(IServiceCollection services)
