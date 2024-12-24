@@ -9,12 +9,16 @@ namespace MyRecipeBook;
 public static class ApiDependencyInjectionExtension
 {
     private const string AuthenticationType = "Bearer";
-    public static void AddApi(this IServiceCollection services)
+    public static void AddApi(this IServiceCollection services, IConfiguration configuration)
     {
         AddSwaggerWithTokenReaderAndOperationFilter(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
         services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
-        services.AddHostedService<AwsQueueDeleteUserBackgroundService>();
+        var testEnv = configuration.GetValue<bool>("IsTestEnvironment");
+        if (testEnv is false)
+        {
+            services.AddHostedService<AwsQueueDeleteUserBackgroundService>();
+        }
     }
 
     private static void AddSwaggerWithTokenReaderAndOperationFilter(IServiceCollection services)
