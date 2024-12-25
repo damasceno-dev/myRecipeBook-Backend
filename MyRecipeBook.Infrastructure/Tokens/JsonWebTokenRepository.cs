@@ -7,27 +7,20 @@ using MyRecipeBook.Domain.Interfaces.Tokens;
 
 namespace MyRecipeBook.Infrastructure.Tokens;
 
-public class JsonWebTokenRepository : ITokenRepository
+public class JsonWebTokenRepository(double expirationTimeInMinutes, string signingKey)
+    : ITokenRepository
 {
-    private readonly double _expirationTimeInMinutes;
-    private readonly string _signingKey;
-
     private SymmetricSecurityKey PrivateSecurityKey =>
-        new SymmetricSecurityKey(new UTF8Encoding().GetBytes(_signingKey));
+        new(new UTF8Encoding().GetBytes(signingKey));
     private  TokenValidationParameters ValidationParameters => 
-        new TokenValidationParameters
+        new()
         {
             ValidateAudience = false,
             ValidateIssuer = false,
             IssuerSigningKey = PrivateSecurityKey,
             ClockSkew = TimeSpan.Zero //for token expired test
         };
-    public JsonWebTokenRepository(double expirationTimeInMinutes, string signingKey)
-    {
-        _expirationTimeInMinutes = expirationTimeInMinutes;
-        _signingKey = signingKey;
-    }
-    
+
     public string Generate(Guid specificGuid)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -37,7 +30,7 @@ public class JsonWebTokenRepository : ITokenRepository
         {
             Subject = new ClaimsIdentity(claims),
             SigningCredentials = new SigningCredentials(PrivateSecurityKey, SecurityAlgorithms.HmacSha256Signature),
-            Expires = DateTime.UtcNow.AddMinutes(_expirationTimeInMinutes)
+            Expires = DateTime.UtcNow.AddMinutes(expirationTimeInMinutes)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
