@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using MyRecipeBook.BackgroundServices;
 using MyRecipeBook.Domain.Interfaces.Tokens;
@@ -11,6 +12,7 @@ public static class ApiDependencyInjectionExtension
     private const string AuthenticationType = "Bearer";
     public static void AddApi(this IServiceCollection services, IConfiguration configuration)
     {
+        DotNetEnv.Env.Load("../MyRecipeBook.API/.env");
         AddSwaggerWithTokenReaderAndOperationFilter(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
         services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
@@ -18,7 +20,51 @@ public static class ApiDependencyInjectionExtension
         if (testEnv is false)
         {
             services.AddHostedService<AwsQueueDeleteUserBackgroundService>();
-        }
+            AddGoogleAuthentication(services);
+        } 
+        AddFrontEndCors(services, "3000");
+    }
+
+    private static void AddFrontEndCors(IServiceCollection services, string port)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy.WithOrigins($"http://localhost:{port}") // Frontend URL
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials(); // Required for cookies
+            });
+        });
+    }
+
+    private static void AddGoogleAuthentication(IServiceCollection services)
+    {
+        var googleLoginConfig = Environment.GetEnvironmentVariable("GOOGLE_LOGIN");
+        if (string.IsNullOrWhiteSpace(googleLoginConfig))
+            throw new ArgumentException("Invalid Google Login connection string");
+        
+        var configParts = googleLoginConfig.Split(';')
+            .Select(part => part.Split('='))
+            .ToDictionary(kv => kv[0], kv => kv[1]);
+
+        var clientId = configParts.GetValueOrDefault("ClientId");
+        var clientSecret = configParts.GetValueOrDefault("ClientSecret");
+        if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
+            throw new ArgumentException("Invalid Google Login connection string values");
+        
+        services.AddAuthentication(config =>
+            {
+                config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = clientId;
+                options.ClientSecret = clientSecret;
+
+            });
     }
 
     private static void AddSwaggerWithTokenReaderAndOperationFilter(IServiceCollection services)

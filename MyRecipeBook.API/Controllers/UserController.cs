@@ -1,6 +1,10 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
 using MyRecipeBook.Application.UseCases.Users.Delete;
+using MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
@@ -38,6 +42,35 @@ namespace MyRecipeBook.Controllers
         {
             var response = await userLoginUseCase.Execute(request);
             return Ok(response);
+        }
+	
+        [HttpGet("login/google")]
+        public async Task<IActionResult> LoginGoogle(string returnUrl, [FromServices] UserExternalLoginUseCase userExternalLoginUse)
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync();
+
+            if (authenticateResult.Succeeded is false 
+                || authenticateResult.Principal is null
+                || authenticateResult.Principal.Identities.Any(id => id.IsAuthenticated) is false)
+                return Challenge(GoogleDefaults.AuthenticationScheme);
+            
+            var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
+            var name = authenticateResult.Principal.FindFirstValue(ClaimTypes.Name);
+            
+            if (email is null || name is null)
+                return BadRequest("Couldn't get name or email from google authentication");
+
+            var token = await userExternalLoginUse.Execute(name, email);
+
+            return Redirect($"{returnUrl}?token={token}&name={name}&email={email}");
+        }
+        
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Sign out the user and clear cookies
+            HttpContext.SignOutAsync();
+            return Ok(new { message = "Logged out successfully" });
         }
 
         [HttpGet]
