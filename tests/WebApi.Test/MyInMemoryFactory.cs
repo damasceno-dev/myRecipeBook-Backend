@@ -1,17 +1,23 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
+using WebApi.Test.Users.Login;
+using WebApi.Test.Users.LoginExternal;
 using Xunit;
 using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
@@ -52,7 +58,24 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
                 AddDatabase(s);
                 AddOpenAIMock(s);
                 AddAwsStorageMock(s);
+                AddGoogleLoginAuthenticationMock(s);
             });
+    }
+
+    private static void AddGoogleLoginAuthenticationMock(IServiceCollection service)
+    {    
+        var mockAuthenticationService = new Mock<IAuthenticationService>();
+        mockAuthenticationService
+            .Setup(auth => auth.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
+            .ReturnsAsync(AuthenticateResult.Success(new AuthenticationTicket(
+                new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Email, LoginGoogleUserControllerInMemoryTest.GoogleEmail),
+                    new Claim(ClaimTypes.Name, LoginGoogleUserControllerInMemoryTest.GoogleName)
+                }, "mock")),
+                "mock")));
+
+        service.AddSingleton(mockAuthenticationService.Object);
     }
 
     private static void AddAwsStorageMock(IServiceCollection service)
@@ -166,8 +189,6 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         AddCulture(culture);
         AddToken(token);
         var response = await _httpClient.PutAsJsonAsync(route, request);
-        Console.WriteLine($"Response Status: {response.StatusCode}");
-        Console.WriteLine($"Response Content: {await response.Content.ReadAsStringAsync()}");
         return response;
     }
     public async Task<HttpResponseMessage> DoPutMultipartForm(string route, MultipartFormDataContent content, string? culture = null, string? token = null)
