@@ -34,6 +34,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallback(context => throw new Exception($"No route with the path {context.Request.Path}"));
 
 await app.RunAsync();
 
