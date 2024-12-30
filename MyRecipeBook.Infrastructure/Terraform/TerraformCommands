@@ -1,4 +1,4 @@
-on main.tf, define an aws user profile able to create, upload and download files from s3 service
+on main.tf, define an aws user profile able to create, upload and download files from s3 service, and to create an amazon simple queue service (sqs)
 on .env, define the credentials of this profile (access key and secret key) and the bucket name (e. g.: recipeBookS3bucket)
 terraform init
 terraform plan -var="prefix=myrecipebook"
