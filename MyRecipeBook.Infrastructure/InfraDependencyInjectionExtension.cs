@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Interfaces;
+using MyRecipeBook.Domain.Interfaces.Email;
 using MyRecipeBook.Domain.Interfaces.OpenAI;
 using MyRecipeBook.Domain.Interfaces.Tokens;
 using MyRecipeBook.Infrastructure.Repositories;
@@ -27,8 +28,14 @@ public static class InfraDependencyInjectionExtension
             AddOpenAI(services);
             AddAwsStorage(services);
             AddAwsQueue(services);
+            AddEmailSender(services);
         }
 
+    }
+
+    private static void AddEmailSender(IServiceCollection services)
+    {
+        services.AddScoped<ISendUserResetPasswordCode, EmailUserResetPasswordCode>();
     }
 
     private static void AddToken(IServiceCollection services, IConfiguration configuration)

@@ -56,4 +56,38 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
 
         dbContext.Users.Remove(user);
     }
+
+    public async Task AddResetPasswordCode(UserPasswordResetCode userPasswordResetCode)
+    {
+        await dbContext.UserPasswordResetCodes.AddAsync(userPasswordResetCode);
+    }
+    
+    public async Task DeactivateExistingResetPasswordCodes(Guid userId)
+    {
+        var existingCodes = await dbContext.UserPasswordResetCodes
+            .Where(code => code.UserId == userId && code.Active)
+            .ToListAsync();
+
+        foreach (var code in existingCodes)
+        {
+            code.Active = false;
+        }
+    }
+
+    public async Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid userId)
+    {
+        return await dbContext.UserPasswordResetCodes.FirstOrDefaultAsync(code => code.UserId == userId && code.Active == true);
+    }
+
+    public async Task DeactivateAllPasswordCodes(Guid userId)
+    {
+        var existingCodes = await dbContext.UserPasswordResetCodes
+            .Where(code => code.UserId == userId)
+            .ToListAsync();
+
+        foreach (var code in existingCodes)
+        {
+            code.Active = false;
+        }
+    }
 }

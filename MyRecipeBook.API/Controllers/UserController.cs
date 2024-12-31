@@ -8,6 +8,7 @@ using MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
 using MyRecipeBook.Application.UseCases.Users.Register;
+using MyRecipeBook.Application.UseCases.Users.ResetPassword;
 using MyRecipeBook.Application.UseCases.Users.Update;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
@@ -72,6 +73,25 @@ namespace MyRecipeBook.Controllers
             HttpContext.SignOutAsync();
             return Ok(new { message = "Logged out successfully" });
         }
+        
+        [HttpGet]
+        [Route("get-reset-password-code/{email}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> GetResetPasswordCode([FromServices] UserGetResetPasswordCodeUseCase userGetResetPasswordCodeUseCase, [FromRoute] string email)
+        {
+            await userGetResetPasswordCodeUseCase.Execute(email);
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetUserPassword([FromServices] UserResetPasswordUseCase userResetPasswordUseCase, [FromBody] RequestUserResetPasswordJson requestUser)
+        {
+            await userResetPasswordUseCase.Execute(requestUser);
+            return NoContent();
+        }
 
         [HttpGet]
         [MyCustomAuthorize]
@@ -123,4 +143,5 @@ namespace MyRecipeBook.Controllers
             return NoContent();
         }
     }
+
 }

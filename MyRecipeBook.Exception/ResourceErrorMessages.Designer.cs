@@ -217,5 +217,23 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("IMAGE_INVALID_TYPE", resourceCulture);
             }
         }
+        public static string USER_PASSWORD_RESET_INVALID_CODE
+        {
+            get {
+                return ResourceManager.GetString("USER_PASSWORD_RESET_INVALID_CODE", resourceCulture);
+            }
+        }
+        public static string USER_PASSWORD_RESET_WRONG_CODE
+        {
+            get {
+                return ResourceManager.GetString("USER_PASSWORD_RESET_WRONG_CODE", resourceCulture);
+            }
+        }
+        public static string USER_PASSWORD_RESET_EXPIRED_CODE
+        {
+            get {
+                return ResourceManager.GetString("USER_PASSWORD_RESET_EXPIRED_CODE", resourceCulture);
+            }
+        }
     }
 }

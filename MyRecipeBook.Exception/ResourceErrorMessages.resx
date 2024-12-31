@@ -114,4 +114,13 @@
     <data name="IMAGE_INVALID_TYPE" xml:space="preserve">
         <value>Only types .jpg and .png are accepted as images</value>
     </data>
+    <data name="USER_PASSWORD_RESET_INVALID_CODE" xml:space="preserve">
+        <value>Invalid Code</value>
+    </data>
+    <data name="USER_PASSWORD_RESET_WRONG_CODE" xml:space="preserve">
+        <value>Wrong Code</value>
+    </data>
+    <data name="USER_PASSWORD_RESET_EXPIRED_CODE" xml:space="preserve">
+        <value>Code expired</value>
+    </data>
 </root>

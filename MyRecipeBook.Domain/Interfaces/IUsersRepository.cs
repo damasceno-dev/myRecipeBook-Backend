@@ -12,4 +12,8 @@ public interface IUsersRepository
     Task<User> GetLoggedUserWithToken();
     void UpdateUser(User user);
     Task DeleteAccount(Guid id);
+    Task AddResetPasswordCode(UserPasswordResetCode userPasswordResetCode);
+    Task DeactivateExistingResetPasswordCodes(Guid userId);
+    Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid userId);
+    Task DeactivateAllPasswordCodes(Guid userId);
 }

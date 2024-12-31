@@ -12,4 +12,5 @@ public class MyRecipeBookDbContext : DbContext
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<DishType> DishTypes { get; set; }
     public DbSet<Instruction> Instructions { get; set; }
+    public DbSet<UserPasswordResetCode> UserPasswordResetCodes { get; set; }
 }
