@@ -13,7 +13,7 @@ public class LoginGoogleUserControllerInMemoryTest(MyInMemoryFactory factory) : 
     [Fact]
     public async Task GoogleLogin_RedirectsWithTokenOnSuccess()
     {
-        const string url = "user/login/google?returnUrl=/redirect-url";
+        const string url = "user/login/google?returnUrl=www.c";
 
         var response = await factory.DoGet(url);
         

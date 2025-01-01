@@ -4,13 +4,9 @@ using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
-using Moq;
-using MyRecipeBook.Application.Services;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Communication;
-using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Entities;
-using MyRecipeBook.Domain.Interfaces;
 using MyRecipeBook.Exception;
 using Xunit;
 

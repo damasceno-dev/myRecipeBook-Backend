@@ -82,7 +82,7 @@ namespace MyRecipeBook.Controllers
             await userGetResetPasswordCodeUseCase.Execute(email);
             return Accepted();
         }
-
+        
         [HttpPost]
         [Route("reset-password")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

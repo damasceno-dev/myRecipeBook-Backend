@@ -9,7 +9,7 @@ namespace MyRecipeBook.Application.UseCases.Users.ResetPassword;
 
 public class UserResetPasswordUseCase(IUsersRepository usersRepository, PasswordEncryption passwordEncryption, IUnitOfWork unitOfWork)
 {
-    private const int CodeExpirationTimeInMinutes = 15;
+    public const int CodeExpirationTimeInMinutes = 15;
     public async Task Execute(RequestUserResetPasswordJson request)
     {
         var user = await usersRepository.GetExistingUserWithEmail(request.Email);

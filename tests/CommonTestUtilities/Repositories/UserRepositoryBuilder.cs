@@ -40,6 +40,12 @@ public class UserRepositoryBuilder
         return this;
     }
 
+    public UserRepositoryBuilder GetUserResetPasswordCode(UserPasswordResetCode? userCode)
+    {
+        _repository.Setup(u => u.GetUserResetPasswordCode(It.IsAny<Guid>())).ReturnsAsync(userCode);
+        return this;
+    }
+
     public IUsersRepository Build()
     {
         return _repository.Object;
