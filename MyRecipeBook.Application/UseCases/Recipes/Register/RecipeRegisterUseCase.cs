@@ -11,7 +11,7 @@ namespace MyRecipeBook.Application.UseCases.Recipes.Register;
 
 public class RecipeRegisterUseCase(IMapper mapper, IUnitOfWork unitOfWork, IUsersRepository usersRepository, IRecipesRepository recipeRepository, IStorageService storageService)
 {
-    public async Task<ResponseRecipeJson> Execute(RequestRecipeForm? request)
+    public async Task<ResponseRecipeJson> Execute(RequestRecipeForm request)
     {
         Validate(request);
         
@@ -49,7 +49,7 @@ public class RecipeRegisterUseCase(IMapper mapper, IUnitOfWork unitOfWork, IUser
         return extension;
     }
 
-    private static void Validate(RequestRecipeJson? request)
+    private static void Validate(RequestRecipeJson request)
     {
         var result = new RecipeRegisterAndUpdateFluentValidation().Validate(request);
         if (result.IsValid is false)

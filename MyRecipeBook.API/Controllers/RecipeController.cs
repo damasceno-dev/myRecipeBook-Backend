@@ -23,7 +23,7 @@ namespace MyRecipeBook.Controllers
         [ProducesResponseType(typeof(ResponseRecipeJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RegisterRecipe([FromForm] RequestRecipeForm? requestRecipe, [FromServices]RecipeRegisterUseCase registerUseCase)
+        public async Task<IActionResult> RegisterRecipe([FromForm] RequestRecipeForm requestRecipe, [FromServices]RecipeRegisterUseCase registerUseCase)
         {
             var response = await registerUseCase.Execute(requestRecipe);
             return Created(string.Empty, response);
