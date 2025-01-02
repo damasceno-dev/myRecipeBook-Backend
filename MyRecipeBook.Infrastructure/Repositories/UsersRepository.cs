@@ -22,14 +22,14 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         return await dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
     }
 
-    public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid Id)
+    public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid id)
     {
-        return await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(Id));
+        return await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
     }
 
-    public async Task<User> GetExistingUserWithId(Guid Id)
+    public async Task<User> GetExistingUserWithId(Guid id)
     {
-        return await dbContext.Users.FirstAsync(u => u.Id.Equals(Id));
+        return await dbContext.Users.FirstAsync(u => u.Id.Equals(id));
     }
 
     public Task<User> GetLoggedUserWithToken()
@@ -44,9 +44,9 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         dbContext.Users.Update(user);
     }
 
-    public async Task DeleteAccount(Guid Id)
+    public async Task DeleteAccount(Guid id)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == Id);
+        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == id);
         if (user is null)
             return;
 
