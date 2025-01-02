@@ -6,19 +6,17 @@ using System.Text.Json;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Infrastructure;
-using WebApi.Test.Users.Login;
 using WebApi.Test.Users.LoginExternal;
 using Xunit;
 using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
@@ -33,6 +31,8 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     private string _password = string.Empty;
     
     private MyRecipeBookDbContext? _dbContext;
+    private UserPasswordResetCode _userResetPasswordCode = default!;
+
     public MyRecipeBookDbContext GetDbContext()
     {
         if (_dbContext == null)
@@ -45,6 +45,7 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     public User GetUser() => _user;
     public List<Recipe> GetRecipes() => _recipes;
     public string GetPassword() => _password;
+    public UserPasswordResetCode GetResetPasswordCode() => _userResetPasswordCode;
 
     public MyInMemoryFactory()
     {
@@ -61,16 +62,14 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
             AddOpenAIMock(s);
             AddAwsStorageMock(s);
             AddGoogleLoginAuthenticationMock(s);
+            AddEmailServicesMock(s);
         });
     }
-    private static void AddTestRoutes(IServiceCollection services)
+
+    private static void AddEmailServicesMock(IServiceCollection service)
     {
-        services.AddRouting();
-        var app = new RouteBuilder(new ApplicationBuilder(services.BuildServiceProvider()));
-        app.MapGet("/test-redirect-url", async context =>
-        {
-            await context.Response.WriteAsync("Test Redirect URL reached.");
-        });
+        var sendEmailMock = SendUserResetPasswordCodeBuilder.Build();
+        service.AddScoped(_ => sendEmailMock);
     }
 
     private static void AddGoogleLoginAuthenticationMock(IServiceCollection service)
@@ -116,9 +115,12 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         
         (_user, _password) = UserBuilder.Build();
         _recipes = RecipeBuilder.RecipeCollection(_user);
+        _userResetPasswordCode = UserPasswordCodeBuilder.Build(_user.Id, DigitGenerator.Generate6DigitCode());
         
         _dbContext.Users.Add(_user);
         _dbContext.Recipes.AddRange(_recipes);
+        _dbContext.UserPasswordResetCodes.Add(_userResetPasswordCode);
+        
         await _dbContext.SaveChangesAsync();
     }
     
