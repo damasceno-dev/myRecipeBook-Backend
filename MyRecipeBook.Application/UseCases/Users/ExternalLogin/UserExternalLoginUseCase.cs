@@ -7,9 +7,8 @@ using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 
-public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfWork unitOfWork, ITokenRepository tokenRepository)
+public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfWork unitOfWork, ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
 {
-    private readonly string _defaultExternalLoginKey = PasswordEncryption.DefaultExternalLoginKey;
     public async Task<string> Execute(string name, string email)
     {
         var user = await usersRepository.GetExistingUserWithEmail(email);
@@ -21,7 +20,7 @@ public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfW
                 Id = Guid.NewGuid(),
                 Name = name,
                 Email = email,
-                Password = _defaultExternalLoginKey
+                Password = passwordEncryption.GetDefaultExternalLoginKey()
             };
 
             await usersRepository.Register(user);

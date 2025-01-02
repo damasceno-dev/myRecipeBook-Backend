@@ -22,14 +22,14 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         return await dbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
     }
 
-    public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid id)
+    public async Task<User?> GetExistingUserWithIdAsNoTracking(Guid Id)
     {
-        return await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
+        return await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(Id));
     }
 
-    public async Task<User> GetExistingUserWithId(Guid id)
+    public async Task<User> GetExistingUserWithId(Guid Id)
     {
-        return await dbContext.Users.FirstAsync(u => u.Id.Equals(id));
+        return await dbContext.Users.FirstAsync(u => u.Id.Equals(Id));
     }
 
     public Task<User> GetLoggedUserWithToken()
@@ -44,9 +44,9 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         dbContext.Users.Update(user);
     }
 
-    public async Task DeleteAccount(Guid id)
+    public async Task DeleteAccount(Guid Id)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == id);
+        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == Id);
         if (user is null)
             return;
 
@@ -62,10 +62,10 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         await dbContext.UserPasswordResetCodes.AddAsync(userPasswordResetCode);
     }
     
-    public async Task DeactivateExistingResetPasswordCodes(Guid id)
+    public async Task DeactivateExistingResetPasswordCodes(Guid userId)
     {
         var existingCodes = await dbContext.UserPasswordResetCodes
-            .Where(code => code.UserId == id && code.Active)
+            .Where(code => code.UserId == userId && code.Active)
             .ToListAsync();
 
         foreach (var code in existingCodes)
@@ -74,9 +74,9 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         }
     }
 
-    public async Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid id)
+    public async Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid userId)
     {
-        return await dbContext.UserPasswordResetCodes.FirstOrDefaultAsync(code => code.UserId == id && code.Active == true);
+        return await dbContext.UserPasswordResetCodes.FirstOrDefaultAsync(code => code.UserId == userId && code.Active == true);
     }
 
     public async Task DeactivateAllPasswordCodes(Guid userId)

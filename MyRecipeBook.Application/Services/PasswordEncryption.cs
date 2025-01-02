@@ -1,20 +1,17 @@
 namespace MyRecipeBook.Application.Services;
 
-public class PasswordEncryption
+public class PasswordEncryption(string additionalKey, string defaultExternalLoginKey)
 {
-    private readonly string _additionalKey;
-    public static string DefaultExternalLoginKey;
-    public PasswordEncryption(string additionalKey, string defaultExternalLoginKey)
+    public string GetDefaultExternalLoginKey()
     {
-        _additionalKey = additionalKey;
-        DefaultExternalLoginKey = defaultExternalLoginKey;
+        return defaultExternalLoginKey;
     }
     public string HashPassword(string password)
     {
-        return BCrypt.Net.BCrypt.HashPassword($"{_additionalKey}{password}");
+        return BCrypt.Net.BCrypt.HashPassword($"{additionalKey}{password}");
     }
     public bool VerifyPassword(string password, string hashedPassword)
     {
-        return BCrypt.Net.BCrypt.Verify($"{_additionalKey}{password}", hashedPassword);
+        return BCrypt.Net.BCrypt.Verify($"{additionalKey}{password}", hashedPassword);
     }
 }

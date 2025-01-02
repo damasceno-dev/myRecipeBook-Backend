@@ -45,12 +45,12 @@ namespace MyRecipeBook.Controllers
         }
 	
         [HttpGet("login/google")]
-        public async Task<IActionResult> LoginGoogle(string returnUrl, [FromServices] UserExternalLoginUseCase userExternalLoginUse)
+        public async Task<IActionResult> LoginGoogle(string returnUrl, [FromServices] UserExternalLoginUseCase userExternalLoginUse, [FromServices] IConfiguration configuration)
         {
             // List of allowed return URLs for security reasons
-            var allowedReturnUrls = new[] { "/", "/home", "/dashboard", "/logout", "test.org", "http://localhost:3000/redirect-after-login" };
-
-            if (string.IsNullOrWhiteSpace(returnUrl) || !allowedReturnUrls.Contains(returnUrl))
+            var allowedReturnUrls = configuration.GetSection("Settings:ExternalLogin:AllowedReturnUrls").Get<string[]>();
+            
+            if (string.IsNullOrWhiteSpace(returnUrl) || (allowedReturnUrls ?? throw new InvalidOperationException()).Contains(returnUrl) is false)
             {
                 returnUrl = "/"; // Default safe redirect
             }
@@ -74,12 +74,12 @@ namespace MyRecipeBook.Controllers
         }
         
         [HttpPost("logout")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseSuccessLogoutJson), StatusCodes.Status200OK)]
         public IActionResult Logout()
         {
             // Sign out the user and clear cookies
             HttpContext.SignOutAsync();
-            return Ok(new { message = "Logged out successfully" });
+            return Ok(new ResponseSuccessLogoutJson("Logged out successfully"));
         }
         
         [HttpGet]

@@ -1,3 +1,4 @@
+using CommonTestUtilities.Cryptography;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
@@ -55,6 +56,7 @@ public class UserExternalLoginUseCaseTest
         var usersRepositoryBuilder = new UserRepositoryBuilder();
         var token = JsonWebTokenRepositoryBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
+        var passwordEncryption = PasswordEncryptionBuilder.Build();
 
         if (user is not null)
         { 
@@ -63,6 +65,6 @@ public class UserExternalLoginUseCaseTest
 
         var usersRepository = usersRepositoryBuilder.Build();
 
-        return new UserExternalLoginUseCase(usersRepository, unitOfWork, token);
+        return new UserExternalLoginUseCase(usersRepository, unitOfWork, token, passwordEncryption);
     }
 }
