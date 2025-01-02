@@ -43,6 +43,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>ResourceEmailPasswordReset.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Services\ResourceEmailPasswordReset.pt-BR.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ResourcesEmailPasswordReset.pt-BR.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -55,6 +59,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ResourceEmailPasswordReset.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Services\ResourceEmailPasswordReset.pt-BR.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ResourceEmailPasswordReset.pt-BR.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 
