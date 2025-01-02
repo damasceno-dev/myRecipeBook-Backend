@@ -44,9 +44,9 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         dbContext.Users.Update(user);
     }
 
-    public async Task DeleteAccount(Guid userId)
+    public async Task DeleteAccount(Guid id)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Id == id);
         if (user is null)
             return;
 
@@ -62,10 +62,10 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         await dbContext.UserPasswordResetCodes.AddAsync(userPasswordResetCode);
     }
     
-    public async Task DeactivateExistingResetPasswordCodes(Guid userId)
+    public async Task DeactivateExistingResetPasswordCodes(Guid id)
     {
         var existingCodes = await dbContext.UserPasswordResetCodes
-            .Where(code => code.UserId == userId && code.Active)
+            .Where(code => code.UserId == id && code.Active)
             .ToListAsync();
 
         foreach (var code in existingCodes)
@@ -74,9 +74,9 @@ internal class UsersRepository(MyRecipeBookDbContext dbContext, ITokenProvider t
         }
     }
 
-    public async Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid userId)
+    public async Task<UserPasswordResetCode?> GetUserResetPasswordCode(Guid id)
     {
-        return await dbContext.UserPasswordResetCodes.FirstOrDefaultAsync(code => code.UserId == userId && code.Active == true);
+        return await dbContext.UserPasswordResetCodes.FirstOrDefaultAsync(code => code.UserId == id && code.Active == true);
     }
 
     public async Task DeactivateAllPasswordCodes(Guid userId)

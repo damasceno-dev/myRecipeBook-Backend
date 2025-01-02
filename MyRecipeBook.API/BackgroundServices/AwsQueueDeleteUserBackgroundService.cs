@@ -29,11 +29,4 @@ public class AwsQueueDeleteUserBackgroundService(IServiceProvider services, IDel
 
         await deleteUserUseCase.Execute(userIdentifier);
     }
-
-    ~AwsQueueDeleteUserBackgroundService() => Dispose();
-    public override void Dispose()
-    {
-        base.Dispose();
-        GC.SuppressFinalize(this);
-    }
 }

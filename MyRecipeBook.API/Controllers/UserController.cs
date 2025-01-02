@@ -13,7 +13,6 @@ using MyRecipeBook.Application.UseCases.Users.Update;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Filters;
-
 namespace MyRecipeBook.Controllers
 {
     [Route("[controller]")]
@@ -48,6 +47,14 @@ namespace MyRecipeBook.Controllers
         [HttpGet("login/google")]
         public async Task<IActionResult> LoginGoogle(string returnUrl, [FromServices] UserExternalLoginUseCase userExternalLoginUse)
         {
+            // List of allowed return URLs for security reasons
+            var allowedReturnUrls = new[] { "/", "/home", "/dashboard", "/logout", "test.org", "http://localhost:3000/redirect-after-login" };
+
+            if (string.IsNullOrWhiteSpace(returnUrl) || !allowedReturnUrls.Contains(returnUrl))
+            {
+                returnUrl = "/"; // Default safe redirect
+            }
+            
             var authenticateResult = await HttpContext.AuthenticateAsync();
 
             if (authenticateResult.Succeeded is false 
@@ -67,6 +74,7 @@ namespace MyRecipeBook.Controllers
         }
         
         [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Logout()
         {
             // Sign out the user and clear cookies

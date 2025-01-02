@@ -16,7 +16,7 @@ public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfW
         {
             user = new User
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Name = name,
                 Email = email,
                 Password = "-"

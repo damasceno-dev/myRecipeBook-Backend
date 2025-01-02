@@ -33,7 +33,6 @@ public class SwaggerRequestRecipeFormInstructionsFilter : IOperationFilter
 
     private static void ConfigureInstructionsProperty(OpenApiOperation operation)
     {
-        {
             if (operation.RequestBody?.Content == null) return;
 
             if (!operation.RequestBody.Content.TryGetValue(MultipartFormData, out var mediaType))
@@ -83,6 +82,6 @@ public class SwaggerRequestRecipeFormInstructionsFilter : IOperationFilter
             {
                 ContentType = "application/json"
             };
-        }
+        
     }
 }
