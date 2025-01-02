@@ -62,6 +62,7 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
             AddOpenAIMock(s);
             AddAwsStorageMock(s);
             AddGoogleLoginAuthenticationMock(s);
+            AddDeleteUserQueue(s);
             AddEmailServicesMock(s);
         });
     }
@@ -86,6 +87,12 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
                 "mock")));
 
         service.AddSingleton(mockAuthenticationService.Object);
+    }
+
+    private static void AddDeleteUserQueue(IServiceCollection service)
+    {        
+        var queueDeleteMock = DeleteUserQueueBuilder.Build();
+        service.AddScoped(_ => queueDeleteMock);
     }
 
     private static void AddAwsStorageMock(IServiceCollection service)

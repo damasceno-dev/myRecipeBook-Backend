@@ -1,3 +1,4 @@
+using MyRecipeBook.Application.Services;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Interfaces;
@@ -8,6 +9,7 @@ namespace MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 
 public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfWork unitOfWork, ITokenRepository tokenRepository)
 {
+    private readonly string _defaultExternalLoginKey = PasswordEncryption.DefaultExternalLoginKey;
     public async Task<string> Execute(string name, string email)
     {
         var user = await usersRepository.GetExistingUserWithEmail(email);
@@ -16,10 +18,10 @@ public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfW
         {
             user = new User
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Name = name,
                 Email = email,
-                Password = "-"
+                Password = _defaultExternalLoginKey
             };
 
             await usersRepository.Register(user);

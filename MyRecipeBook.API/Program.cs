@@ -34,7 +34,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapFallback(context => throw new Exception($"No route with the path {context.Request.Path}"));
+app.MapFallback(async context =>
+{
+    context.Response.StatusCode = StatusCodes.Status404NotFound;
+    await context.Response.WriteAsync($"No route with path {context.Request.Path}");
+});
 
 await app.RunAsync();
 

@@ -32,11 +32,12 @@ public static class AppDependencyInjectionExtension
     private static void AddPasswordEncryption(IServiceCollection services, IConfiguration configuration)
     {
         var additionalKey = configuration.GetValue<string>("Settings:Password:AdditionalKey");
-        if (additionalKey is null)
+        var defaultExternalLoginKey = configuration.GetValue<string>("Settings:Password:DefaultExternalLoginKey");
+        if (additionalKey is null || defaultExternalLoginKey is null)
         {
-            throw new ArgumentException("Invalid additional key for password encryption");
+            throw new ArgumentException("Invalid additional key or external login key for password encryption");
         }
-        services.AddScoped(options => new PasswordEncryption(additionalKey));
+        services.AddScoped(options => new PasswordEncryption(additionalKey,defaultExternalLoginKey));
     }
 
     private static void AddUseCases(IServiceCollection services)

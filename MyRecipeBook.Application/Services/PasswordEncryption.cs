@@ -3,10 +3,11 @@ namespace MyRecipeBook.Application.Services;
 public class PasswordEncryption
 {
     private readonly string _additionalKey;
-
-    public PasswordEncryption(string additionalKey)
+    public static string DefaultExternalLoginKey;
+    public PasswordEncryption(string additionalKey, string defaultExternalLoginKey)
     {
         _additionalKey = additionalKey;
+        DefaultExternalLoginKey = defaultExternalLoginKey;
     }
     public string HashPassword(string password)
     {

@@ -6,6 +6,6 @@ public static class PasswordEncryptionBuilder
 {
     public static PasswordEncryption Build()
     {
-        return new PasswordEncryption("testKey1234");
+        return new PasswordEncryption("testKey1234", "a");
     }
 }

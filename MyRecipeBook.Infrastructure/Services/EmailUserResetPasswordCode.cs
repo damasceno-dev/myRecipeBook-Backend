@@ -51,9 +51,17 @@ public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
             await smtpClient.AuthenticateAsync(Gmail, Password);
             await smtpClient.SendAsync(email);
         }
+        catch (SmtpCommandException smtpEx)
+        {
+            throw new InvalidOperationException($"SMTP command error: {smtpEx.Message}", smtpEx);
+        }
+        catch (SmtpProtocolException protocolEx)
+        {
+            throw new InvalidOperationException($"SMTP protocol error: {protocolEx.Message}", protocolEx);
+        }
         catch (Exception ex)
         {
-            throw new Exception($"Error sending google reset email password: {ex.Message}");
+            throw new InvalidOperationException($"Error sending reset password email: {ex.Message}", ex);
         }
         finally
         {

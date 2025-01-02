@@ -5,11 +5,11 @@ using MyRecipeBook.Communication.Requests;
 
 namespace MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
 
-public class JsonModelBinder : IModelBinder
+public partial class JsonModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
 {
-    if (bindingContext == null) throw new ArgumentNullException(nameof(bindingContext));
+    ArgumentNullException.ThrowIfNull(bindingContext);
 
     var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
     if (valueProviderResult == ValueProviderResult.None)
@@ -49,10 +49,9 @@ public class JsonModelBinder : IModelBinder
 
     return Task.CompletedTask;
 }
-    private string FixImproperlyQuotedJsonObjects(string input)
+    private static string FixImproperlyQuotedJsonObjects(string input)
     {
-        // Regex to find improperly quoted JSON objects
-        var regex = new Regex(@"(?<=\[|,)\s*""\{.*?\}""\s*(?=,|\])");
+        var regex = FindImproperlyQuotedJsonObjects();
     
         // Replace the improperly quoted JSON objects with properly formatted JSON
         var sanitizedInput = regex.Replace(input, match =>
@@ -64,4 +63,7 @@ public class JsonModelBinder : IModelBinder
         return sanitizedInput;
     }
 
+    // Regex to find improperly quoted JSON objects
+    [GeneratedRegex(@"(?<=\[|,)\s*""\{.*?\}""\s*(?=,|\])")]
+    private static partial Regex FindImproperlyQuotedJsonObjects();
 }

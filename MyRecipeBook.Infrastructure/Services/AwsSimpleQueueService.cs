@@ -29,12 +29,12 @@ public class AwsSimpleQueueService(IAmazonSQS sqsClient, string queueUrl) : IDel
         return response.Messages.Select(message => (message.Body, message.ReceiptHandle));
     }
 
-    public async Task DeleteMessageAsync(string receiptHandle, CancellationToken cancellationToken)
+    public async Task DeleteMessageAsync(string messageId, CancellationToken cancellationToken)
     {
         await sqsClient.DeleteMessageAsync(new DeleteMessageRequest
         {
             QueueUrl = queueUrl,
-            ReceiptHandle = receiptHandle
+            ReceiptHandle = messageId
         }, cancellationToken);
     }
 }
