@@ -14,6 +14,7 @@ using MyRecipeBook.Application.UseCases.Users.Delete;
 using MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
+using MyRecipeBook.Application.UseCases.Users.RefreshTokens;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Application.UseCases.Users.ResetPassword;
 using MyRecipeBook.Application.UseCases.Users.Update;
@@ -60,5 +61,6 @@ public static class AppDependencyInjectionExtension
         services.AddScoped<UserExternalLoginUseCase>();
         services.AddScoped<UserGetResetPasswordCodeUseCase>();
         services.AddScoped<UserResetPasswordUseCase>();
+        services.AddScoped<UserRefreshTokenUseCase>();
     }
 }

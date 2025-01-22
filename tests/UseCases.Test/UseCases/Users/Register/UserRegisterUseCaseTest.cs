@@ -4,7 +4,6 @@ using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
-using Moq;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Communication;
 using MyRecipeBook.Exception;
@@ -84,6 +83,7 @@ public class UserRegisterUseCaseTest
         var password = PasswordEncryptionBuilder.Build();
         var mapper = MapperBuilder.Build();
         var token = JsonWebTokenRepositoryBuilder.Build();
-        return new UserRegisterUseCase(usersRepository, unitOfWork, mapper, token, password);
+        var refreshToken = new RefreshTokenRepositoryBuilder().Build();
+        return new UserRegisterUseCase(usersRepository, unitOfWork, mapper, token, refreshToken, password);
     }
 }

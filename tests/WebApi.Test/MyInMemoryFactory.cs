@@ -29,6 +29,7 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     private User _user = default!;
     private List<Recipe> _recipes = [];
     private string _password = string.Empty;
+    private RefreshToken _refreshToken = default!;
     
     private MyRecipeBookDbContext? _dbContext;
     private UserPasswordResetCode _userResetPasswordCode = default!;
@@ -46,7 +47,8 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
     public List<Recipe> GetRecipes() => _recipes;
     public string GetPassword() => _password;
     public UserPasswordResetCode GetResetPasswordCode() => _userResetPasswordCode;
-
+    public RefreshToken GetRefreshToken() => _refreshToken;
+    
     public MyInMemoryFactory()
     {
         _httpClient = CreateClient();
@@ -123,10 +125,12 @@ public class MyInMemoryFactory :  WebApplicationFactory<Program>, IAsyncLifetime
         (_user, _password) = UserBuilder.Build();
         _recipes = RecipeBuilder.RecipeCollection(_user);
         _userResetPasswordCode = UserPasswordCodeBuilder.Build(_user.Id, DigitGenerator.Generate6DigitCode());
+        _refreshToken = RefreshTokenBuilder.Build(_user);
         
         _dbContext.Users.Add(_user);
         _dbContext.Recipes.AddRange(_recipes);
         _dbContext.UserPasswordResetCodes.Add(_userResetPasswordCode);
+        _dbContext.RefreshTokens.Add(_refreshToken);
         
         await _dbContext.SaveChangesAsync();
     }

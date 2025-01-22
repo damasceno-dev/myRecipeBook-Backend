@@ -157,5 +157,17 @@ namespace MyRecipeBook.Exception {
                 return ResourceManager.GetString("IMAGE_INVALID_TYPE", resourceCulture);
             }
         }
+        public static string REFRESH_TOKEN_INVALID
+        {
+            get {
+                return ResourceManager.GetString("REFRESH_TOKEN_INVALID", resourceCulture);
+            }
+        }
+        public static string REFRESH_TOKEN_EXPIRED
+        {
+            get {
+                return ResourceManager.GetString("REFRESH_TOKEN_EXPIRED", resourceCulture);
+            }
+        }
     }
 }

@@ -235,5 +235,17 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("USER_PASSWORD_RESET_EXPIRED_CODE", resourceCulture);
             }
         }
+        public static string REFRESH_TOKEN_INVALID
+        {
+            get {
+                return ResourceManager.GetString("REFRESH_TOKEN_INVALID", resourceCulture);
+            }
+        }
+        public static string REFRESH_TOKEN_EXPIRED
+        {
+            get {
+                return ResourceManager.GetString("REFRESH_TOKEN_EXPIRED", resourceCulture);
+            }
+        }
     }
 }

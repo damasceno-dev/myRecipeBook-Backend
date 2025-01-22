@@ -1,7 +1,6 @@
 using CommonTestUtilities.Cryptography;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
-using CommonTestUtilities.Requests;
 using CommonTestUtilities.Token;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.Users.ExternalLogin;
@@ -23,7 +22,7 @@ public class UserExternalLoginUseCaseTest
 
         var result = await useCase.Execute(name: user.Name, email: user.Email);
 
-        result.Should().NotBeNullOrEmpty();
+        result.Should().NotBeNull();
     }
 
     [Fact]
@@ -35,7 +34,7 @@ public class UserExternalLoginUseCaseTest
 
         var result = await useCase.Execute(name: user.Name, email: user.Email);
 
-        result.Should().NotBeNullOrEmpty();
+        result.Should().NotBeNull();
     }
     
     [Fact]
@@ -55,6 +54,7 @@ public class UserExternalLoginUseCaseTest
 
         var usersRepositoryBuilder = new UserRepositoryBuilder();
         var token = JsonWebTokenRepositoryBuilder.Build();
+        var refreshToken = new RefreshTokenRepositoryBuilder().Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
         var passwordEncryption = PasswordEncryptionBuilder.Build();
 
@@ -65,6 +65,6 @@ public class UserExternalLoginUseCaseTest
 
         var usersRepository = usersRepositoryBuilder.Build();
 
-        return new UserExternalLoginUseCase(usersRepository, unitOfWork, token, passwordEncryption);
+        return new UserExternalLoginUseCase(usersRepository, unitOfWork, token, refreshToken, passwordEncryption);
     }
 }

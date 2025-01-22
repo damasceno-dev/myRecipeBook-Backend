@@ -7,6 +7,7 @@ using MyRecipeBook.Application.UseCases.Users.Delete;
 using MyRecipeBook.Application.UseCases.Users.ExternalLogin;
 using MyRecipeBook.Application.UseCases.Users.Login;
 using MyRecipeBook.Application.UseCases.Users.Profile;
+using MyRecipeBook.Application.UseCases.Users.RefreshTokens;
 using MyRecipeBook.Application.UseCases.Users.Register;
 using MyRecipeBook.Application.UseCases.Users.ResetPassword;
 using MyRecipeBook.Application.UseCases.Users.Update;
@@ -68,9 +69,9 @@ namespace MyRecipeBook.Controllers
             if (email is null || name is null)
                 return BadRequest("Couldn't get name or email from google authentication");
 
-            var token = await userExternalLoginUse.Execute(name, email);
+            var responseUserLogin = await userExternalLoginUse.Execute(name, email);
 
-            return Redirect($"{returnUrl}?token={token}&name={name}&email={email}");
+            return Redirect($"{returnUrl}?token={responseUserLogin.ResponseToken.Token}&name={responseUserLogin.Name}&email={responseUserLogin.Email}&refreshToken={responseUserLogin.ResponseToken.RefreshToken}");
         }
         
         [HttpPost("logout")]
@@ -80,6 +81,15 @@ namespace MyRecipeBook.Controllers
             // Sign out the user and clear cookies
             HttpContext.SignOutAsync();
             return Ok(new ResponseSuccessLogoutJson("Logged out successfully"));
+        }
+
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(ResponseTokenJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> RefreshToken([FromServices] UserRefreshTokenUseCase userRefreshTokenUseCase, [FromBody] RequestRefreshTokenJson refreshToken)
+        {
+            var response = await userRefreshTokenUseCase.Execute(refreshToken);
+            return Ok(response);
         }
         
         [HttpGet]
