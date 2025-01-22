@@ -52,6 +52,7 @@ public static class InfraDependencyInjectionExtension
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IRecipesRepository, RecipesRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     }
 
     private static void AddDbContext(IServiceCollection services, IConfiguration configuration)

@@ -10,7 +10,7 @@ using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.Users.Register;
 
-public class UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper, ITokenRepository tokenRepository, PasswordEncryption passwordEncryption)
+public class UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOfWork, IMapper mapper, ITokenRepository tokenRepository, IRefreshTokenRepository refreshTokenRepository, PasswordEncryption passwordEncryption)
 {
     public async Task<ResponseUserRegisterJson> Execute(RequestUserRegisterJson request)
     {
@@ -21,8 +21,11 @@ public class UserRegisterUseCase(IUsersRepository repository, IUnitOfWork unitOf
         newUser.Id = Guid.NewGuid();
         newUser.Password = passwordEncryption.HashPassword(request.Password);
         var userToken = tokenRepository.Generate(newUser.Id);
-        
         await repository.Register(newUser);
+        
+        var refreshToken = new RefreshToken { Value = refreshTokenRepository.Generate(), UserId = newUser.Id };
+        await refreshTokenRepository.SaveRefreshToken(refreshToken);
+        
         await unitOfWork.Commit();
 
         return new ResponseUserRegisterJson

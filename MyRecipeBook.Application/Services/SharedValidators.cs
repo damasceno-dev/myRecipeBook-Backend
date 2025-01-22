@@ -11,6 +11,7 @@ public static partial class SharedValidators
     public const int MinimumPasswordLength = 6;
     public const int MaximumRecipeInstructionTextLength = 2000;
     public const int MaximumRecipeIngredients = 10;
+    public const int RefreshTokenExpirationTimeInDays = 7;
     private const int MaximumRecipeIngredientWords = 5;
     
     public static (bool isValidImage, string extension) ValidateImageAndGetExtension(this Stream file)

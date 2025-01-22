@@ -123,4 +123,10 @@
     <data name="USER_PASSWORD_RESET_WRONG_CODE" xml:space="preserve">
         <value>Código errado</value>
     </data>
+    <data name="REFRESH_TOKEN_INVALID" xml:space="preserve">
+        <value>Refresh Token inválido</value>
+    </data>
+    <data name="REFRESH_TOKEN_EXPIRED" xml:space="preserve">
+        <value>Refresh Token expirado</value>
+    </data>
 </root>

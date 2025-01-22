@@ -96,7 +96,9 @@ public class LoginUseCaseTest
     {
         var usersRepository = new UserRepositoryBuilder().GetExistingUserWithEmail(user).Build();
         var token = JsonWebTokenRepositoryBuilder.Build();
+        var refreshToken = new RefreshTokenRepositoryBuilder().Build();
+        var unitOfWork = UnitOfWorkBuilder.Build();
         var passwordEncryption = PasswordEncryptionBuilder.Build();
-        return new UserLoginUseCase(usersRepository, token, passwordEncryption);
+        return new UserLoginUseCase(usersRepository, token, refreshToken, unitOfWork, passwordEncryption);
     }
 }
