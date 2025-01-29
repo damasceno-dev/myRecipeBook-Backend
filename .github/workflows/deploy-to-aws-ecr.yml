@@ -13,7 +13,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+        
+      - name: Create .env files
+        run: |
+          echo "${{ secrets.INFRA_ENV }}" > MyRecipeBook.Infrastructure/Infrastructure.env
+          echo "${{ secrets.API_ENV }}" > MyRecipeBook.API/API.env
+          
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
