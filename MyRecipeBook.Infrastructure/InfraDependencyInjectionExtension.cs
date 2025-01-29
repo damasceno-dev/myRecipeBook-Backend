@@ -16,6 +16,38 @@ namespace MyRecipeBook.Infrastructure;
 
 public static class InfraDependencyInjectionExtension
 {
+    public static async Task MigrateDatabaseAsync(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var scopedServices = scope.ServiceProvider;
+
+        try
+        {
+            var dbContext = scopedServices.GetRequiredService<MyRecipeBookDbContext>();
+            var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
+
+            if (!pendingMigrations.Any())
+            {
+                Console.WriteLine(@"No pending migrations were found. The database is up-to-date.");
+                return;
+            }
+
+            Console.WriteLine(@"The following migrations will be applied:");
+            foreach (var migration in pendingMigrations)
+            {
+                Console.WriteLine($@"- {migration}");
+            }
+
+            await dbContext.Database.MigrateAsync();
+            Console.WriteLine(@"Migrations applied successfully.");
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions (e.g., logging, rethrowing)
+            Console.WriteLine($@"An error occurred during database migration: {ex.Message}");
+            throw;
+        }
+    }
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         AddDotEnvFiles();
@@ -54,7 +86,7 @@ public static class InfraDependencyInjectionExtension
         var expirationTime = configuration.GetValue<int>("Settings:Token:ExpirationTimeInMinutes");
         if (signKey is null || expirationTime == 0)
             throw new ArgumentException("Invalid token sign key or expiration time");
-        services.AddScoped<ITokenRepository>(options => new JsonWebTokenRepository(expirationTime, signKey));
+        services.AddScoped<ITokenRepository>(_ => new JsonWebTokenRepository(expirationTime, signKey));
     }
 
     private static void AddRepositories(IServiceCollection services)
@@ -110,8 +142,9 @@ public static class InfraDependencyInjectionExtension
             throw new ArgumentException("Invalid AWS connection string values");
         
         var s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
-        services.AddScoped<IStorageService>(c => new AwsStorageService(s3Client, bucketName));
+        services.AddScoped<IStorageService>(_ => new AwsStorageService(s3Client, bucketName));
     }
+    
     private static void AddAwsQueue(IServiceCollection services)
     {
         var queueUrl = Environment.GetEnvironmentVariable("AWS_SQS_DELETE_USER_URL");

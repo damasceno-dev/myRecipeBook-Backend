@@ -20,6 +20,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+
+await app.Services.MigrateDatabaseAsync();
+
 app.UseCors("AllowFrontend");
 app.UseMiddleware<CultureMiddleware>();
 
