@@ -1,13 +1,13 @@
-name: Deploy to Amazon Public ECR
+name: Deploy to Private Amazon ECR
 
 on:
   push:
     branches:
-      - main  # Trigger only when pushing to main branch
+      - main  # Runs when pushing to the main branch
 
 jobs:
   deploy:
-    name: Build and Push to Public ECR
+    name: Build and Push to Private ECR
     runs-on: ubuntu-latest
 
     steps:
@@ -21,26 +21,24 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
 
-      - name: Install AWS CLI
+      - name: Log in to Amazon ECR
         run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
-      - name: Authenticate with Amazon Public ECR
-        run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 533267083060.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and Tag Docker Image
         run: |
-          docker build -t public.ecr.aws/m8i1w4q6/myrecipebook:latest -t public.ecr.aws/m8i1w4q6/myrecipebook:${{ env.SHORT_SHA }} .
+          docker build -t 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:latest -t 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:${{ env.SHORT_SHA }} .
 
-      - name: Push Docker Image to Public ECR
+      - name: Push Docker Image to Private ECR
         run: |
-          docker push public.ecr.aws/m8i1w4q6/myrecipebook:latest
-          docker push public.ecr.aws/m8i1w4q6/myrecipebook:${{ env.SHORT_SHA }}
+          docker push 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:latest
+          docker push 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:${{ env.SHORT_SHA }}
 
       - name: Verify Pushed Images
         run: |
           echo "Pushed images to ECR:"
-          echo " - public.ecr.aws/m8i1w4q6/myrecipebook:latest"
-          echo " - public.ecr.aws/m8i1w4q6/myrecipebook:${{ env.SHORT_SHA }}"
+          echo " - 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:latest"
+          echo " - 533267083060.dkr.ecr.us-east-1.amazonaws.com/myrecipebook:${{ env.SHORT_SHA }}"
