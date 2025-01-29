@@ -28,5 +28,11 @@
       <ProjectReference Include="..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
       <ProjectReference Include="..\MyRecipeBook.Infrastructure\MyRecipeBook.Infrastructure.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="API.env">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
 </Project>

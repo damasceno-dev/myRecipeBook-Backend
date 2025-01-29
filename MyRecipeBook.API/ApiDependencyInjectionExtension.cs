@@ -12,7 +12,7 @@ public static class ApiDependencyInjectionExtension
     private const string AuthenticationType = "Bearer";
     public static void AddApi(this IServiceCollection services, IConfiguration configuration)
     {
-        DotNetEnv.Env.Load("../MyRecipeBook.API/.env");
+        AddDotEnvFiles();
         AddSwaggerWithTokenReaderAndOperationFilter(services);
         services.AddScoped<ITokenProvider, GetTokenValueFromRequest>();
         services.AddHttpContextAccessor(); //allow context accessor on GetTokenValueFromRequest
@@ -23,6 +23,15 @@ public static class ApiDependencyInjectionExtension
             AddGoogleAuthentication(services);
         } 
         AddFrontEndCors(services, "3000");
+    }
+    private static void AddDotEnvFiles()
+    {    
+        // Determine the environment and set the .env file path'
+        var envFilePath = File.Exists("API.env")
+            ? "API.env" // Path for publishing environment
+            : "../MyRecipeBook.API/API.env"; // Path for development environment
+
+        DotNetEnv.Env.Load(envFilePath);
     }
 
     private static void AddFrontEndCors(IServiceCollection services, string port)

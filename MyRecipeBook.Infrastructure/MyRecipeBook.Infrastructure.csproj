@@ -67,4 +67,10 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="Infrastructure.env">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
 </Project>

@@ -18,7 +18,7 @@ public static class InfraDependencyInjectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");
+        AddDotEnvFiles();
         var testEnv = configuration.GetValue<bool>("IsTestEnvironment");
         AddRepositories(services);
         AddToken(services, configuration);
@@ -33,6 +33,16 @@ public static class InfraDependencyInjectionExtension
 
     }
 
+    private static void AddDotEnvFiles()
+    {    
+        // Determine the environment and set the .env file path
+        var envFilePath = File.Exists("Infrastructure.env")
+            ? "Infrastructure.env" // Path for publishing environment
+            : "../MyRecipeBook.Infrastructure/Infrastructure.env"; // Path for development environment
+
+        DotNetEnv.Env.Load(envFilePath);
+    }
+    
     private static void AddEmailSender(IServiceCollection services)
     {
         services.AddScoped<ISendUserResetPasswordCode, EmailUserResetPasswordCode>();
