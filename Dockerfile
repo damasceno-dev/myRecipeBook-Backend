@@ -10,7 +10,7 @@ COPY ["MyRecipeBook.Infrastructure/", "MyRecipeBook.Infrastructure/"]
 
 # ✅ Explicitly copy env files to production
 COPY MyRecipeBook.API/API.env MyRecipeBook.API/API.env
-COPY MyRecipeBook.API/API.env MyRecipeBook.API/API.env
+COPY MyRecipeBook.Infrastructure/Infrastructure.env MyRecipeBook.Infrastructure/Infrastructure.env
 WORKDIR MyRecipeBook.API/
 
 RUN dotnet restore
