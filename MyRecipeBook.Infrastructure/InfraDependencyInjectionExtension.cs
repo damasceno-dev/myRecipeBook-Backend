@@ -124,21 +124,17 @@ public static class InfraDependencyInjectionExtension
     
     private static void AddAwsStorage(IServiceCollection services)
     {
-        var awsConfig = Environment.GetEnvironmentVariable("AWS_S3_CONFIG");
-
-        if (string.IsNullOrWhiteSpace(awsConfig))
-            throw new ArgumentException("Invalid AWS connection string");
         
-        var configParts = awsConfig.Split(';')
-            .Select(part => part.Split('='))
-            .ToDictionary(kv => kv[0], kv => kv[1]);
+        var bucketName = Environment.GetEnvironmentVariable("AWS_S3_BUCKET_NAME");
 
-        var accessKey = configParts.GetValueOrDefault("AccessKey");
-        var secretKey = configParts.GetValueOrDefault("SecretKey");
-        var bucketName = configParts.GetValueOrDefault("BucketName");
-        var region = configParts.GetValueOrDefault("Region");
+        if (string.IsNullOrWhiteSpace(bucketName))
+            throw new ArgumentException("Invalid or empty AWS S3 Bucket Name");
 
-        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey) ||string.IsNullOrWhiteSpace(bucketName))
+        var region = Environment.GetEnvironmentVariable("AWS_REGION");
+        var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+
+        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey) ||string.IsNullOrWhiteSpace(region))
             throw new ArgumentException("Invalid AWS connection string values");
         
         var s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
@@ -148,9 +144,16 @@ public static class InfraDependencyInjectionExtension
     private static void AddAwsQueue(IServiceCollection services)
     {
         var queueUrl = Environment.GetEnvironmentVariable("AWS_SQS_DELETE_USER_URL");
-
+        
         if (string.IsNullOrWhiteSpace(queueUrl))
             throw new ArgumentException("Invalid AWS SQS Delete user url");
+       
+        var region = Environment.GetEnvironmentVariable("AWS_REGION");
+        var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+
+        if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey) ||string.IsNullOrWhiteSpace(region))
+            throw new ArgumentException("Invalid AWS connection string values");
         
         services.AddSingleton<IDeleteUserQueue>(_ => new AwsSimpleQueueService(new AmazonSQSClient(), queueUrl));
     }
