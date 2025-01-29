@@ -3,7 +3,7 @@ name: Deploy to Amazon Public ECR
 on:
   push:
     branches:
-      - main  # Trigger only when pushing to the main branch
+      - main  # This triggers the workflow on push to the main branch
 
 jobs:
   deploy:
@@ -21,10 +21,13 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
 
-      - name: Log in to Amazon Public ECR
+      - name: Log in to Amazon ECR Public
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry-type: public
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
 
       - name: Build and Tag Docker Image
         run: |
