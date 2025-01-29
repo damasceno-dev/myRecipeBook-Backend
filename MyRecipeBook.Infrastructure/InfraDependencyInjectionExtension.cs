@@ -43,7 +43,6 @@ public static class InfraDependencyInjectionExtension
         }
         catch (Exception ex)
         {
-            // Handle exceptions (e.g., logging, rethrowing)
             Console.WriteLine($@"An error occurred during database migration: {ex.Message}");
             throw;
         }
