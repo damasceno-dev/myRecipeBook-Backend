@@ -21,11 +21,14 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
 
-      - name: Log in to Amazon Public ECR
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: public
-          registries: public.ecr.aws
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Authenticate with Amazon Public ECR
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
       - name: Build and Tag Docker Image
         run: |
