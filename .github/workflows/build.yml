@@ -42,7 +42,12 @@ jobs:
         run: |
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-
+          
+      - name: Create .env files
+        run: |
+          echo "${{ secrets.INFRA_ENV }}" > MyRecipeBook.Infrastructure/Infrastructure.env
+          echo "${{ secrets.API_ENV }}" > MyRecipeBook.API/API.env
+          
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
