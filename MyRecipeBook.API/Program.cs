@@ -20,7 +20,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-await app.Services.MigrateDatabaseAsync();
+var testEnv = builder.Configuration.GetValue<bool>("IsTestEnvironment");
+if (testEnv is false)
+{
+    await app.Services.MigrateDatabaseAsync();
+}
 
 app.UseCors("AllowFrontend");
 app.UseMiddleware<CultureMiddleware>();
