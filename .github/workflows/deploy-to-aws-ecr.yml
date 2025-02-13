@@ -22,7 +22,7 @@ jobs:
       - name: Load Environment Variables Safely
         run: |
           while IFS='=' read -r key value; do
-            if [[ ! -z "$key" ]]; then
+            if [[ ! -z "$key" && ! -z "$value" ]]; then
               echo "$key=\"$value\"" >> $GITHUB_ENV
             fi
           done < MyRecipeBook.Infrastructure/Infrastructure.env
@@ -33,6 +33,10 @@ jobs:
       - name: Get short commit hash
         id: vars
         run: echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+
+      - name: Debug AWS_REGION
+        run: |
+          echo "AWS_REGION is: '$AWS_REGION'"
 
       - name: Debug AWS Credentials
         run: |
