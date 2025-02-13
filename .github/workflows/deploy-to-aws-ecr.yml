@@ -23,7 +23,8 @@ jobs:
         run: |
           while IFS='=' read -r key value; do
             if [[ ! -z "$key" && ! -z "$value" ]]; then
-              echo "$key=\"$value\"" >> $GITHUB_ENV
+              clean_value=$(echo "$value" | tr -d '"') 
+              echo "$key=$clean_value" >> $GITHUB_ENV
             fi
           done < MyRecipeBook.Infrastructure/Infrastructure.env
           
