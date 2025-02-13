@@ -19,13 +19,11 @@ jobs:
           echo "${{ secrets.INFRA_ENV }}" > MyRecipeBook.Infrastructure/Infrastructure.env
           echo "${{ secrets.API_ENV }}" > MyRecipeBook.API/API.env
           
-      - name: Load Resources Creator Environment Variables
+      - name: Load Environment Variables Safely
         run: |
-          export $(cat MyRecipeBook.Infrastructure/Infrastructure.env | xargs)
-          echo "AWS_REGION=${AWS_REGION}" >> $GITHUB_ENV
-          echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> $GITHUB_ENV
-          echo "AWS_ECR_URL=${AWS_ECR_URL}" >> $GITHUB_ENV
+          while IFS='=' read -r key value; do
+            [[ ! -z "$key" ]] && echo "$key=\"$value\"" >> $GITHUB_ENV
+          done < .secrets
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
