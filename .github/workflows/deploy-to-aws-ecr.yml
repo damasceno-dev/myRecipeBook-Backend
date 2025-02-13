@@ -23,7 +23,7 @@ jobs:
         run: |
           while IFS='=' read -r key value; do
             [[ ! -z "$key" ]] && echo "$key=\"$value\"" >> $GITHUB_ENV
-          done < .secrets
+          done < MyRecipeBook.Infrastructure/Infrastructure.env
           
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
