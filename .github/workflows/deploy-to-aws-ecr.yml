@@ -24,7 +24,7 @@ jobs:
           while IFS='=' read -r key value; do
             if [[ ! -z "$key" ]]; then
               echo "$key=\"$value\"" >> $GITHUB_ENV
-#              echo "::add-mask::$value"  # Mask the variable value in logs
+              echo "::add-mask::$value"  # Mask the variable value in logs
             fi
           done < MyRecipeBook.Infrastructure/Infrastructure.env
           
