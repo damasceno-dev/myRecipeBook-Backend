@@ -108,7 +108,7 @@ public static class InfraDependencyInjectionExtension
         if (connectionString is null)
             throw new ArgumentException("Invalid connection string");
         
-        connectionString = connectionString.Replace("$$password$$", envPassword);
+        connectionString = connectionString.Replace("$$replaceThis$$", envPassword);
 
         services.AddDbContext<MyRecipeBookDbContext>(options => options.UseNpgsql(connectionString));
     }

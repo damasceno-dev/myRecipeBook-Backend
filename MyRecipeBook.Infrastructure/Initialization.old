@@ -1,0 +1,31 @@
+
+running the first script: define an user in aws that is going to create the resources for the application.
+(e. g., terraform plan -var="prefix=myrecipebook" -var="admin_profile=your-admin-profile" -var="resources_creator_profile=your-resources-creator-profile")
+define an admin in aws that is going to give the permission to the user to create the resources for the application
+
+the admin must have attached the policies mentioned in the comment of admin/main.tf
+
+execute the first step then the second step
+pull the image to the ecr repository (ci.yml file)
+execute the third step to run the app
+
+    execute terraform plan and apply in the Terraform/admin folder
+     example: terraform apply -var="admin_profile=yourAdminProfile" -var="user_profile=yourUserProfile" -var="account_id=yourAccNumber" -var="prefix=myrecipebook"
+    execute terraform plan and apply in the Terraform/user folder
+        example: terraform apply -var="db_password=samePassFromInfrastructure.env" -var="user_profile=yourUserProfile" -var="prefix=myrecipebook"
+    
+
+rds endpoint:
+terraform output -raw rds_endpoint
+write it in appsettings.Production.json => 
+  "ConnectionStrings": {
+    "DefaultConnection": Host=
+
+hub to docker images:
+terraform output -raw ecr_repository_url
+write it in github secrets AWS_ECR_REPOSITORY for deploy-to-aws-ecr pipeline
+
+application running in production:
+terraform output -raw app_runner_service_url
+example:
+https://abcd123456xyz.us-east-1.awsapprunner.com/swagger/index.html
