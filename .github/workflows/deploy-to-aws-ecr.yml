@@ -22,7 +22,10 @@ jobs:
       - name: Load Environment Variables Safely
         run: |
           while IFS='=' read -r key value; do
-            [[ ! -z "$key" ]] && echo "$key=\"$value\"" >> $GITHUB_ENV
+            if [[ ! -z "$key" ]]; then
+              echo "$key=\"$value\"" >> $GITHUB_ENV
+#              echo "::add-mask::$value"  # Mask the variable value in logs
+            fi
           done < MyRecipeBook.Infrastructure/Infrastructure.env
           
       - name: Set up Docker Buildx
