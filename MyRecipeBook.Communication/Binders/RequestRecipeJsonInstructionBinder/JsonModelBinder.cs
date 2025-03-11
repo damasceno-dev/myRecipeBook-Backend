@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MyRecipeBook.Communication.Requests;
 
@@ -8,62 +7,75 @@ namespace MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
 public partial class JsonModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
-{
-    ArgumentNullException.ThrowIfNull(bindingContext);
-
-    var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
-    if (valueProviderResult == ValueProviderResult.None)
     {
-        bindingContext.Result = ModelBindingResult.Failed();
-        return Task.CompletedTask;
-    }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
-    try
-    {
-        var rawValue = valueProviderResult.FirstValue;
-        if (string.IsNullOrWhiteSpace(rawValue))
+        var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+        if (valueProviderResult == ValueProviderResult.None)
         {
-            bindingContext.Result = ModelBindingResult.Success(null);
+            bindingContext.Result = ModelBindingResult.Failed();
             return Task.CompletedTask;
         }
 
-        // Normalize the value
-        var normalizedValue = rawValue
-            .Replace("\\n", "")         // Remove newline escapes
-            .Replace("\\\"", "\"")     // Unescape quotes
-            .Trim();                   // Remove leading/trailing spaces
-
-        // Preprocess the JSON string to handle mixed object types
-        var sanitizedValue = FixImproperlyQuotedJsonObjects(normalizedValue);
-
-        // Deserialize the corrected JSON array
-        var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(sanitizedValue);
-
-        bindingContext.Result = ModelBindingResult.Success(parsedInstructions);
-    }
-    catch (Exception ex)
-    {
-        bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"Invalid JSON format: {ex.Message}");
-        bindingContext.Result = ModelBindingResult.Failed();
-    }
-
-    return Task.CompletedTask;
-}
-    private static string FixImproperlyQuotedJsonObjects(string input)
-    {
-        var regex = FindImproperlyQuotedJsonObjects();
-    
-        // Replace the improperly quoted JSON objects with properly formatted JSON
-        var sanitizedInput = regex.Replace(input, match =>
+        try
         {
-            var trimmedMatch = match.Value.Trim('\"'); // Remove the surrounding quotes
-            return trimmedMatch; // Return the unquoted JSON object
-        });
+            var rawValue = valueProviderResult.FirstValue;
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                bindingContext.Result = ModelBindingResult.Success(null);
+                return Task.CompletedTask;
+            }
 
-        return sanitizedInput;
+            // Normalize the value
+            var normalizedValue = rawValue
+                .Replace("\\n", "")         // Remove newline escapes
+                .Replace("\\\"", "\"")     // Unescape quotes
+                .Trim();                   // Remove leading/trailing spaces
+
+            // Try to parse as array first
+            try
+            {
+                var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(normalizedValue);
+                bindingContext.Result = ModelBindingResult.Success(parsedInstructions);
+                return Task.CompletedTask;
+            }
+            catch
+            {
+                // If parsing as array fails, try parsing as single object or comma-separated objects
+                var jsonDocument = JsonDocument.Parse(normalizedValue);
+                var instructions = new List<RequestRecipeInstructionJson>();
+
+                if (jsonDocument.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    // Single object
+                    var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(jsonDocument.RootElement.GetRawText());
+                    if (instruction != null)
+                    {
+                        instructions.Add(instruction);
+                    }
+                }
+                else if (jsonDocument.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    // Array of objects
+                    foreach (var element in jsonDocument.RootElement.EnumerateArray())
+                    {
+                        var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(element.GetRawText());
+                        if (instruction != null)
+                        {
+                            instructions.Add(instruction);
+                        }
+                    }
+                }
+
+                bindingContext.Result = ModelBindingResult.Success(instructions);
+            }
+        }
+        catch (Exception ex)
+        {
+            bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"Invalid JSON format: {ex.Message}");
+            bindingContext.Result = ModelBindingResult.Failed();
+        }
+
+        return Task.CompletedTask;
     }
-
-    // Regex to find improperly quoted JSON objects
-    [GeneratedRegex(@"(?<=\[|,)\s*""\{.*?\}""\s*(?=,|\])")]
-    private static partial Regex FindImproperlyQuotedJsonObjects();
 }

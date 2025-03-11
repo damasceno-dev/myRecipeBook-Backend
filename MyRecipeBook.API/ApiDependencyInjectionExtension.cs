@@ -40,7 +40,7 @@ public static class ApiDependencyInjectionExtension
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins($"http://localhost:{port}") // Frontend URL
+                policy.WithOrigins($"http://localhost:{port}", $"https://localhost:{port}") // Frontend URL
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials(); // Required for cookies
@@ -72,7 +72,25 @@ public static class ApiDependencyInjectionExtension
             {
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
+                // Use less strict cookie settings for development over HTTP:
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    var redirectUri = context.RedirectUri;
+                    var uri = new Uri(redirectUri);
+                    // Parse the query parameters
+                    var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+                    // Convert to a dictionary to override values
+                    var queryDict = queryParams.ToDictionary(k => k.Key, v => v.Value.ToString());
+                    // Override the prompt parameter unconditionally
+                    queryDict["prompt"] = "consent select_account";
+                    // Rebuild the redirect URI
+                    var newRedirectUri = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(uri.GetLeftPart(UriPartial.Path), queryDict);
+                    context.Response.Redirect(newRedirectUri);
+                    return Task.CompletedTask;
+                };
             });
     }
 

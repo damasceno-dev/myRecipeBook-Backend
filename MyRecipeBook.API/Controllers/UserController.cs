@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.Application.UseCases.Users.ChangePassword;
@@ -18,7 +19,8 @@ namespace MyRecipeBook.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(ILogger<UserController> logger)
+        : ControllerBase
     {
         [HttpPost]
         [Route("register")]
@@ -76,11 +78,13 @@ namespace MyRecipeBook.Controllers
         
         [HttpPost("logout")]
         [ProducesResponseType(typeof(ResponseSuccessLogoutJson), StatusCodes.Status200OK)]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            // Sign out the user and clear cookies
-            HttpContext.SignOutAsync();
-            return Ok(new ResponseSuccessLogoutJson("Logged out successfully"));
+                logger.LogInformation("Logout process started.");
+                // Sign out the local authentication cookie
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                logger.LogInformation("Logout completed successfully.");
+                return Ok(new ResponseSuccessLogoutJson("Logged out successfully"));
         }
 
         [HttpPost("refresh-token")]
