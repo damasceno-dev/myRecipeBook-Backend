@@ -7,7 +7,13 @@ using MyRecipeBook.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(options => options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider()));
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new JsonModelBinderProvider());
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+}).ConfigureApiBehaviorOptions(options => {
+    options.SuppressModelStateInvalidFilter = true;
+});
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new StringConverter()));
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -15,7 +21,6 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddApi(builder.Configuration);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
