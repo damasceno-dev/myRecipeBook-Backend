@@ -29,20 +29,7 @@ public class UserUpdateUseCaseTest
         response.Email.Should().Be(request.Email);
         response.Name.Should().Be(request.Name);
     }
-    
-    [Fact]
-    public async Task ErrorEmailEmpty()
-    {
-        var request = RequestUserUpdateJsonBuilder.Build();
-        request.Email = string.Empty;
-        var useCase = CreateUserUpdateUseCase();
-        
-        Func<Task> act = () => useCase.Execute(request);
-        
-        (await act.Should().ThrowAsync<OnValidationException>())
-            .Where(e => e.GetErrors.Count == 1 && 
-                        e.GetErrors.Contains(ResourceErrorMessages.EMAIL_NOT_EMPTY));
-    }
+
     [Fact]
     public async Task ErrorEmailInvalid()
     {
@@ -55,20 +42,6 @@ public class UserUpdateUseCaseTest
         (await act.Should().ThrowAsync<OnValidationException>())
             .Where(e => e.GetErrors.Count == 1 && 
                         e.GetErrors.Contains(ResourceErrorMessages.EMAIL_INVALID));
-    }
-    
-    [Fact]
-    public async Task ErrorNameEmpty()
-    {
-        var request = RequestUserUpdateJsonBuilder.Build();
-        request.Name = string.Empty;
-        var useCase = CreateUserUpdateUseCase();
-        
-        Func<Task> act = () => useCase.Execute(request);
-        
-        (await act.Should().ThrowAsync<OnValidationException>())
-            .Where(e => e.GetErrors.Count == 1 && 
-                        e.GetErrors.Contains(ResourceErrorMessages.NAME_NOT_EMPTY));
     }
     
     [Fact]

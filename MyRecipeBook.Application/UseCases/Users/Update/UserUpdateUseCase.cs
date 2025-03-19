@@ -22,15 +22,25 @@ public class UserUpdateUseCase
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    
     public async Task<ResponseUserProfileJson> Execute(RequestUserUpdateJson request)
     {
         var user = await _usersRepository.GetLoggedUserWithToken();
         
         Validate(request);
-        await ValidateIfEmailAlreadyExists(request.Email);
-        
-        user.Name = request.Name;
-        user.Email = request.Email;
+
+        // Only update and validate email if it's provided
+        if (!string.IsNullOrEmpty(request.Email))
+        {
+            await ValidateIfEmailAlreadyExists(request.Email);
+            user.Email = request.Email;
+        }
+
+        // Only update name if it's provided
+        if (!string.IsNullOrEmpty(request.Name))
+        {
+            user.Name = request.Name;
+        }
         
         _usersRepository.UpdateUser(user);
         await _unitOfWork.Commit();

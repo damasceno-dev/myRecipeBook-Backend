@@ -63,26 +63,6 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
     
     [Theory]
     [ClassData(typeof(TestCultures))]
-    public async Task ErrorEmailEmpty(string cultureFromRequest)
-    {
-        var registeredUser = _factory.GetUser();
-        var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(registeredUser.Id);
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("EMAIL_NOT_EMPTY", new CultureInfo(cultureFromRequest));
-
-        var requestUpdate = RequestUserUpdateJsonBuilder.Build();
-        requestUpdate.Email = string.Empty;
-        var response = await _factory.DoPut("user/update", token: validToken, request:requestUpdate, culture:cultureFromRequest);
-        
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        result.RootElement.GetProperty("errorMessages")
-            .EnumerateArray()
-            .Should()
-            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
-    }
-    
-    [Theory]
-    [ClassData(typeof(TestCultures))]
     public async Task ErrorEmailInvalid(string cultureFromRequest)
     {
         var registeredUser = _factory.GetUser();
@@ -91,25 +71,6 @@ public class UpdateUserControllerInMemoryTest : IClassFixture<MyInMemoryFactory>
 
         var requestUpdate = RequestUserUpdateJsonBuilder.Build();
         requestUpdate.Email = "invalid_email.com";
-        var response = await _factory.DoPut("user/update", token: validToken, request:requestUpdate, culture:cultureFromRequest);
-        
-        var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        result.RootElement.GetProperty("errorMessages")
-            .EnumerateArray()
-            .Should()
-            .ContainSingle(e => e.GetString()!.Equals(expectedErrorMessage));
-    }
-    
-    [Theory]
-    [ClassData(typeof(TestCultures))]
-    public async Task ErrorNameEmpty(string cultureFromRequest)
-    {   
-        var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(_factory.GetUser().Id);
-        var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("NAME_NOT_EMPTY", new CultureInfo(cultureFromRequest));
-
-        var requestUpdate = RequestUserUpdateJsonBuilder.Build();
-        requestUpdate.Name = string.Empty;
         var response = await _factory.DoPut("user/update", token: validToken, request:requestUpdate, culture:cultureFromRequest);
         
         var result = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
