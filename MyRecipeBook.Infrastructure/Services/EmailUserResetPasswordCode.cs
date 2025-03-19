@@ -1,20 +1,28 @@
 using MimeKit;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MyRecipeBook.Domain.Interfaces.Email;
+using System.Security.Authentication;
 
 namespace MyRecipeBook.Infrastructure.Services;
 
 public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
 {
     private const string GmailSmtpServer = "smtp.gmail.com";
-    private const int SmtpPort = 587; // Use 465 for SSL
+    private const int SmtpPort = 587;
     private string? Gmail { get; set; }
     private string? Name { get; set; }
     private string? Password { get; set; }
 
     public EmailUserResetPasswordCode()
     {
-        DotNetEnv.Env.Load("../MyRecipeBook.Infrastructure/.env");        
+        // Use the same env file loading logic as InfraDependencyInjectionExtension
+        var envFilePath = File.Exists("Infrastructure.env")
+            ? "Infrastructure.env" // Path for publishing environment
+            : "../MyRecipeBook.Infrastructure/Infrastructure.env"; // Path for development environment
+
+        DotNetEnv.Env.Load(envFilePath);
+        
         var gmailConfig = Environment.GetEnvironmentVariable("GMAIL_APP_CONFIG");
 
         if (string.IsNullOrWhiteSpace(gmailConfig))
@@ -47,25 +55,35 @@ public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
         using var smtpClient = new SmtpClient();
         try
         {
-            await smtpClient.ConnectAsync(GmailSmtpServer, SmtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+            // SecureSocketOptions is an enum in MailKit, not a class with properties
+            // Use the SslProtocols directly when connecting
+            smtpClient.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+            smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+            await smtpClient.ConnectAsync(GmailSmtpServer, SmtpPort, SecureSocketOptions.StartTls);
             await smtpClient.AuthenticateAsync(Gmail, Password);
             await smtpClient.SendAsync(email);
         }
         catch (SmtpCommandException smtpEx)
         {
+            Console.WriteLine($"SMTP command error: {smtpEx.Message}");
+            Console.WriteLine($"Status code: {smtpEx.StatusCode}");
             throw new InvalidOperationException($"SMTP command error: {smtpEx.Message}", smtpEx);
         }
         catch (SmtpProtocolException protocolEx)
         {
+            Console.WriteLine($"SMTP protocol error: {protocolEx.Message}");
             throw new InvalidOperationException($"SMTP protocol error: {protocolEx.Message}", protocolEx);
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Error sending reset password email: {ex.Message}");
             throw new InvalidOperationException($"Error sending reset password email: {ex.Message}", ex);
         }
         finally
         {
-            await smtpClient.DisconnectAsync(true);
+            if (smtpClient.IsConnected)
+                await smtpClient.DisconnectAsync(true);
         }
     }
 }
