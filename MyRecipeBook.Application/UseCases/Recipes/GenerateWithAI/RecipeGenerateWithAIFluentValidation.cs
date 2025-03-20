@@ -10,7 +10,9 @@ public class RecipeGenerateWithAIFluentValidation : AbstractValidator<RequestRec
     private const int MaximumRecipeIngredients = SharedValidators.MaximumRecipeIngredients;
     public RecipeGenerateWithAIFluentValidation()
     {
-        RuleFor(r => r.Ingredients.Count).InclusiveBetween(1, MaximumRecipeIngredients)
+        
+        RuleFor(recipe => recipe.Ingredients.Count).GreaterThan(0).WithMessage(ResourceErrorMessages.RECIPE_AT_LEAST_ONE_INGREDIENT);
+        RuleFor(r => r.Ingredients.Count).LessThan(MaximumRecipeIngredients)
             .WithMessage(ResourceErrorMessages.RECIPE_INGREDIENT_LIST_MAXIMUM_COUNT);
         RuleForEach(r => r.Ingredients).ValidateIngredient();
     }

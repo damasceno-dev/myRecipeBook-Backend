@@ -12,7 +12,7 @@ public static partial class SharedValidators
     public const int MaximumRecipeInstructionTextLength = 2000;
     public const int MaximumRecipeIngredients = 10;
     public const int RefreshTokenExpirationTimeInDays = 7;
-    private const int MaximumRecipeIngredientWords = 5;
+    private const int MaximumRecipeIngredientWords = 10;
     
     public static (bool isValidImage, string extension) ValidateImageAndGetExtension(this Stream file)
     {
@@ -115,8 +115,8 @@ public static partial class SharedValidators
     
     #region Regex
         [GeneratedRegex(@"\s+")] private static partial Regex OneOrMoreSpacesRegex();
-        [GeneratedRegex(@"[^a-zA-ZÀ-ÿ0-9\s/]")] private static partial Regex ContainsInvalidCharactersRegex();
-        [GeneratedRegex(@"^(\d+/\d+|\d+|[a-zA-ZÀ-ÿ])")] private static partial Regex StartsWithValidCharacterRegex();
+        [GeneratedRegex(@"[^a-zA-ZÀ-ÿ0-9\s/()]")] private static partial Regex ContainsInvalidCharactersRegex();
+        [GeneratedRegex(@"^(\d+/\d+|\d+|[a-zA-ZÀ-ÿ\(])")] private static partial Regex StartsWithValidCharacterRegex();
         [GeneratedRegex(@"^\d+/\d+$")] private static partial Regex SlashIsBetweenDigitsRegex();
     #endregion
 }
