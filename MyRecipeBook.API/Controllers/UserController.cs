@@ -72,8 +72,8 @@ namespace MyRecipeBook.Controllers
                 return BadRequest("Couldn't get name or email from google authentication");
 
             var responseUserLogin = await userExternalLoginUse.Execute(name, email);
-
-            return Redirect($"{returnUrl}?token={responseUserLogin.ResponseToken.Token}&name={responseUserLogin.Name}&email={responseUserLogin.Email}&refreshToken={responseUserLogin.ResponseToken.RefreshToken}");
+            var url = $"{returnUrl}?token={responseUserLogin.ResponseToken.Token}&name={responseUserLogin.Name}&email={responseUserLogin.Email}&refreshToken={responseUserLogin.ResponseToken.RefreshToken}";
+            return Redirect(url);
         }
         
         [HttpPost("logout")]

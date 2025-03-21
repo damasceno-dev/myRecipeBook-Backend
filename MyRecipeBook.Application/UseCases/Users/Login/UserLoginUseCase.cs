@@ -45,6 +45,12 @@ public class UserLoginUseCase(IUsersRepository repository, ITokenRepository toke
         {
             throw new InvalidLoginException(ResourceErrorMessages.EMAIL_NOT_ACTIVE);
         }
+
+        // If this is a Google user trying to login with password, update their password
+        if (validUser.Password == passwordEncryption.GetDefaultExternalLoginKey())
+        {
+            throw new InvalidLoginException(ResourceErrorMessages.USER_IS_ALREADY_GOOGLE);
+        }
         
         if (passwordEncryption.VerifyPassword(requestPassword, validUser.Password) is false)
         {

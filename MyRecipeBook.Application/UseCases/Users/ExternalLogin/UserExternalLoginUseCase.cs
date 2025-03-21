@@ -25,6 +25,13 @@ public class UserExternalLoginUseCase(IUsersRepository usersRepository, IUnitOfW
 
             await usersRepository.Register(user);
         }
+        else if (user.Password != passwordEncryption.GetDefaultExternalLoginKey())
+        {
+            // If user exists but is not a Google user, update their password to use Google login
+            user.Password = passwordEncryption.GetDefaultExternalLoginKey();
+            usersRepository.UpdateUser(user);
+            await unitOfWork.Commit();
+        }
         
         if (user.Active is false)
         {

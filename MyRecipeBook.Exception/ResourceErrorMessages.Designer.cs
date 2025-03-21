@@ -247,5 +247,11 @@ namespace MyRecipeBook.Communication {
                 return ResourceManager.GetString("REFRESH_TOKEN_EXPIRED", resourceCulture);
             }
         }
+        public static string USER_IS_ALREADY_GOOGLE
+        {
+            get {
+                return ResourceManager.GetString("USER_IS_ALREADY_GOOGLE", resourceCulture);
+            }
+        }
     }
 }

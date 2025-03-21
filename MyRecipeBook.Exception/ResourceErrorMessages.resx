@@ -129,4 +129,7 @@
     <data name="REFRESH_TOKEN_EXPIRED" xml:space="preserve">
         <value>Refresh Token expired</value>
     </data>
+    <data name="USER_IS_ALREADY_GOOGLE" xml:space="preserve">
+        <value>This e-mail has already registered with google. Use the google sign in</value>
+    </data>
 </root>

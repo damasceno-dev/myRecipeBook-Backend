@@ -4,8 +4,11 @@ namespace MyRecipeBook.Exception;
 
 public class InvalidLoginException : MyRecipeBookException
 {
-    public InvalidLoginException(string message) : base(message)
+    public string? ErrorCode { get; }
+
+    public InvalidLoginException(string message, string? errorCode = null) : base(message)
     {
+        ErrorCode = errorCode;
     }
 
     public override int GetStatusCode => (int)HttpStatusCode.Unauthorized;
