@@ -1,3 +1,7 @@
+# MyRecipeBook Backend
+
+This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources.
+
 Running the project: 
 Set the environment variables of the corresponding files using the examples:
 
