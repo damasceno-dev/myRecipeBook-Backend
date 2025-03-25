@@ -3,9 +3,8 @@
 
 This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources.
 
-<!-- Sonarcloud -->
+<!-- Sonarcloud badges -->
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)
-
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
 
@@ -61,14 +60,6 @@ Putting the project online for the first time:
 ### Continuous Delivery:
 After the project is online, every push will push this new image to Amazon ECR,
 and its going to be automatically used by the Amazon App Runner to put the last image online
-
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=bugs)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=coverage)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=YOUR_PROJECT_KEY&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=YOUR_PROJECT_KEY)
-
 
 <!-- Badges -->
 [badge-dot-net]: https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff&style=for-the-badge
