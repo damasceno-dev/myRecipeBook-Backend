@@ -67,7 +67,7 @@ public class JsonModelBinder : IModelBinder
         return value.StartsWith("[\"") && value.EndsWith("\"]");
     }
 
-    private void ParseSwaggerFormat(string rawValue, List<RequestRecipeInstructionJson> instructions)
+    private static void ParseSwaggerFormat(string rawValue, List<RequestRecipeInstructionJson> instructions)
     {
         Console.WriteLine("Detected Swagger format - array of strings");
         
@@ -205,7 +205,7 @@ public class JsonModelBinder : IModelBinder
         return false;
     }
 
-    private void TrySplitAndParseParts(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    private static void TrySplitAndParseParts(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
     {
         try
         {
