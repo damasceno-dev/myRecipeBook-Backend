@@ -5,7 +5,7 @@ using MyRecipeBook.Communication.Requests;
 
 namespace MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
 
-public partial class JsonModelBinder : IModelBinder
+public class JsonModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
@@ -62,7 +62,7 @@ public partial class JsonModelBinder : IModelBinder
         return instructions;
     }
 
-    private bool IsSwaggerFormat(string value)
+    private static bool IsSwaggerFormat(string value)
     {
         return value.StartsWith("[\"") && value.EndsWith("\"]");
     }
@@ -85,7 +85,7 @@ public partial class JsonModelBinder : IModelBinder
         }
     }
 
-    private void ProcessJsonArray(JsonElement arrayElement, List<RequestRecipeInstructionJson> instructions)
+    private static void ProcessJsonArray(JsonElement arrayElement, List<RequestRecipeInstructionJson> instructions)
     {
         foreach (var element in arrayElement.EnumerateArray())
         {
@@ -117,7 +117,7 @@ public partial class JsonModelBinder : IModelBinder
         }
     }
 
-    private void ProcessMultipleValues(List<string> values, List<RequestRecipeInstructionJson> instructions)
+    private static void ProcessMultipleValues(List<string?> values, List<RequestRecipeInstructionJson> instructions)
     {
         Console.WriteLine($"Processing {values.Count} separate values");
         
@@ -154,7 +154,7 @@ public partial class JsonModelBinder : IModelBinder
         }
     }
 
-    private void ProcessJsonArrayString(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    private static void ProcessJsonArrayString(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
     {
         Console.WriteLine("Processing as JSON array");
         try
@@ -185,7 +185,7 @@ public partial class JsonModelBinder : IModelBinder
         TrySplitAndParseParts(normalizedValue, instructions);
     }
 
-    private bool TryParseWithArrayWrapping(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    private static bool TryParseWithArrayWrapping(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
     {
         try
         {
@@ -209,7 +209,7 @@ public partial class JsonModelBinder : IModelBinder
     {
         try
         {
-            string[] parts = normalizedValue.Split(new[] { "},{" }, StringSplitOptions.None);
+            string[] parts = normalizedValue.Split(["},{"], StringSplitOptions.None);
             Console.WriteLine($"Split into {parts.Length} parts");
             
             for (int i = 0; i < parts.Length; i++)
@@ -224,25 +224,27 @@ public partial class JsonModelBinder : IModelBinder
         }
     }
 
-    private string FixBracesForPart(string part, int index, int totalParts)
+    private static string FixBracesForPart(string part, int index, int totalParts)
     {
-        if (index == 0 && !part.EndsWith("}"))
+        if (index == 0 && !part.EndsWith('}'))
         {
             return part + "}";
         }
-        else if (index == totalParts - 1 && !part.StartsWith("{"))
+
+        if (index == totalParts - 1 && !part.StartsWith('{'))
         {
             return "{" + part;
         }
-        else if (index > 0 && index < totalParts - 1)
+
+        if (index > 0 && index < totalParts - 1)
         {
             return "{" + part + "}";
         }
-        
+
         return part;
     }
 
-    private void TryParseAndAddInstruction(string json, List<RequestRecipeInstructionJson> instructions, string context)
+    private static void TryParseAndAddInstruction(string json, List<RequestRecipeInstructionJson> instructions, string context)
     {
         try
         {
@@ -266,7 +268,7 @@ public partial class JsonModelBinder : IModelBinder
         }
     }
 
-    private string NormalizeJsonString(string value)
+    private static string NormalizeJsonString(string value)
     {
         return value
             .Replace("\\n", "")
@@ -274,22 +276,22 @@ public partial class JsonModelBinder : IModelBinder
             .Trim();
     }
 
-    private bool IsJsonArray(string text)
+    private static bool IsJsonArray(string text)
     {
-        return text.StartsWith("[") && text.EndsWith("]");
+        return text.StartsWith('[') && text.EndsWith(']');
     }
 
-    private bool IsConcatenatedObjects(string text)
+    private static bool IsConcatenatedObjects(string text)
     {
-        return text.StartsWith("{") && text.Contains("},{") && text.EndsWith("}");
+        return text.StartsWith('{') && text.Contains("},{") && text.EndsWith('}');
     }
 
-    private bool IsSingleJsonObject(string text)
+    private static bool IsSingleJsonObject(string text)
     {
-        return text.StartsWith("{") && text.EndsWith("}");
+        return text.StartsWith('{') && text.EndsWith('}');
     }
 
-    private void LogBindingError(Exception ex, ModelBindingContext bindingContext)
+    private static void LogBindingError(Exception ex, ModelBindingContext bindingContext)
     {
         Console.WriteLine($"Exception in model binding: {ex.Message}");
         Console.WriteLine($"Stack trace: {ex.StackTrace}");
