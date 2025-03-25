@@ -117,7 +117,7 @@ public class RecipeGenerateWithAIControllerInMemoryTest(MyInMemoryFactory factor
     public async Task ErrorMaximumWordCountExceeded(string culture)
     {
         var request = RequestRecipeIngredientsForAIJsonBuilder.Build();
-        request.Ingredients[0] = "1 cup of very very very fine flour";
+        request.Ingredients[0] = string.Join(" ", Enumerable.Repeat("word", SharedValidators.MaximumRecipeIngredientWords + 1));
         var expectedErrorMessage = ResourceErrorMessages.ResourceManager.GetString("RECIPE_INGREDIENT_MAXIMUM_WORD_COUNT", new CultureInfo(culture));
         var validToken = JsonWebTokenRepositoryBuilder.Build().Generate(factory.GetUser().Id);
 

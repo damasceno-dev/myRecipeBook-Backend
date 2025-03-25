@@ -94,7 +94,7 @@ public class RecipeGenerateWithAIUseCaseTest
     public async Task ErrorMaximumWordCountExceeded()
     {
         var request = RequestRecipeIngredientsForAIJsonBuilder.Build();
-        request.Ingredients[0] = "1 cup of very very very fine flour";
+        request.Ingredients[0] = string.Join(" ", Enumerable.Repeat("word", SharedValidators.MaximumRecipeIngredientWords + 1));
         var recipeDto = RecipeDtoBuilder.Build(request.Ingredients);
         var useCase = CreateRecipeGenerateWithAIUseCase(recipeDto);
 

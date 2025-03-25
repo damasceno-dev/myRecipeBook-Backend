@@ -70,7 +70,7 @@ public class RecipeGenerateWithAIFluentValidationTest
     public void ErrorMaximumWordCountExceeded()
     {
         var request = RequestRecipeIngredientsForAIJsonBuilder.Build();
-        request.Ingredients[0] = "1 cup of very very very fine flour";
+        request.Ingredients[0] = string.Join(" ", Enumerable.Repeat("word", SharedValidators.MaximumRecipeIngredientWords + 1));
         var result = new RecipeGenerateWithAIFluentValidation().Validate(request);
 
         result.IsValid.Should().BeFalse();
