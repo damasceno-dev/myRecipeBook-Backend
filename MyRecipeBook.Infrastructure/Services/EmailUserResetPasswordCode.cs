@@ -58,7 +58,6 @@ public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
             // SecureSocketOptions is an enum in MailKit, not a class with properties
             // Use the SslProtocols directly when connecting
             smtpClient.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-            smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
             await smtpClient.ConnectAsync(GmailSmtpServer, SmtpPort, SecureSocketOptions.StartTls);
             await smtpClient.AuthenticateAsync(Gmail, Password);
@@ -66,18 +65,18 @@ public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
         }
         catch (SmtpCommandException smtpEx)
         {
-            Console.WriteLine($"SMTP command error: {smtpEx.Message}");
-            Console.WriteLine($"Status code: {smtpEx.StatusCode}");
+            Console.WriteLine($@"SMTP command error: {smtpEx.Message}");
+            Console.WriteLine($@"Status code: {smtpEx.StatusCode}");
             throw new InvalidOperationException($"SMTP command error: {smtpEx.Message}", smtpEx);
         }
         catch (SmtpProtocolException protocolEx)
         {
-            Console.WriteLine($"SMTP protocol error: {protocolEx.Message}");
+            Console.WriteLine($@"SMTP protocol error: {protocolEx.Message}");
             throw new InvalidOperationException($"SMTP protocol error: {protocolEx.Message}", protocolEx);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error sending reset password email: {ex.Message}");
+            Console.WriteLine($@"Error sending reset password email: {ex.Message}");
             throw new InvalidOperationException($"Error sending reset password email: {ex.Message}", ex);
         }
         finally

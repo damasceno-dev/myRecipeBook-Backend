@@ -34,11 +34,8 @@ if (testEnv is false)
 app.UseCors("AllowFrontend");
 app.UseMiddleware<CultureMiddleware>();
 
-// if (app.Environment.IsDevelopment())
-// {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-// }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

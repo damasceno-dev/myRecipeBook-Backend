@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Primitives;
 using MyRecipeBook.Communication.Requests;
 
 namespace MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
@@ -7,238 +8,289 @@ namespace MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
 public partial class JsonModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
-{
-    ArgumentNullException.ThrowIfNull(bindingContext);
-
-    var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
-    if (valueProviderResult == ValueProviderResult.None)
     {
-        bindingContext.Result = ModelBindingResult.Failed();
-        return Task.CompletedTask;
-    }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
-    try
-    {
-        var instructions = new List<RequestRecipeInstructionJson>();
-        var rawValue = valueProviderResult.FirstValue;
-        
-        if (string.IsNullOrWhiteSpace(rawValue))
+        var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+        if (valueProviderResult == ValueProviderResult.None)
         {
-            bindingContext.Result = ModelBindingResult.Success(null);
+            bindingContext.Result = ModelBindingResult.Failed();
             return Task.CompletedTask;
         }
 
-        Console.WriteLine($"Original raw value: {rawValue}");
-        
-        // CASE 1: Swagger format - JSON array of strings ["string1","string2",...]
-        if (rawValue.StartsWith("[\"") && rawValue.EndsWith("\"]"))
+        try
         {
-            Console.WriteLine("Detected Swagger format - array of strings");
-            
-            try
+            var rawValue = valueProviderResult.FirstValue;
+
+            if (string.IsNullOrWhiteSpace(rawValue))
             {
-                using var jsonDoc = JsonDocument.Parse(rawValue);
-                if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var element in jsonDoc.RootElement.EnumerateArray())
-                    {
-                        if (element.ValueKind == JsonValueKind.String)
-                        {
-                            var jsonString = element.GetString();
-                            if (!string.IsNullOrEmpty(jsonString))
-                            {
-                                Console.WriteLine($"Processing string from array: {jsonString}");
-                                
-                                try
-                                {
-                                    // The strings from Swagger already have proper JSON format
-                                    // but may contain escape sequences like \n
-                                    var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(jsonString);
-                                    if (instruction != null)
-                                    {
-                                        instructions.Add(instruction);
-                                        Console.WriteLine($"Successfully parsed instruction: Step {instruction.Step}, Text: {instruction.Text}");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Failed to parse instruction from Swagger: {ex.Message}");
-                                }
-                            }
-                        }
-                    }
-                }
+                bindingContext.Result = ModelBindingResult.Success(null);
+                return Task.CompletedTask;
             }
-            catch (Exception ex) 
-            {
-                Console.WriteLine($"Failed to process Swagger format: {ex.Message}");
-            }
+
+            Console.WriteLine($"Original raw value: {rawValue}");
+
+            var instructions = ParseInstructions(rawValue, valueProviderResult.Values);
+
+            Console.WriteLine($"Total instructions parsed: {instructions.Count}");
+            bindingContext.Result = ModelBindingResult.Success(instructions);
         }
-        // CASE 2: Frontend format - multiple values or concatenated objects
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("Processing frontend format");
-            
-            // Check if we have multiple values from a form submission
-            var allValues = valueProviderResult.Values.ToList();
-            if (allValues.Count > 1)
-            {
-                Console.WriteLine($"Processing {allValues.Count} separate values");
-                
-                foreach (var value in allValues)
-                {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        // Normalize and parse each individual value
-                        var normalizedItem = value
-                            .Replace("\\n", "")
-                            .Replace("\\\"", "\"")
-                            .Trim();
-                        
-                        try
-                        {
-                            // Try to parse as single object
-                            if (normalizedItem.StartsWith("{") && normalizedItem.EndsWith("}"))
-                            {
-                                var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(normalizedItem);
-                                if (instruction != null)
-                                {
-                                    instructions.Add(instruction);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Failed to parse individual value: {ex.Message}");
-                        }
-                    }
-                }
-            }
-            
-            // If we couldn't parse individual values or there's only one value,
-            // try to parse the raw value as a combined JSON structure
-            if (instructions.Count == 0 && !string.IsNullOrWhiteSpace(rawValue))
-            {
-                var normalizedValue = rawValue
-                    .Replace("\\n", "")
-                    .Replace("\\\"", "\"")
-                    .Trim();
-                
-                Console.WriteLine($"Normalized frontend value: {normalizedValue}");
-                
-                // CASE 2A: JSON array directly [{"Step":1,...},{"Step":2,...}]
-                if (normalizedValue.StartsWith("[") && normalizedValue.EndsWith("]"))
-                {
-                    Console.WriteLine("Processing as JSON array");
-                    try
-                    {
-                        var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(normalizedValue);
-                        if (parsedInstructions != null)
-                        {
-                            instructions.AddRange(parsedInstructions);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to parse as JSON array: {ex.Message}");
-                    }
-                }
-                // CASE 2B: Concatenated objects without array notation {"Step":1,...},{"Step":2,...}
-                else if (normalizedValue.StartsWith("{") && normalizedValue.Contains("},{") && normalizedValue.EndsWith("}"))
-                {
-                    Console.WriteLine("Processing as concatenated objects");
-                    
-                    // Wrap in array brackets and try to parse
-                    try
-                    {
-                        var arrayWrapped = $"[{normalizedValue}]";
-                        var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(arrayWrapped);
-                        if (parsedInstructions != null)
-                        {
-                            instructions.AddRange(parsedInstructions);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to parse concatenated objects with wrapping: {ex.Message}");
-                        
-                        // If that didn't work, try splitting and parsing each part
-                        try
-                        {
-                            string[] parts = normalizedValue.Split(new[] { "},{" }, StringSplitOptions.None);
-                            Console.WriteLine($"Split into {parts.Length} parts");
-                            
-                            for (int i = 0; i < parts.Length; i++)
-                            {
-                                string part = parts[i];
-                                
-                                // Add back the braces that were removed in the split
-                                if (i == 0)
-                                {
-                                    if (!part.EndsWith("}"))
-                                        part = part + "}";
-                                }
-                                else if (i == parts.Length - 1)
-                                {
-                                    if (!part.StartsWith("{"))
-                                        part = "{" + part;
-                                }
-                                else
-                                {
-                                    part = "{" + part + "}";
-                                }
-                                
-                                try
-                                {
-                                    var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(part);
-                                    if (instruction != null)
-                                    {
-                                        instructions.Add(instruction);
-                                    }
-                                }
-                                catch (Exception innerEx)
-                                {
-                                    Console.WriteLine($"Failed to parse part {i}: {innerEx.Message}");
-                                }
-                            }
-                        }
-                        catch (Exception splitEx)
-                        {
-                            Console.WriteLine($"Failed to process by splitting: {splitEx.Message}");
-                        }
-                    }
-                }
-                // CASE 2C: Single object {"Step":1,...}
-                else if (normalizedValue.StartsWith("{") && normalizedValue.EndsWith("}"))
-                {
-                    Console.WriteLine("Processing as single object");
-                    try
-                    {
-                        var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(normalizedValue);
-                        if (instruction != null)
-                        {
-                            instructions.Add(instruction);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to parse as single object: {ex.Message}");
-                    }
-                }
-            }
+            LogBindingError(ex, bindingContext);
+            bindingContext.Result = ModelBindingResult.Failed();
         }
 
-        Console.WriteLine($"Total instructions parsed: {instructions.Count}");
-        bindingContext.Result = ModelBindingResult.Success(instructions);
+        return Task.CompletedTask;
     }
-    catch (Exception ex)
+
+    private List<RequestRecipeInstructionJson> ParseInstructions(string rawValue, StringValues values)
+    {
+        var instructions = new List<RequestRecipeInstructionJson>();
+
+        // Try to parse as Swagger format first
+        if (IsSwaggerFormat(rawValue))
+        {
+            ParseSwaggerFormat(rawValue, instructions);
+        }
+        else
+        {
+            // Handle frontend format
+            ParseFrontendFormat(rawValue, values, instructions);
+        }
+
+        return instructions;
+    }
+
+    private bool IsSwaggerFormat(string value)
+    {
+        return value.StartsWith('[') && value.EndsWith(']');
+    }
+
+    private void ParseSwaggerFormat(string rawValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        Console.WriteLine("Detected Swagger format - array of strings");
+
+        try
+        {
+            using var jsonDoc = JsonDocument.Parse(rawValue);
+            if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
+            {
+                ProcessJsonArray(jsonDoc.RootElement, instructions);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to process Swagger format: {ex.Message}");
+        }
+    }
+
+    private void ProcessJsonArray(JsonElement arrayElement, List<RequestRecipeInstructionJson> instructions)
+    {
+        foreach (var element in arrayElement.EnumerateArray())
+        {
+            if (element.ValueKind != JsonValueKind.String) continue;
+
+            var jsonString = element.GetString();
+            if (string.IsNullOrEmpty(jsonString)) continue;
+
+            Console.WriteLine($"Processing string from array: {jsonString}");
+            TryParseAndAddInstruction(jsonString, instructions, "instruction from Swagger");
+        }
+    }
+
+    private void ParseFrontendFormat(string rawValue, StringValues values, List<RequestRecipeInstructionJson> instructions)
+    {
+        Console.WriteLine("Processing frontend format");
+
+        // Check if we have multiple values from a form submission
+        var allValues = values.ToList();
+        if (allValues.Count > 1)
+        {
+            ProcessMultipleValues(allValues, instructions);
+        }
+
+        // If we couldn't parse individual values or there's only one value
+        if (instructions.Count == 0 && !string.IsNullOrWhiteSpace(rawValue))
+        {
+            ProcessSingleRawValue(rawValue, instructions);
+        }
+    }
+
+    private void ProcessMultipleValues(List<string?> values, List<RequestRecipeInstructionJson> instructions)
+    {
+        Console.WriteLine($"Processing {values.Count} separate values");
+
+        foreach (var value in values)
+        {
+            if (string.IsNullOrWhiteSpace(value)) continue;
+
+            var normalizedItem = NormalizeJsonString(value);
+
+            if (IsSingleJsonObject(normalizedItem))
+            {
+                TryParseAndAddInstruction(normalizedItem, instructions, "individual value");
+            }
+        }
+    }
+
+    private void ProcessSingleRawValue(string rawValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        var normalizedValue = NormalizeJsonString(rawValue);
+
+        Console.WriteLine($"Normalized frontend value: {normalizedValue}");
+
+        if (IsJsonArray(normalizedValue))
+        {
+            ProcessJsonArrayString(normalizedValue, instructions);
+        }
+        else if (IsConcatenatedObjects(normalizedValue))
+        {
+            ProcessConcatenatedObjects(normalizedValue, instructions);
+        }
+        else if (IsSingleJsonObject(normalizedValue))
+        {
+            TryParseAndAddInstruction(normalizedValue, instructions, "single object");
+        }
+    }
+
+    private void ProcessJsonArrayString(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        Console.WriteLine("Processing as JSON array");
+        try
+        {
+            var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(normalizedValue);
+            if (parsedInstructions != null)
+            {
+                instructions.AddRange(parsedInstructions);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to parse as JSON array: {ex.Message}");
+        }
+    }
+
+    private void ProcessConcatenatedObjects(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        Console.WriteLine("Processing as concatenated objects");
+
+        // Try with array wrapping first
+        if (TryParseWithArrayWrapping(normalizedValue, instructions))
+        {
+            return;
+        }
+
+        // Fall back to manual splitting
+        TrySplitAndParseParts(normalizedValue, instructions);
+    }
+
+    private bool TryParseWithArrayWrapping(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        try
+        {
+            var arrayWrapped = $"[{normalizedValue}]";
+            var parsedInstructions = JsonSerializer.Deserialize<List<RequestRecipeInstructionJson>>(arrayWrapped);
+            if (parsedInstructions != null)
+            {
+                instructions.AddRange(parsedInstructions);
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to parse concatenated objects with wrapping: {ex.Message}");
+        }
+
+        return false;
+    }
+
+    private void TrySplitAndParseParts(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    {
+        try
+        {
+            string[] parts = normalizedValue.Split(["},{"], StringSplitOptions.None);
+            Console.WriteLine($"Split into {parts.Length} parts");
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                string part = FixBracesForPart(parts[i], i, parts.Length);
+                TryParseAndAddInstruction(part, instructions, $"part {i}");
+            }
+        }
+        catch (Exception splitEx)
+        {
+            Console.WriteLine($"Failed to process by splitting: {splitEx.Message}");
+        }
+    }
+
+    private string FixBracesForPart(string part, int index, int totalParts)
+    {
+        if (index == 0)
+        {
+            if (!part.EndsWith('}'))
+                return part + "}";
+        }
+        else if (index == totalParts - 1)
+        {
+            if (!part.StartsWith('{'))
+                return '{' + part;
+        }
+        else
+        {
+            return '{' + part + '}';
+        }
+
+        return part;
+    }
+
+    private void TryParseAndAddInstruction(string json, List<RequestRecipeInstructionJson> instructions, string context)
+    {
+        try
+        {
+            var instruction = JsonSerializer.Deserialize<RequestRecipeInstructionJson>(json);
+            if (instruction != null)
+            {
+                instructions.Add(instruction);
+                if (instruction.Step > 0)
+                {
+                    Console.WriteLine($"Successfully parsed instruction: Step {instruction.Step}, Text: {instruction.Text}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to parse {context}: {ex.Message}");
+        }
+    }
+
+    private string NormalizeJsonString(string value)
+    {
+        return value
+            .Replace("\\n", "")
+            .Replace("\\\"", "\"")
+            .Trim();
+    }
+
+    private bool IsJsonArray(string text)
+    {
+        return text.StartsWith('[') && text.EndsWith(']');
+    }
+
+    private bool IsConcatenatedObjects(string text)
+    {
+        return text.StartsWith('{') && text.Contains("},{") && text.EndsWith('}');
+    }
+
+    private bool IsSingleJsonObject(string text)
+    {
+        return text.StartsWith('{') && text.EndsWith('}');
+    }
+
+    private void LogBindingError(Exception ex, ModelBindingContext bindingContext)
     {
         Console.WriteLine($"Exception in model binding: {ex.Message}");
         Console.WriteLine($"Stack trace: {ex.StackTrace}");
         bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"Invalid JSON format: {ex.Message}");
-        bindingContext.Result = ModelBindingResult.Failed();
     }
-
-    return Task.CompletedTask;
-}
 }

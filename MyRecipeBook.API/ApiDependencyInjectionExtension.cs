@@ -87,7 +87,7 @@ public static class ApiDependencyInjectionExtension
                     // Override the prompt parameter unconditionally
                     queryDict["prompt"] = "consent select_account";
                     // Rebuild the redirect URI
-                    var newRedirectUri = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(uri.GetLeftPart(UriPartial.Path), queryDict);
+                    var newRedirectUri = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(uri.GetLeftPart(UriPartial.Path), queryDict!);
                     context.Response.Redirect(newRedirectUri);
                     return Task.CompletedTask;
                 };

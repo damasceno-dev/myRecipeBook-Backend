@@ -8,13 +8,13 @@ public class RefreshTokenRepository(MyRecipeBookDbContext dbContext) : IRefreshT
 {
     public string Generate() => Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
-    public async Task<RefreshToken?> GetRefreshToken(string refreshToken)
+    public async Task<RefreshToken?> GetRefreshToken(string token)
     {
         return await dbContext
             .RefreshTokens
             .AsNoTracking()
-            .Include(token => token.User)
-            .FirstOrDefaultAsync(token => token.Value.Equals(refreshToken));
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rt => rt.Value.Equals(token));
     }
 
     public async Task SaveRefreshToken(RefreshToken refreshToken)

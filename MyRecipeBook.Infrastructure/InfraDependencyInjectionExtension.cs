@@ -26,7 +26,7 @@ public static class InfraDependencyInjectionExtension
             var dbContext = scopedServices.GetRequiredService<MyRecipeBookDbContext>();
             var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync()).ToList();
 
-            if (!pendingMigrations.Any())
+            if (pendingMigrations.Count == 0)
             {
                 Console.WriteLine(@"No pending migrations were found. The database is up-to-date.");
                 return;
