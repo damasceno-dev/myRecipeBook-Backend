@@ -1,10 +1,12 @@
 # MyRecipeBook Backend
 
+[![sonarcloud-qualityGate]]
+[![sonarcloud-bugs]]
+[![sonarcloud-code-smells]]
+[![sonarcloud-coverage]]
+[![sonarcloud-duplicated-lines]]
 
 This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources.
-
-<!-- Sonarcloud badges -->
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=damasceno-dev_myRecipeBook-Backend)
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
 
@@ -23,8 +25,10 @@ Other technologies and practices adopted include **Entity Framework** for object
 ## Technologies Used
 
 ![badge-dot-net]
+![badge-csharp]
 ![badge-rider]
 ![badge-postgres]
+![badge-aws]
 ![badge-swagger]
 ![badge-github-pipelines]
 ![badge-google]
@@ -63,6 +67,7 @@ and its going to be automatically used by the Amazon App Runner to put the last 
 
 <!-- Badges -->
 [badge-dot-net]: https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff&style=for-the-badge
+[badge-csharp]: https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white
 [badge-rider]: https://img.shields.io/badge/Rider-000000?logo=rider&logoColor=fff&style=for-the-badge
 [badge-postgres]: https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=fff&style=for-the-badge
 [badge-swagger]: https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=000&style=for-the-badge
@@ -70,3 +75,11 @@ and its going to be automatically used by the Amazon App Runner to put the last 
 [badge-google]: https://img.shields.io/badge/Google-4285F4?logo=google&logoColor=fff&style=for-the-badge
 [badge-openai]: https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=fff&style=for-the-badge
 [badge-sonarcloud]: https://img.shields.io/badge/SonarCloud-F3702A?logo=sonarcloud&logoColor=fff&style=for-the-badge
+[badge-aws]: https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white
+
+<!-- Sonarcloud -->
+[sonarcloud-qualityGate]: https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=alert_status
+[sonarcloud-bugs]: https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=bugs
+[sonarcloud-code-smells]: https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=code_smells
+[sonarcloud-coverage]: https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=coverage
+[sonarcloud-duplicated-lines]: https://sonarcloud.io/api/project_badges/measure?project=damasceno-dev_myRecipeBook-Backend&metric=duplicated_lines_density
