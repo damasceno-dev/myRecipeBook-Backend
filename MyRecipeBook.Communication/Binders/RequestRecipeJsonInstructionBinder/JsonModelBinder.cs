@@ -171,7 +171,7 @@ public class JsonModelBinder : IModelBinder
         }
     }
 
-    private void ProcessConcatenatedObjects(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
+    private static void ProcessConcatenatedObjects(string normalizedValue, List<RequestRecipeInstructionJson> instructions)
     {
         Console.WriteLine("Processing as concatenated objects");
         
