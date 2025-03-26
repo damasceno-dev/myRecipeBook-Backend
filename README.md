@@ -6,7 +6,10 @@
 ![sonarcloud-coverage]
 ![sonarcloud-duplicated-lines]
 
-This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources and the frontend page as well.
+This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), which consists of three main parts:
+- Infrastructure (AWS resources)
+- Backend API  (this repository)
+- Frontend Application
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
 The main differences of this project from the one in the course are: using aws instead of azure, the frontend page and the aws deployment using terraform, since the focus of the course is the backend.
