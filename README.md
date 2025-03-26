@@ -1,18 +1,21 @@
 # MyRecipeBook Backend
 
-[![sonarcloud-qualityGate]]
-[![sonarcloud-bugs]]
-[![sonarcloud-code-smells]]
-[![sonarcloud-coverage]]
-[![sonarcloud-duplicated-lines]]
+![sonarcloud-qualityGate]
+![sonarcloud-bugs]
+![sonarcloud-code-smells]
+![sonarcloud-coverage]
+![sonarcloud-duplicated-lines]
 
-This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources.
+This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), containing the Terraform configurations for AWS resources and the frontend page as well.
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
+The main differences of this project from the one in the course are: using aws instead of azure, the frontend page and the aws deployment using terraform, since the focus of the course is the backend.
 
 **My Recipe Book** - an application for cooking enthusiasts who love to share recipes! My Recipe Book is designed to make your kitchen life easier, helping you organize, manage your recipes, and make your culinary experience more enjoyable.
 
-This project consists of an **API** developed in **.NET** for managing culinary recipes. The **API** allows users to register by providing their name, email, and password. After registration, users can create, edit, filter, and delete recipes. Each recipe must include a title, ingredients, and instructions. Additionally, users have the option to add preparation time, difficulty level, and an illustrative image to the recipe.
+It is also possible to generate your recipe using artificial intelligence. Describe at least one ingredient and let it generate a recipe ready to use.
+
+This project consists of an **API** developed in **.NET** for managing culinary recipes. The **API** allows users to register by providing their name, email, and password. After registration, users can create, edit, filter, and delete recipes. Each recipe must include a title, ingredients, and instructions. Additionally, users can add preparation time, difficulty level, and an illustrative image to the recipe.
 
 The **API** supports **PostgreSQL** as the database option, providing flexibility in the data storage environment. **CI/CD** pipeline configuration and integration with **SonarCloud** ensure continuous code analysis, promoting more robust and secure development.
 
@@ -20,7 +23,8 @@ Following **Domain-Driven Design (DDD)** and **SOLID** principles, the project a
 
 To ensure code quality, **unit and integration tests** are implemented. The use of **dependency injection** promotes better modularity and code testability, facilitating maintenance and project evolution.
 
-Other technologies and practices adopted include **Entity Framework** for object-relational mapping andimplementation of **JWT & Refresh Token** for secure authentication. Database migrations are managed to ensure controlled evolution of the data schema. Additionally, the use of **Git** and the **GitFlow** branching strategy helps in organizing and controlling code versions.
+Other technologies and practices adopted include **Entity Framework** for object-relational mapping and implementation of **JWT & Refresh Token** together with **google login** for secure authentication. Database migrations are managed to ensure controlled evolution of the data schema. Additionally, the use of **Git** and the **GitFlow** branching strategy helps in organizing and controlling code versions.
+And OpenAI integration for automatic generated recipes.
 
 ## Technologies Used
 
