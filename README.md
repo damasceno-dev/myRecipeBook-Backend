@@ -12,7 +12,7 @@ This repository is a submodule of the [MyRecipeBook Full-Stack Application](http
 - Frontend Application
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
-The main differences of this project from the one in the course are: using aws instead of azure, the frontend page and the aws deployment using terraform, since the focus of the course is the backend.
+The main differences of this project from the one in the course are: using aws instead of azure, the frontend application and the aws deployment using terraform, since the focus of the course is the backend.
 
 **My Recipe Book** - an application for cooking enthusiasts who love to share recipes! My Recipe Book is designed to make your kitchen life easier, helping you organize, manage your recipes, and make your culinary experience more enjoyable.
 
