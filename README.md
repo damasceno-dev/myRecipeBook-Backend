@@ -8,7 +8,7 @@
 
 This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), which consists of three main parts:
 - Infrastructure (AWS resources)
-- Backend API  (this repository)
+- Backend API (this repository)
 - Frontend Application
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
