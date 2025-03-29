@@ -50,8 +50,11 @@ namespace MyRecipeBook.Controllers
         [HttpGet("login/google")]
         public async Task<IActionResult> LoginGoogle(string returnUrl, [FromServices] UserExternalLoginUseCase userExternalLoginUse, [FromServices] IConfiguration configuration)
         {
-            // List of allowed return URLs for security reasons
+            logger.LogInformation("Received returnUrl: {ReturnUrl}", returnUrl);
+            
             var allowedReturnUrls = configuration.GetSection("Settings:ExternalLogin:AllowedReturnUrls").Get<string[]>();
+            logger.LogInformation("Allowed URLs: {AllowedUrls}", string.Join(", ", allowedReturnUrls ?? []));
+            // List of allowed return URLs for security reasons
             
             if (string.IsNullOrWhiteSpace(returnUrl) || (allowedReturnUrls ?? throw new InvalidOperationException()).Contains(returnUrl) is false)
             {
