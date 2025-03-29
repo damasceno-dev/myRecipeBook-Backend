@@ -68,6 +68,16 @@ Putting the project online for the first time:
 6) Deploy the app runner workflow in the same repository mentioned in step 1
 7) The App Runner URL output from the previous step is the url of the online project
 
+8) Configure Google OAuth:
+   - Go to the Google Cloud Console
+   - Navigate to APIs & Services → Credentials
+   - Find and edit your OAuth 2.0 Client ID
+   - Add the following authorized redirect URI:
+     ```
+     https://your-apprunner-service-url/signin-google
+     ```
+   - Click "Save"
+
 ### Continuous Delivery:
 After the project is online, every push will push this new image to Amazon ECR,
 and its going to be automatically used by the Amazon App Runner to put the last image online
