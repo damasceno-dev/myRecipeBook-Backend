@@ -40,7 +40,7 @@ public static class ApiDependencyInjectionExtension
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins($"http://localhost:{port}", $"https://localhost:{port}") // Frontend URL
+                policy.WithOrigins($"http://localhost:{port}", $"https://localhost:{port}", "https://main.d39u9fqzs1y4j1.amplifyapp.com") // Frontend URL
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials(); // Required for cookies
