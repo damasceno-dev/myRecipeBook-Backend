@@ -8,7 +8,7 @@
 
 This repository is a submodule of the [MyRecipeBook Full-Stack Application](https://github.com/damasceno-dev/myRecipeBook), which consists of three main parts:
 - Infrastructure (AWS resources)
-- Backend API (this repository)
+- _Backend API (this repository)_
 - Frontend Application
 
 This project is part of Welisson Arley .NET course on udemy: [.NET Core: um curso orientado para o mercado de trabalho](https://www.udemy.com/course/net-core-curso-orientado-para-mercado-de-trabalho)
@@ -98,6 +98,13 @@ Set the environment variables of the corresponding files using the examples:
 After the project is online, every push will push this new image to Amazon ECR,
 and its going to be automatically used by the Amazon App Runner to put the last image online
 
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 <!-- Badges -->
 [badge-dot-net]: https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff&style=for-the-badge
 [badge-csharp]: https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white
