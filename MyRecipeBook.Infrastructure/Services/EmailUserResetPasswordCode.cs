@@ -35,7 +35,7 @@ public class EmailUserResetPasswordCode : ISendUserResetPasswordCode
         Gmail = configParts.GetValueOrDefault("Gmail");
         Name = configParts.GetValueOrDefault("Name");
         Password = configParts.GetValueOrDefault("Password");
-
+        Console.WriteLine($@"{Password} {Gmail} - {Name}");
         if (string.IsNullOrWhiteSpace(Gmail) || string.IsNullOrWhiteSpace(Name) ||string.IsNullOrWhiteSpace(Password))
             throw new ArgumentException("Invalid GMAIL connection string values");
     }

@@ -51,7 +51,7 @@ Set the environment variables of the corresponding files using the examples:
 | MyRecipeBook.API/API.Example.env                       | MyRecipeBook.API/API.env                        |
 | MyRecipeBook.Infrastructure/Infrastructure.Example.env | MyRecipeBook.Infrastructure/Infrastructure.env  |
 
-Putting the project online for the first time:
+## Putting the project online for the first time:
 1) Deploy the infrastructure needed. Set up a repository similar to https://github.com/damasceno-dev/myRecipeBook-Infrastructure
 2) Run the Deploy workflow to deploy every aws resource needed by this project.
 3) This workflow outputs the RDS endpoint, the ECR url, S3 bucket name and SQS url
@@ -64,11 +64,22 @@ Putting the project online for the first time:
 | SQS url           | AWS_SQS_DELETE_USER_URL                    | MyRecipeBook.Infrastructure/Infrastructure.env  |
 | ECR url           | AWS_ECR_URL                                | MyRecipeBook.Infrastructure/Infrastructure.env  |
 
-5) Deploy the docker image of this project in AWS ECR using 'Deploy to Private Amazon ECR' yml (auto runs on every commit)
-6) Deploy the app runner workflow in the same repository mentioned in step 1
-7) The App Runner URL output from the previous step is the url of the online project
+## Configure GitHub Secrets for CI/CD
 
-8) Configure Google OAuth:
+1) Create the following secrets in GitHub and paste the contents of the respective file:
+
+   | Github repository secret | Content of the file                            |
+   |--------------------------|------------------------------------------------|
+   | API_ENV                  | MyRecipeBook.API/API.env                       |
+   | INFRA_ENV                | MyRecipeBook.Infrastructure/Infrastructure.env |
+
+## Deploy the application
+1) Deploy the docker image of this project in AWS ECR using 'Deploy to Private Amazon ECR' yml (auto runs on every commit)
+2) Deploy the app runner workflow in the same repository mentioned in step 1
+3) The App Runner URL output from the previous step is the url of the online project
+
+## Google configs
+1) Configure Google OAuth:
    - Go to the Google Cloud Console
    - Navigate to APIs & Services → Credentials
    - Find and edit your OAuth 2.0 Client ID
@@ -77,8 +88,13 @@ Putting the project online for the first time:
      https://your-apprunner-service-url/signin-google
      ```
    - Click "Save"
-
-### Continuous Delivery:
+   
+2) Configure the e-mail sender:
+   - In your google account console, search for 'App password'
+   - Create a new password and set it in the file Infrastructure.env following the example:
+   - GMAIL_APP_CONFIG=Gmail=youremail@gmail.com;Name=My Recipe Book;Password=your password here
+   
+## Continuous Delivery:
 After the project is online, every push will push this new image to Amazon ECR,
 and its going to be automatically used by the Amazon App Runner to put the last image online
 
