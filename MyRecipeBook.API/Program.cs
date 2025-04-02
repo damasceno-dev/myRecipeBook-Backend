@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MyRecipeBook;
 using MyRecipeBook.Application;
 using MyRecipeBook.Communication.Binders.RequestRecipeJsonInstructionBinder;
@@ -23,7 +25,19 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddHealthChecks().AddDbContextCheck<MyRecipeBookDbContext>();
+
 var app = builder.Build();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    AllowCachingResponses = false,
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    }
+});
 
 var testEnv = builder.Configuration.GetValue<bool>("IsTestEnvironment");
 if (testEnv is false)
@@ -33,6 +47,8 @@ if (testEnv is false)
 
 app.UseCors("AllowFrontend");
 app.UseMiddleware<CultureMiddleware>();
+
+
 
 app.UseSwagger();
 app.UseSwaggerUI();
